@@ -1,4 +1,4 @@
-# SquateQuest - FrontApp
+# SkateQuest - FrontApp
 
 Blablabla, trop bien cette app.
 
