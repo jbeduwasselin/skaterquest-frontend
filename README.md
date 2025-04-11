@@ -14,3 +14,8 @@ prendra d'abbords le style de globalStyle puis va venir écrire les styles de st
 vous pouvez recuperer globalStyle partout (``` import globalStyle from "../globalStyle.js"  ```)
 
 Ah oui j'ai aussi installé les librairies necessaire pour la la camera, la naviagtion et la géoloc.
+
+
+Librairie pour la conversion de vidéo : https://www.npmjs.com/package/@config-plugins/ffmpeg-kit-react-native
+(On va essayer d'éviter de stocker des videos de 18GB) /!\ ne marche pas sur expo GO à implementer sur les .apk/.app 
+
