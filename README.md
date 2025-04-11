@@ -1,4 +1,4 @@
-# SquateQuest - FrontApp
+# SkateQuest - FrontApp
 
 Blablabla, trop bien cette app.
 
@@ -12,3 +12,5 @@ Tips :
 prendra d'abbords le style de globalStyle puis va venir écrire les styles de styles par dessus (similaire à StyleSheet.compose https://reactnative.dev/docs/stylesheet#compose )
 
 vous pouvez recuperer globalStyle partout (``` import globalStyle from "../globalStyle.js"  ```)
+
+Ah oui j'ai aussi installé les librairies necessaire pour la la camera, la naviagtion et la géoloc.
