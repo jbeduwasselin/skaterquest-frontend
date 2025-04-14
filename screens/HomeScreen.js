@@ -1,25 +1,40 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 
 export default function FriendScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tu veux ajouter un ami ?</Text>
+
+<TouchableOpacity
+        style={styles.settingsIcon}
+        onPress={() => navigation.navigate('AppSettingsScreen')}
+      >
+        <Icon name="settings" size={24} color="#333" />
+      </TouchableOpacity>
+
+      <Text style={styles.title}>Bienvenue les skaters !</Text>
 
       <View style={styles.buttonContainer}>
-        {/* TouchableOpacity remplace Button */}
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Tricks')}
+          onPress={() => navigation.navigate('TricksScreen')}
         >
-          <Text style={styles.buttonText}>Voir les tricks</Text>
+          <Text style={styles.buttonText}>Livre de tricks</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Spots')}
+          onPress={() => navigation.navigate('VideoScreen')}
         >
-          <Text style={styles.buttonText}>Explorer les spots</Text>
+          <Text style={styles.buttonText}>Mes vidéos</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('CrewScreen')}
+        >
+          <Text style={styles.buttonText}>Mon équipe</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -32,6 +47,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+  },
+  settingsIcon: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    zIndex: 1,
   },
   title: {
     fontSize: 24,

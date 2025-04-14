@@ -6,6 +6,10 @@ import HomeScreen from "./screens/HomeScreen";
 import GosPlayScreen from "./screens/GosPlayScreen";
 import MapScreen from "./screens/MapScreen";
 import FriendScreen from "./screens/FriendScreen";
+import CrewScreen from "./screens/CrewScreen";
+import VideoScreen from "./screens/VideoScreen";
+import TricksScreen from "./screens/TricksScreen";
+import AppSettingsScreen from "./screens/AppSettingsScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -27,6 +31,10 @@ export default function App() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="TabNavigator" component={TabNavigator} />
+        <Stack.Screen name="CrewScreen" component={CrewScreen} />
+        <Stack.Screen name="VideoScreen" component={VideoScreen} />
+        <Stack.Screen name="TricksScreen" component={TricksScreen} />
+        <Stack.Screen name="AppSettingsScreen" component={AppSettingsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
