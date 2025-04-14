@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   button: {
-    backgroundColor: '#3498db', // couleur de fond personnalisée
+    backgroundColor: '#3498db',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
