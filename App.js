@@ -10,6 +10,7 @@ import CrewScreen from "./screens/CrewScreen";
 import VideoScreen from "./screens/VideoScreen";
 import TricksScreen from "./screens/TricksScreen";
 import AppSettingsScreen from "./screens/AppSettingsScreen";
+import SettingsScreen from "./screens/SettingsScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -35,6 +36,7 @@ export default function App() {
         <Stack.Screen name="VideoScreen" component={VideoScreen} />
         <Stack.Screen name="TricksScreen" component={TricksScreen} />
         <Stack.Screen name="AppSettingsScreen" component={AppSettingsScreen} />
+        <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
