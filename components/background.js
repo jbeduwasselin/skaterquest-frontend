@@ -4,7 +4,7 @@ import { ImageBackground, StyleSheet } from 'react-native';
 export default function BackgroundWrapper({ children }) {
   return (
     <ImageBackground
-      source={require('../assets/Background appli (temporaire).jpg')}
+      source={require('../assets/grip skate background temporaire.jpg')}
       style={styles.background}
       resizeMode="cover"
     >

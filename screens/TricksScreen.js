@@ -1,11 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import BackgroundWrapper from "../components/background";
 
-export default function CrewScreen() {
+
+export default function TricksScreen() {
   return (
+    <BackgroundWrapper>
     <View style={styles.container}>
       <Text style={styles.title}>Livre des tricks</Text>
     </View>
+    </BackgroundWrapper>
   );
 }
 
@@ -19,5 +23,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: "#fff",
   },
 });
