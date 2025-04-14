@@ -1,19 +1,237 @@
-import { Button, StyleSheet, Text, View } from "react-native";
-// import { useEffect, useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { login, logout } from "../reducers/user";
+import { login } from "../reducers/user";
+import { FontAwesome } from "@expo/vector-icons";
 
 export default function LoginScreen({ navigation }) {
+  const IP_ADRESS = process.env.IP_ADRESS; // dotenv est-il capable d'aller chercher depuis ici les infos dans le .env du backend ???
+
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.value);
+
+  // Initialisation des états liés à la connexion
+  const [showSignInModal, setShowSignInModal] = useState(false);
+  const [signInEmail, setSignInEmail] = useState("");
+  const [signInPassword, setSignInPassword] = useState("");
+
+  // Initialisation des états liés à l'inscription
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
+  const [signUpUsername, setSignUpUsername] = useState("");
+  const [signUpEmail, setSignUpEmail] = useState("");
+  const [signUpPassword, setSignUpPassword] = useState("");
+
+  // Fonction de connexion
+  const handleSignIn = () => {
+    fetch(`http://${IP_ADRESS}:3000/users/signin`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: signInEmail,
+        password: signInPassword,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.result) {
+          // Enregistrement des données de l'utilisateur dans le store Redux
+          dispatch(login({ username: signInEmail, token: data.token }));
+          // Réinitialisation des états
+          setSignInEmail("");
+          setSignInPassword("");
+          setShowSignInModal(false);
+          // Redirection vers l'écran d'accueil
+          navigation.navigate("TabNavigator");
+        } else {
+          // Afficher un message en cas d'échec de connexion
+        }
+      });
+  };
+
+  // Fonction d'inscription
+  const handleSignUp = () => {
+    fetch(`http://${IP_ADRESS}:3000/users/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: signUpUsername,
+        email: signUpEmail,
+        password: signUpPassword,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.result) {
+          // Enregistrement des données de l'utilisateur dans le store Redux
+          dispatch(login({ username: signUpUsername, token: data.token }));
+          // Réinitialisation des états
+          setSignUpUsername("");
+          setSignUpEmail("");
+          setSignUpPassword("");
+          setShowSignUpModal(false);
+          // Redirection vers l'écran d'accueil
+          navigation.navigate("TabNavigator");
+        } else {
+          // Afficher un message en cas d'échec d'inscription
+        }
+      });
+  };
+
+  // Fenêtre modale de connexion
+  const signInModalContent = (
+    <View style={styles.signInContainer}>
+      <TouchableOpacity
+        onPress={() => setShowSignInModal(false)}
+        style={styles.closeButton}
+        activeOpacity={0.8}
+      >
+        <FontAwesome name={"close"} />
+      </TouchableOpacity>
+      <Text>connexion</Text>
+      <TextInput
+        styles={styles.inputs}
+        placeholder="Ton adresse mail"
+        onChangeText={(value) => setSignInEmail(value)}
+        value={signInEmail}
+      />
+      <TextInput
+        styles={styles.inputs}
+        placeholder="Ton mot de passe"
+        onChangeText={(value) => setSignInPassword(value)}
+        value={signInPassword}
+      />
+      <TouchableOpacity
+        onPress={() => handleSignIn()}
+        style={styles.button}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.textButton}>Valider</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  // Fenêtre modale d'inscription
+  const signUpModalContent = (
+    <View style={styles.signUpContainer}>
+      <TouchableOpacity
+        onPress={() => setShowSignUpModal(false)}
+        style={styles.closeButton}
+        activeOpacity={0.8}
+      >
+        <FontAwesome name={"close"} />
+      </TouchableOpacity>
+      <Text>Inscription</Text>
+      <TextInput
+        styles={styles.inputs}
+        placeholder="Ton pseudo"
+        onChangeText={(value) => setSignUpUsername(value)}
+        value={signUpUsername}
+      />
+      <TextInput
+        styles={styles.inputs}
+        placeholder="Ton adresse mail"
+        onChangeText={(value) => setSignUpEmail(value)}
+        value={signUpEmail}
+      />
+      <TextInput
+        styles={styles.inputs}
+        placeholder="Ton mot de passe"
+        onChangeText={(value) => setSignUpPassword(value)}
+        value={signUpPassword}
+      />
+      <TouchableOpacity
+        onPress={() => handleSignUp()}
+        style={styles.button}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.textButton}>Valider l'inscription !</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
-    <View>
-      <Text>Login Screen</Text>
-      <Button
-        title="Go to Home"
-        onPress={() => navigation.navigate("TabNavigator")}
-      />
+    <View style={styles.container}>
+      <Text style={styles.title}>SKATER QUEST</Text>
+
+      {!showSignInModal ? (
+        <TouchableOpacity
+          onPress={() => {
+            setShowSignUpModal(false);
+            setShowSignInModal(true);
+          }}
+          style={styles.button}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.textButton}>Connexion</Text>
+        </TouchableOpacity>
+      ) : (
+        [signInModalContent]
+      )}
+
+      {!showSignUpModal ? (
+        <TouchableOpacity
+          onPress={() => {
+            setShowSignInModal(false);
+            setShowSignUpModal(true);
+          }}
+          style={styles.button}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.textButton}>
+            T'es nouveau ? Crée un compte ici !
+          </Text>
+        </TouchableOpacity>
+      ) : (
+        [signUpModalContent]
+      )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "white",
+    borderRadius: 1,
+    paddingTop: 100,
+  },
+  title: {},
+  button: {
+    alignItems: "center",
+    padding: 8,
+    width: "50%",
+    marginTop: 100,
+    backgroundColor: "orange",
+    borderRadius: 10,
+  },
+  signUpContainer: {
+    alignItems: "center",
+    padding: 5,
+    margin: 10,
+    width: "70%",
+    height: "50%",
+    backgroundColor: "yellow",
+  },
+  signInContainer: {
+    alignItems: "center",
+    padding: 5,
+    margin: 10,
+    width: "70%",
+    height: "50%",
+    backgroundColor: "green",
+  },
+  closeButton: {
+    alignSelf: "flex-end",
+    padding: 8,
+    backgroundColor: "orange",
+    borderRadius: "100%",
+  },
+  inputs: {},
+});
