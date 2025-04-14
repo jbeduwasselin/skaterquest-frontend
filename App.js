@@ -3,6 +3,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
+import Icon from "react-native-vector-icons/Feather"; // Seul Icon de Feather sera utilisé
+
 // Imports des screens
 import LoginScreen from "./screens/LoginScreen";
 import HomeScreen from "./screens/HomeScreen";
@@ -33,11 +35,49 @@ const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          backgroundColor: "#1e1e1e", // Urbain / sombre
+          borderTopWidth: 0,
+          height: 70,
+          elevation: 10,
+          shadowColor: "#FF650C", // reflet sunset
+          shadowOpacity: 0.25,
+          shadowRadius: 6,
+        },
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+          switch (route.name) {
+            case "Home":
+              iconName = "home";
+              break;
+            case "GoS":
+              iconName = "crosshair"; // Exemple de remplacement pour l'icône GoS
+              break;
+            case "Spots":
+              iconName = "map";
+              break;
+            case "Amis":
+              iconName = "users";
+              break;
+          }
+          return (
+            <Icon
+              name={iconName}
+              size={focused ? 28 : 24}
+              color={focused ? "#FF650C" : "#fff"}
+            />
+          );
+        },
+      })}
+    >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="GosPlayScreen" component={GosPlayScreen} />
-      <Tab.Screen name="MapScreen" component={MapScreen} />
-      <Tab.Screen name="FriendScreen" component={FriendScreen} />
+      <Tab.Screen name="GoS" component={GosPlayScreen} />
+      <Tab.Screen name="Spots" component={MapScreen} />
+      <Tab.Screen name="Amis" component={FriendScreen} />
     </Tab.Navigator>
   );
 };
