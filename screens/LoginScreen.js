@@ -12,7 +12,6 @@ import { FontAwesome } from "@expo/vector-icons";
 import { IP_AND_PORT } from "../config";
 
 export default function LoginScreen({ navigation }) {
-
   const dispatch = useDispatch();
 
   // Initialisation des états liés à la connexion
@@ -51,6 +50,7 @@ export default function LoginScreen({ navigation }) {
       }),
     })
       .then((res) => res.json())
+      //.then(console.log)
       .then((data) => {
         if (data.result) {
           dispatch(login({ username: signInEmail, token: data.token })); // Enregistrement des données de l'utilisateur dans le store Redux
@@ -74,12 +74,15 @@ export default function LoginScreen({ navigation }) {
       }),
     })
       .then((res) => res.json())
+      //.then(console.log)
       .then((data) => {
         if (data.result) {
+          console.log("ok : ", data);
           dispatch(login({ username: signUpUsername, token: data.token })); // Enregistrement des données de l'utilisateur dans le store Redux
           emptyStates(); // Réinitialisation des états
           navigation.navigate("TabNavigator"); // Redirection vers l'écran d'accueil
         } else {
+          console.log("error : ", data);
           setErrorMessage("Erreur !");
         }
       });
@@ -179,7 +182,7 @@ export default function LoginScreen({ navigation }) {
           <Text style={styles.textButton}>Connexion</Text>
         </TouchableOpacity>
       ) : (
-        [signInModalContent]
+        signInModalContent
       )}
 
       {!showSignUpModal ? (
@@ -196,7 +199,7 @@ export default function LoginScreen({ navigation }) {
           </Text>
         </TouchableOpacity>
       ) : (
-        [signUpModalContent]
+        signUpModalContent
       )}
     </View>
   );
