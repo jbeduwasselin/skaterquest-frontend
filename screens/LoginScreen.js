@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../reducers/user";
 import { FontAwesome } from "@expo/vector-icons";
-import { signInRequest, signUpRequest } from "../lib/request";
+import { IP_AND_PORT } from "../config";
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -41,7 +41,14 @@ export default function LoginScreen({ navigation }) {
 
   // Fonction de connexion
   const handleSignIn = () => {
-    signInRequest(signInEmail, signInPassword)
+    fetch(`http://${IP_AND_PORT}/user/signin`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: signInEmail,
+        password: signInPassword,
+      }),
+    })
       .then((res) => res.json())
       .then((data) => {
         if (data.result) {
@@ -56,17 +63,28 @@ export default function LoginScreen({ navigation }) {
 
   // Fonction d'inscription
   const handleSignUp = () => {
-    signUpRequest(signUpUsername, signUpEmail, signUpPassword).then((data) => {
-      if (data.result) {
-        console.log("ok : ", data);
-        dispatch(login({ username: signUpUsername, token: data.token })); // Enregistrement des données de l'utilisateur dans le store Redux
-        emptyStates(); // Réinitialisation des états
-        navigation.navigate("TabNavigator"); // Redirection vers l'écran d'accueil
-      } else {
-        console.log("error : ", data);
-        setErrorMessage("Erreur !");
-      }
-    });
+    fetch(`http://${IP_AND_PORT}/user/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: signUpUsername,
+        email: signUpEmail,
+        password: signUpPassword,
+      }),
+    })
+      .then((res) => res.json())
+      //.then(console.log)
+      .then((data) => {
+        if (data.result) {
+          console.log("ok : ", data);
+          dispatch(login({ username: signUpUsername, token: data.token })); // Enregistrement des données de l'utilisateur dans le store Redux
+          emptyStates(); // Réinitialisation des états
+          navigation.navigate("TabNavigator"); // Redirection vers l'écran d'accueil
+        } else {
+          console.log("error : ", data);
+          setErrorMessage("Erreur !");
+        }
+      });
   };
 
   // Fenêtre modale de connexion
@@ -81,15 +99,15 @@ export default function LoginScreen({ navigation }) {
       >
         <FontAwesome name={"close"} />
       </TouchableOpacity>
-      <Text>Connexion</Text>
+      <Text>connexion</Text>
       <TextInput
-        style={styles.inputs}
+        styles={styles.inputs}
         placeholder="Ton adresse mail"
         onChangeText={(value) => setSignInEmail(value)}
         value={signInEmail}
       />
       <TextInput
-        style={styles.inputs}
+        styles={styles.inputs}
         placeholder="Ton mot de passe"
         onChangeText={(value) => setSignInPassword(value)}
         value={signInPassword}
@@ -119,19 +137,19 @@ export default function LoginScreen({ navigation }) {
       </TouchableOpacity>
       <Text>Inscription</Text>
       <TextInput
-        style={styles.inputs}
+        styles={styles.inputs}
         placeholder="Ton pseudo"
         onChangeText={(value) => setSignUpUsername(value)}
         value={signUpUsername}
       />
       <TextInput
-        style={styles.inputs}
+        styles={styles.inputs}
         placeholder="Ton adresse mail"
         onChangeText={(value) => setSignUpEmail(value)}
         value={signUpEmail}
       />
       <TextInput
-        style={styles.inputs}
+        styles={styles.inputs}
         placeholder="Ton mot de passe"
         onChangeText={(value) => setSignUpPassword(value)}
         value={signUpPassword}
@@ -182,7 +200,7 @@ export default function LoginScreen({ navigation }) {
       ) : (
         signUpModalContent
       )}
-    </View>
+          </View>
   );
 }
 
@@ -208,19 +226,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 5,
     margin: 10,
-    width: "60%",
-    height: "70%",
+    width: "70%",
+    height: "50%",
     backgroundColor: "yellow",
-    borderRadius: 2,
   },
   signInContainer: {
     alignItems: "center",
     padding: 5,
     margin: 10,
-    width: "60%",
-    height: "70%",
-    backgroundColor: "lightgreen",
-    borderRadius: 2,
+    width: "70%",
+    height: "50%",
+    backgroundColor: "green",
   },
   closeButton: {
     alignSelf: "flex-end",
@@ -228,10 +244,7 @@ const styles = StyleSheet.create({
     backgroundColor: "orange",
     borderRadius: "100%",
   },
-  inputs: {
-    borderBottomColor: 'orange',
-    borderBottomWidth: 1,
-  },
+  inputs: {},
   errorMessage: {
     color: "red",
   },

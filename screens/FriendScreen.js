@@ -7,7 +7,7 @@ export default function FriendScreen({ navigation }) {
   return (
     <BackgroundWrapper>
       <View style={styles.container}>
-        <Text style={styles.title}>Tu veux ajouter un ami ?</Text>
+        <Text style={styles.title}>Liste d'amis</Text>
 
         {/* Champ de recherche */}
         <TextInput
