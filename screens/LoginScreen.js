@@ -50,7 +50,6 @@ export default function LoginScreen({ navigation }) {
       }),
     })
       .then((res) => res.json())
-      //.then(console.log)
       .then((data) => {
         if (data.result) {
           dispatch(login({ username: signInEmail, token: data.token })); // Enregistrement des données de l'utilisateur dans le store Redux
@@ -217,7 +216,7 @@ const styles = StyleSheet.create({
   title: {},
   button: {
     alignItems: "center",
-    padding: 8,
+    padding: 12,
     width: "50%",
     marginTop: 100,
     backgroundColor: "orange",
