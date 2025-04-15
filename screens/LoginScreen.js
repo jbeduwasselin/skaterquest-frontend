@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../reducers/user";
 import { FontAwesome } from "@expo/vector-icons";
-import { IP_AND_PORT } from "../config";
+import { signInRequest, signUpRequest } from "../lib/request";
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -41,14 +41,7 @@ export default function LoginScreen({ navigation }) {
 
   // Fonction de connexion
   const handleSignIn = () => {
-    fetch(`http://${IP_AND_PORT}/user/signin`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: signInEmail,
-        password: signInPassword,
-      }),
-    })
+    signInRequest(signInEmail, signInPassword)
       .then((res) => res.json())
       //.then(console.log)
       .then((data) => {
@@ -64,28 +57,17 @@ export default function LoginScreen({ navigation }) {
 
   // Fonction d'inscription
   const handleSignUp = () => {
-    fetch(`http://${IP_AND_PORT}/user/signup`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: signUpUsername,
-        email: signUpEmail,
-        password: signUpPassword,
-      }),
-    })
-      .then((res) => res.json())
-      //.then(console.log)
-      .then((data) => {
-        if (data.result) {
-          console.log("ok : ", data);
-          dispatch(login({ username: signUpUsername, token: data.token })); // Enregistrement des données de l'utilisateur dans le store Redux
-          emptyStates(); // Réinitialisation des états
-          navigation.navigate("TabNavigator"); // Redirection vers l'écran d'accueil
-        } else {
-          console.log("error : ", data);
-          setErrorMessage("Erreur !");
-        }
-      });
+    signUpRequest(signUpUsername, signUpEmail, signUpPassword).then((data) => {
+      if (data.result) {
+        console.log("ok : ", data);
+        dispatch(login({ username: signUpUsername, token: data.token })); // Enregistrement des données de l'utilisateur dans le store Redux
+        emptyStates(); // Réinitialisation des états
+        navigation.navigate("TabNavigator"); // Redirection vers l'écran d'accueil
+      } else {
+        console.log("error : ", data);
+        setErrorMessage("Erreur !");
+      }
+    });
   };
 
   // Fenêtre modale de connexion
