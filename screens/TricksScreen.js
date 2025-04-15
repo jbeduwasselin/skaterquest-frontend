@@ -8,6 +8,23 @@ import {
   Switch,
 } from "react-native";
 import BackgroundWrapper from "../components/background";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+const getDifficultyColor = (difficulty) => {
+  switch (difficulty) {
+    case "Facile":
+      return "#4CAF50";
+    case "Moyen":
+      return "#FF9800";
+    case "Difficile":
+      return "#F44336";
+    default:
+      return "#aaa";
+  }
+};
+
+const difficultyLevels = ["Facile", "Moyen", "Difficile"];
+const categories = ["Flat", "Grind", "Stairs", "Wall"]; // tu peux en ajouter ici
 
 const tricksData = [
   {
@@ -103,7 +120,7 @@ const tricksData = [
     difficulty: "Moyen",
     category: "Flat",
     description:
-      "Ollie avec une rotation horizontale de la planche via le pied avant.",
+      "L'ollie avec une rotation horizontale de la planche via le pied avant.",
   },
   {
     name: "Heelflip",
@@ -286,11 +303,22 @@ const tricksData = [
     category: "Grind",
     description: "Grind où l’arrière de la planche touche le rebord.",
   },
-];
+]
 
 export default function TricksScreen() {
   const [expandedTricks, setExpandedTricks] = useState({});
   const [validatedTricks, setValidatedTricks] = useState({});
+  const [selectedDifficulties, setSelectedDifficulties] = useState({
+    Facile: true,
+    Moyen: true,
+    Difficile: true,
+  });
+  const [selectedCategories, setSelectedCategories] = useState({
+    Flat: true,
+    Grind: true,
+    Stairs: true,
+    Wall: true,
+  });
 
   const toggleExpand = (index) => {
     setExpandedTricks((prev) => ({
@@ -306,17 +334,98 @@ export default function TricksScreen() {
     }));
   };
 
+  const toggleDifficulty = (difficulty) => {
+    setSelectedDifficulties((prev) => ({
+      ...prev,
+      [difficulty]: !prev[difficulty],
+    }));
+  };
+
+  const toggleCategory = (category) => {
+    setSelectedCategories((prev) => ({
+      ...prev,
+      [category]: !prev[category],
+    }));
+  };
+
+  const filteredTricks = tricksData.filter(
+    (trick) =>
+      selectedDifficulties[trick.difficulty] &&
+      selectedCategories[trick.category]
+  );
+
+  const totalDisplayed = filteredTricks.length;
+  const totalValidated = filteredTricks.reduce((count, _, index) => {
+    return validatedTricks[index] ? count + 1 : count;
+  }, 0);
+  const validationPercentage =
+    totalDisplayed === 0 ? 0 : totalValidated / totalDisplayed;
+
   return (
     <BackgroundWrapper>
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Livre des tricks</Text>
-        {tricksData.map((trick, index) => (
+
+        {/* ✅ Progress bar */}
+        <View style={styles.progressContainer}>
+          <Text style={styles.progressText}>
+            Validé : {totalValidated} / {totalDisplayed} (
+            {Math.round(validationPercentage * 100)}%)
+          </Text>
+          <View style={styles.progressBarBackground}>
+            <View
+              style={[
+                styles.progressBarFill,
+                { width: `${validationPercentage * 100}%` },
+              ]}
+            />
+          </View>
+        </View>
+
+        {/* Filtres par difficulté */}
+        <View style={styles.filterContainer}>
+          <Text style={styles.filterTitle}>Filtrer par difficulté</Text>
+          {difficultyLevels.map((level) => (
+            <View key={level} style={styles.filterRow}>
+              <Text style={styles.filterLabel}>{level}</Text>
+              <Switch
+                value={selectedDifficulties[level]}
+                onValueChange={() => toggleDifficulty(level)}
+                trackColor={{ true: getDifficultyColor(level) }}
+              />
+            </View>
+          ))}
+        </View>
+
+        {/* Filtres par catégorie */}
+        <View style={styles.filterContainer}>
+          <Text style={styles.filterTitle}>Filtrer par catégorie</Text>
+          {categories.map((cat) => (
+            <View key={cat} style={styles.filterRow}>
+              <Text style={styles.filterLabel}>{cat}</Text>
+              <Switch
+                value={selectedCategories[cat]}
+                onValueChange={() => toggleCategory(cat)}
+              />
+            </View>
+          ))}
+        </View>
+
+        {/* Liste des tricks filtrée */}
+        {filteredTricks.map((trick, index) => (
           <View key={index} style={styles.trickCard}>
             <TouchableOpacity onPress={() => toggleExpand(index)}>
               <View style={styles.trickHeader}>
                 <Text style={styles.trickName}>{trick.name}</Text>
-                <Text style={styles.difficulty}>{trick.difficulty}</Text>
-                <Text style={styles.category}>{trick.category}</Text>
+                <View style={styles.difficultyCategoryContainer}>
+                  <MaterialCommunityIcons
+                    name="skateboard"
+                    size={20}
+                    color={getDifficultyColor(trick.difficulty)}
+                    style={{ marginRight: 6 }}
+                  />
+                  <Text style={styles.category}>{trick.category}</Text>
+                </View>
               </View>
             </TouchableOpacity>
 
@@ -338,6 +447,7 @@ export default function TricksScreen() {
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     padding: 20,
@@ -348,6 +458,28 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: "#fff",
     textAlign: "center",
+  },
+  filterContainer: {
+    marginBottom: 20,
+    backgroundColor: "#333",
+    padding: 10,
+    borderRadius: 10,
+  },
+  filterTitle: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 10,
+  },
+  filterRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  filterLabel: {
+    color: "#fff",
+    fontSize: 15,
   },
   trickCard: {
     backgroundColor: "#222",
@@ -365,14 +497,14 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#fff",
   },
-  difficulty: {
-    fontSize: 14,
-    color: "#aaa",
+  difficultyCategoryContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   category: {
     fontSize: 14,
     color: "#fff",
-    fontStyle: "italic", // Ajoute un style différent pour la catégorie
+    fontStyle: "italic",
   },
   description: {
     marginTop: 10,
@@ -389,4 +521,24 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 14,
   },
+  progressContainer: {
+    marginBottom: 20,
+  },
+  progressText: {
+    color: "#fff",
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 6,
+  },
+  progressBarBackground: {
+    height: 10,
+    backgroundColor: "#fff",
+    borderRadius: 5,
+    overflow: "hidden",
+  },
+  progressBarFill: {
+    height: 10,
+    backgroundColor: "#4CAF50",
+  },
+
 });
