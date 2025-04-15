@@ -99,15 +99,15 @@ export default function LoginScreen({ navigation }) {
       >
         <FontAwesome name={"close"} />
       </TouchableOpacity>
-      <Text>connexion</Text>
+      <Text>Connexion</Text>
       <TextInput
-        styles={styles.inputs}
+        style={styles.inputs}
         placeholder="Ton adresse mail"
         onChangeText={(value) => setSignInEmail(value)}
         value={signInEmail}
       />
       <TextInput
-        styles={styles.inputs}
+        style={styles.inputs}
         placeholder="Ton mot de passe"
         onChangeText={(value) => setSignInPassword(value)}
         value={signInPassword}
@@ -137,19 +137,19 @@ export default function LoginScreen({ navigation }) {
       </TouchableOpacity>
       <Text>Inscription</Text>
       <TextInput
-        styles={styles.inputs}
+        style={styles.inputs}
         placeholder="Ton pseudo"
         onChangeText={(value) => setSignUpUsername(value)}
         value={signUpUsername}
       />
       <TextInput
-        styles={styles.inputs}
+        style={styles.inputs}
         placeholder="Ton adresse mail"
         onChangeText={(value) => setSignUpEmail(value)}
         value={signUpEmail}
       />
       <TextInput
-        styles={styles.inputs}
+        style={styles.inputs}
         placeholder="Ton mot de passe"
         onChangeText={(value) => setSignUpPassword(value)}
         value={signUpPassword}
@@ -226,17 +226,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 5,
     margin: 10,
-    width: "70%",
-    height: "50%",
+    width: "60%",
+    height: "70%",
     backgroundColor: "yellow",
+    borderRadius: 2,
   },
   signInContainer: {
     alignItems: "center",
     padding: 5,
     margin: 10,
-    width: "70%",
-    height: "50%",
-    backgroundColor: "green",
+    width: "60%",
+    height: "70%",
+    backgroundColor: "lightgreen",
+    borderRadius: 2,
   },
   closeButton: {
     alignSelf: "flex-end",
@@ -244,7 +246,10 @@ const styles = StyleSheet.create({
     backgroundColor: "orange",
     borderRadius: "100%",
   },
-  inputs: {},
+  inputs: {
+    borderBottomColor: 'orange',
+    borderBottomWidth: 1,
+  },
   errorMessage: {
     color: "red",
   },
