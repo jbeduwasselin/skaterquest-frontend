@@ -42,8 +42,8 @@ export default function LoginScreen({ navigation }) {
   // Fonction de connexion
   const handleSignIn = () => {
     signInRequest(signInEmail, signInPassword)
-      .then((res) => res.json())
       .then((data) => {
+        console.log(data);
         if (data.result) {
           dispatch(login({ username: signInEmail, token: data.token })); // Enregistrement des données de l'utilisateur dans le store Redux
           emptyStates(); // Réinitialisation des états
@@ -57,6 +57,7 @@ export default function LoginScreen({ navigation }) {
   // Fonction d'inscription
   const handleSignUp = () => {
     signUpRequest(signUpUsername, signUpEmail, signUpPassword).then((data) => {
+      console.log(data);
       if (data.result) {
         console.log("ok : ", data);
         dispatch(login({ username: signUpUsername, token: data.token })); // Enregistrement des données de l'utilisateur dans le store Redux
@@ -229,7 +230,7 @@ const styles = StyleSheet.create({
     borderRadius: "100%",
   },
   inputs: {
-    borderBottomColor: 'orange',
+    borderBottomColor: "orange",
     borderBottomWidth: 1,
   },
   errorMessage: {
