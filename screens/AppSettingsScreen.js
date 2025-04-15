@@ -1,8 +1,8 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet } from "react-native";
 import BackgroundWrapper from "../components/background";
-import { LinearGradient } from "expo-linear-gradient";
-import Icon from "react-native-vector-icons/Feather";
+import IconButton from "../components/IconButton"; // Importer le composant IconButton
+import Icon from "react-native-vector-icons/Feather";  // Importer l'icône Feather
 
 export default function AppSettingsScreen({ navigation }) {
   const handleHelpPress = () => {
@@ -28,47 +28,41 @@ export default function AppSettingsScreen({ navigation }) {
   return (
     <BackgroundWrapper>
       <View style={styles.container}>
-      <Icon name="settings" size={48} color="#fff" style={styles.settingsIcon} />
+        {/* Icône des paramètres (en dehors des boutons) */}
+        <Icon
+          name="settings"
+          size={48}
+          color="#fff"
+          style={styles.settingsIcon}
+          onPress={() => console.log("Settings Pressed")} // Action sur l'icône de paramètres
+        />
 
         <View style={styles.buttonContainer}>
-          <LinearGradient
-            colors={["#FFC1C6", "#FF650C"]} // couleur 1 -> couleur 2
-            style={styles.gradientButton}
-          >
-            <TouchableOpacity style={styles.buttonContent} onPress={handleHelpPress}>
-              <Text style={styles.buttonText}>Aides</Text>
-            </TouchableOpacity>
-          </LinearGradient>
-
-          <LinearGradient
-            colors={["#FFC1C6", "#FF650C"]}
-            style={styles.gradientButton}
-          >
-            <TouchableOpacity
-              style={styles.buttonContent}
-              onPress={handlePrivacySettingsPress}
-            >
-              <Text style={styles.buttonText}>Paramètres de confidentialité</Text>
-            </TouchableOpacity>
-          </LinearGradient>
-
-          <LinearGradient
-            colors={["#FFC1C6", "#FF650C"]}
-            style={styles.gradientButton}
-          >
-            <TouchableOpacity style={styles.buttonContent} onPress={handleLogout}>
-              <Text style={styles.buttonText}>Déconnexion</Text>
-            </TouchableOpacity>
-          </LinearGradient>
-
-          <LinearGradient
-            colors={["#FFC1C6", "#FF650C"]}
-            style={styles.gradientButton}
-          >
-            <TouchableOpacity style={styles.buttonContent} onPress={handleUnsubscribe}>
-              <Text style={styles.buttonText}>Désinscription</Text>
-            </TouchableOpacity>
-          </LinearGradient>
+          {/* Boutons avec IconButton et texte */}
+          <IconButton
+            iconName="help-circle"  // Icône pour Aides
+            onPress={handleHelpPress}  // Logique au clic
+            buttonText="Aides"  // Texte à afficher dans le bouton
+            style={styles.iconButton}  // Applique le style personnalisé
+          />
+          <IconButton
+            iconName="shield"  // Icône pour Paramètres de confidentialité
+            onPress={handlePrivacySettingsPress}
+            buttonText="Paramètres de confidentialité"
+            style={styles.iconButton}
+          />
+          <IconButton
+            iconName="log-out"  // Icône pour Déconnexion
+            onPress={handleLogout}
+            buttonText="Déconnexion"
+            style={styles.iconButton}
+          />
+          <IconButton
+            iconName="user-x"  // Icône pour Désinscription
+            onPress={handleUnsubscribe}
+            buttonText="Désinscription"
+            style={styles.iconButton}
+          />
         </View>
       </View>
     </BackgroundWrapper>
@@ -76,41 +70,23 @@ export default function AppSettingsScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-
-  settingsIcon: {
-    marginBottom: 30,
-    marginTop: -80, //  Décale l'icône vers le haut
-  },
-  
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#fff",
-    marginBottom: 20,
-  },
   buttonContainer: {
     width: "100%",
-    gap: 100, // Ajout de gap entre les boutons
-    alignItems: "center", // Centrer les boutons horizontalement
+    gap: 30,  // Espacement entre les boutons
+    alignItems: "center",  // Centrer les boutons horizontalement
   },
-  gradientButton: {
-    borderRadius: 5,
-    width: "80%", // Largeur des boutons ajustée à 80% de l'écran
+  settingsIcon: {
+    marginBottom: 30,
+    marginTop: -80, // Décale l'icône vers le haut
   },
-  buttonContent: {
-    padding: 15,
-    borderRadius: 5,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
+  iconButton: {
+    width: "80%",  // Largeur de chaque bouton à 80% de l'écran
+    marginBottom: 20,  // Marge entre les boutons
   },
 });

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import BackgroundWrapper from "../components/background";
-import { LinearGradient } from "expo-linear-gradient";
+import IconButton from "../components/IconButton"; // Importation de IconButton
 
 export default function HomeScreen({ navigation }) {
   const [profileImage, setProfileImage] = useState(null);
@@ -12,25 +12,22 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.container}>
         {/* Container pour les icônes et la photo de profil */}
         <View style={styles.headerContainer}>
-          {/* Container pour les icônes alignées */}
-          <View style={styles.iconsContainer}>
-            {/* Icône des paramètres en haut à gauche */}
-            <TouchableOpacity
-              style={styles.settingsIcon}
-              onPress={() => navigation.navigate("AppSettingsScreen")}
-            >
-              <Icon name="settings" size={24} color="#fff" />
-            </TouchableOpacity>
-
-            {/* Icône du crayon en haut à droite */}
-            <TouchableOpacity
-              style={styles.editIcon}
-              onPress={() => navigation.navigate("SettingsScreen")}
-            >
-              <Icon name="edit" size={24} color="#fff" />
-            </TouchableOpacity>
-          </View>
+          {/* Icône des paramètres en haut à gauche */}
+          <TouchableOpacity
+            style={styles.settingsIcon}
+            onPress={() => navigation.navigate("AppSettingsScreen")}
+          >
+            <Icon name="settings" size={24} color="#fff" />
+          </TouchableOpacity>
         </View>
+
+        {/* Icône du crayon en haut à droite */}
+        <TouchableOpacity
+          style={styles.editIcon}
+          onPress={() => navigation.navigate("SettingsScreen")}
+        >
+          <Icon name="edit" size={24} color="#fff" />
+        </TouchableOpacity>
 
         {/* Image de profil */}
         <Image
@@ -43,46 +40,32 @@ export default function HomeScreen({ navigation }) {
         />
 
         <View style={styles.buttonContainer}>
+          {/* Utilisation de IconButton pour les boutons */}
           <View style={styles.alignLeft}>
-            <LinearGradient
-              colors={["#FFC1C6", "#FF650C"]}
-              style={styles.gradientButton}
-            >
-              <TouchableOpacity
-                style={styles.buttonContent}
-                onPress={() => navigation.navigate("TricksScreen")}
-              >
-                <Text style={styles.buttonText}>Livre de tricks</Text>
-              </TouchableOpacity>
-            </LinearGradient>
+            <IconButton
+              iconName="book"
+              buttonText="Livre de tricks"
+              onPress={() => navigation.navigate("TricksScreen")}
+              style={styles.iconButton}
+            />
           </View>
 
           <View style={styles.alignRight}>
-            <LinearGradient
-              colors={["#FFC1C6", "#FF650C"]}
-              style={styles.gradientButton}
-            >
-              <TouchableOpacity
-                style={styles.buttonContent}
-                onPress={() => navigation.navigate("VideoScreen")}
-              >
-                <Text style={styles.buttonText}>Mes vidéos</Text>
-              </TouchableOpacity>
-            </LinearGradient>
+            <IconButton
+              iconName="video"
+              buttonText="Mes vidéos"
+              onPress={() => navigation.navigate("VideoScreen")}
+              style={styles.iconButton}
+            />
           </View>
 
           <View style={styles.alignLeft}>
-            <LinearGradient
-              colors={["#FFC1C6", "#FF650C"]}
-              style={styles.gradientButton}
-            >
-              <TouchableOpacity
-                style={styles.buttonContent}
-                onPress={() => navigation.navigate("CrewScreen")}
-              >
-                <Text style={styles.buttonText}>Mon équipe</Text>
-              </TouchableOpacity>
-            </LinearGradient>
+            <IconButton
+              iconName="users"
+              buttonText="Mon équipe"
+              onPress={() => navigation.navigate("CrewScreen")}
+              style={styles.iconButton}
+            />
           </View>
         </View>
       </View>
@@ -104,19 +87,17 @@ const styles = StyleSheet.create({
     width: "100%", // Pour que le container prenne toute la largeur de l'écran
     flexDirection: "row", // Aligner les éléments en ligne
     alignItems: "center", // Centrer verticalement les éléments
-    justifyContent: "space-between", // Espacement égal entre les icônes et la photo
+    justifyContent: "flex-start", // Aligné à gauche
     zIndex: 1,
-  },
-  iconsContainer: {
-    flexDirection: "row", // Alignement horizontal des icônes
-    width: "100%",
-    justifyContent: "space-between", // Espacement égal entre les icônes
   },
   settingsIcon: {
     marginLeft: 20, // Espacement entre l'icône des paramètres et le bord gauche
   },
   editIcon: {
-    marginRight: 20, // Espacement entre l'icône du crayon et le bord droit
+    position: "absolute", // Positionnement absolu par rapport au parent
+    top: 50, // Positionné en haut de l'écran
+    right: 20, // Positionné à droite de l'écran
+    zIndex: 2, // Ajout d'un zIndex plus élevé pour que l'icône soit au-dessus des autres éléments
   },
   profileImage: {
     width: 120, // Taille de l'image de profil
@@ -137,7 +118,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: "100%",
-    gap: 100,
+    gap: 30, // Ajout de gap pour espacer les boutons
     marginTop: 20,
   },
   alignLeft: {
@@ -146,18 +127,8 @@ const styles = StyleSheet.create({
   alignRight: {
     alignItems: "flex-end",
   },
-  gradientButton: {
-    borderRadius: 5,
+  iconButton: {
     width: 160,
-  },
-  buttonContent: {
-    paddingVertical: 18,
-    borderRadius: 5,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
+    marginBottom: 20,
   },
 });

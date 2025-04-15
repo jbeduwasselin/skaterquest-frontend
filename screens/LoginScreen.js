@@ -201,18 +201,7 @@ export default function LoginScreen({ navigation }) {
       ) : (
         signUpModalContent
       )}
-      {/* Bouton temporaire d'accès rapide au HomeScreen */}
-      <TouchableOpacity
-        onPress={() => navigation.navigate("TabNavigator")}
-        style={[styles.button, { marginTop: 20, backgroundColor: "gray" }]}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.textButton}>
-          Accès rapide (à enlever plus tard)
-        </Text>
-      </TouchableOpacity>
-      {/* Bouton temporaire d'accès rapide au HomeScreen */}
-    </View>
+          </View>
   );
 }
 

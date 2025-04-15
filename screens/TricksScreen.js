@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,9 +6,12 @@ import {
   ScrollView,
   TouchableOpacity,
   Switch,
+  Button,
+  Modal,
 } from "react-native";
 import BackgroundWrapper from "../components/background";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const getDifficultyColor = (difficulty) => {
   switch (difficulty) {
@@ -24,7 +27,7 @@ const getDifficultyColor = (difficulty) => {
 };
 
 const difficultyLevels = ["Facile", "Moyen", "Difficile"];
-const categories = ["Flat", "Grind", "Stairs", "Wall"]; // tu peux en ajouter ici
+const categories = ["Flat", "Grind", "Stairs", "Wall"];
 
 const tricksData = [
   {
@@ -303,7 +306,7 @@ const tricksData = [
     category: "Grind",
     description: "Grind où l’arrière de la planche touche le rebord.",
   },
-]
+];
 
 export default function TricksScreen() {
   const [expandedTricks, setExpandedTricks] = useState({});
@@ -319,6 +322,75 @@ export default function TricksScreen() {
     Stairs: true,
     Wall: true,
   });
+
+  const [showOnlyValidated, setShowOnlyValidated] = useState(false);
+  const [showSkillTree, setShowSkillTree] = useState(false);
+
+  // Charger les données sauvegardées au démarrage
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const storedExpandedTricks = await AsyncStorage.getItem(
+          "expandedTricks"
+        );
+        const storedValidatedTricks = await AsyncStorage.getItem(
+          "validatedTricks"
+        );
+        const storedDifficulties = await AsyncStorage.getItem(
+          "selectedDifficulties"
+        );
+        const storedCategories = await AsyncStorage.getItem(
+          "selectedCategories"
+        );
+
+        if (storedExpandedTricks)
+          setExpandedTricks(JSON.parse(storedExpandedTricks));
+        if (storedValidatedTricks)
+          setValidatedTricks(JSON.parse(storedValidatedTricks));
+        if (storedDifficulties)
+          setSelectedDifficulties(JSON.parse(storedDifficulties));
+        if (storedCategories)
+          setSelectedCategories(JSON.parse(storedCategories));
+      } catch (error) {
+        console.error("Erreur de chargement des données", error);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  // Sauvegarder les données à chaque modification
+  useEffect(() => {
+    const saveData = async () => {
+      try {
+        await AsyncStorage.setItem(
+          "expandedTricks",
+          JSON.stringify(expandedTricks)
+        );
+        await AsyncStorage.setItem(
+          "validatedTricks",
+          JSON.stringify(validatedTricks)
+        );
+        await AsyncStorage.setItem(
+          "selectedDifficulties",
+          JSON.stringify(selectedDifficulties)
+        );
+        await AsyncStorage.setItem(
+          "selectedCategories",
+          JSON.stringify(selectedCategories)
+        );
+      } catch (error) {
+        console.error("Erreur de sauvegarde des données", error);
+      }
+    };
+
+    saveData();
+  }, [
+    expandedTricks,
+    validatedTricks,
+    selectedDifficulties,
+    selectedCategories,
+  ]);
 
   const toggleExpand = (index) => {
     setExpandedTricks((prev) => ({
@@ -361,6 +433,66 @@ export default function TricksScreen() {
   const validationPercentage =
     totalDisplayed === 0 ? 0 : totalValidated / totalDisplayed;
 
+  // Fonction pour choisir un trick aléatoire en fonction du niveau et de la progression
+  const getRandomTrick = () => {
+    const availableTricks = filteredTricks.filter(
+      (trick, index) =>
+        validatedTricks[index] || selectedDifficulties[trick.difficulty]
+    );
+
+    if (availableTricks.length === 0) {
+      alert("Aucun trick disponible selon ton niveau et ta progression !");
+      return;
+    }
+
+    const randomTrick =
+      availableTricks[Math.floor(Math.random() * availableTricks.length)];
+    alert(
+      `Trick aléatoire : ${randomTrick.name}\nDescription : ${randomTrick.description}`
+    );
+  };
+
+  // Fonction pour afficher l'arbre de compétences
+  // Fonction pour afficher l'arbre de compétences, uniquement avec les tricks validés
+  const renderSkillTree = () => {
+    // Filtrage des tricks validés
+    const validatedTricksList = filteredTricks.filter(
+      (trick, index) => validatedTricks[index]
+    );
+
+    if (validatedTricksList.length === 0) {
+      return (
+        <Text style={styles.noTricksText}>
+          Aucune compétence validée pour l'instant.
+        </Text>
+      );
+    }
+
+    return (
+      <ScrollView style={styles.skillTreeContainer}>
+        <Text style={styles.skillTreeTitle}>Arbre de compétences</Text>
+
+        <View style={styles.treeWrapper}>
+          {/* Afficher les tricks validés sous forme d'arbre avec des liens entre eux */}
+          {validatedTricksList.map((trick, index) => (
+            <View
+              key={index}
+              style={[
+                styles.skillNode,
+                { backgroundColor: getDifficultyColor(trick.difficulty) },
+              ]}
+            >
+              <Text style={styles.skillNodeTitle}>{trick.name}</Text>
+              <Text style={styles.skillNodeDescription}>
+                {trick.description}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    );
+  };
+
   return (
     <BackgroundWrapper>
       <ScrollView contentContainerStyle={styles.container}>
@@ -380,6 +512,16 @@ export default function TricksScreen() {
               ]}
             />
           </View>
+        </View>
+
+        {/* Boutons "Donne-moi un trick" et "Voir l’arbre de compétences" */}
+        <View style={styles.randomButtonContainer}>
+          <Button title="Donne-moi un trick" onPress={getRandomTrick} />
+          <Button
+            title="Voir l’arbre de compétences"
+            onPress={() => setShowSkillTree(true)}
+            style={{ marginTop: 10 }}
+          />
         </View>
 
         {/* Filtres par difficulté */}
@@ -443,10 +585,24 @@ export default function TricksScreen() {
           </View>
         ))}
       </ScrollView>
+
+      {/* Modal de l'arbre de compétences */}
+      <Modal
+        visible={showSkillTree}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowSkillTree(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            {renderSkillTree()}
+            <Button title="Fermer" onPress={() => setShowSkillTree(false)} />
+          </View>
+        </View>
+      </Modal>
     </BackgroundWrapper>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -522,7 +678,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   progressContainer: {
-    marginBottom: 20,
+    marginBottom: 8,
   },
   progressText: {
     color: "#fff",
@@ -540,5 +696,90 @@ const styles = StyleSheet.create({
     height: 10,
     backgroundColor: "#4CAF50",
   },
-
+  randomButtonContainer: {
+    marginTop: 20,
+    alignItems: "center",
+  },
+  skillTreeContainer: {
+    padding: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    borderRadius: 15,
+    width: "80%",
+    alignSelf: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    maxHeight: 400, // Limite la hauteur pour qu'il devienne défilable
+    overflow: "scroll",
+  },
+  skillTreeTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 15,
+    textAlign: "center",
+    textShadowColor: "#000",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 5,
+  },
+  treeWrapper: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+    position: "relative",
+  },
+  skillNode: {
+    backgroundColor: "#444",
+    padding: 15,
+    borderRadius: 15,
+    margin: 10,
+    width: 120,
+    alignItems: "center",
+    justifyContent: "center",
+    transform: [{ scale: 0.9 }],
+    transition: "transform 0.3s, box-shadow 0.3s",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2)",
+    position: "relative",
+  },
+  skillNodeHovered: {
+    transform: [{ scale: 1.1 }],
+    boxShadow: "0 8px 12px rgba(0, 0, 0, 0.4)",
+  },
+  skillNodeTitle: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+    textShadowColor: "#000",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 4,
+  },
+  skillNodeDescription: {
+    color: "#ddd",
+    fontSize: 12,
+    textAlign: "center",
+  },
+  skillNodeIcon: {
+    width: 40,
+    height: 40,
+    marginBottom: 10,
+  },
+  lineConnector: {
+    position: "absolute",
+    top: "50%",
+    left: "100%",
+    width: 10,
+    height: 10,
+    backgroundColor: "#4CAF50",
+    borderRadius: 5,
+    transform: [{ translateX: 15 }],
+  },
+  noTricksText: {
+    color: "#fff",
+    textAlign: "center",
+    fontSize: 18,
+  },
 });
