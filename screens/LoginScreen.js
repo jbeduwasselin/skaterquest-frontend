@@ -9,9 +9,9 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../reducers/user";
 import { FontAwesome } from "@expo/vector-icons";
+import { IP_AND_PORT } from "../config";
 
 export default function LoginScreen({ navigation }) {
-  const IP_ADRESS = process.env.IP_ADRESS;
 
   const dispatch = useDispatch();
 
@@ -42,7 +42,7 @@ export default function LoginScreen({ navigation }) {
 
   // Fonction de connexion
   const handleSignIn = () => {
-    fetch(`http://${IP_ADRESS}:3000/users/signin`, {
+    fetch(`http://${IP_AND_PORT}/user/signin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -64,7 +64,7 @@ export default function LoginScreen({ navigation }) {
 
   // Fonction d'inscription
   const handleSignUp = () => {
-    fetch(`http://${IP_ADRESS}:3000/users/signup`, {
+    fetch(`http://${IP_AND_PORT}/user/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
