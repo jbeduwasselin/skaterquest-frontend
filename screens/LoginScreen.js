@@ -40,18 +40,17 @@ export default function LoginScreen({ navigation }) {
   };
 
   // Fonction de connexion
-  const handleSignIn = () => {
-    signInRequest(signInEmail, signInPassword)
-      .then((data) => {
-        console.log(data);
-        if (data.result) {
-          dispatch(login({ username: signInEmail, token: data.token })); // Enregistrement des données de l'utilisateur dans le store Redux
-          emptyStates(); // Réinitialisation des états
-          navigation.navigate("TabNavigator"); // Redirection vers l'écran d'accueil
-        } else {
-          setErrorMessage("Erreur !");
-        }
-      });
+  const handleSignIn = async () => {
+    const data = await signInRequest(signInEmail, signInPassword); // Requête vers le back gérée par le module signInRequest()
+    if (data.result) {
+      console.log("Connection OK : ", data);
+      dispatch(login({ username: signInEmail, token: data.token })); // Enregistrement des données de l'utilisateur dans le store Redux
+      emptyStates(); // Réinitialisation des états
+      navigation.navigate("TabNavigator"); // Redirection vers l'écran d'accueil
+    } else {
+      console.log("Connection error : ", data);
+      setErrorMessage("Erreur !");
+    }
   };
 
   // Fonction d'inscription
@@ -59,12 +58,12 @@ export default function LoginScreen({ navigation }) {
     signUpRequest(signUpUsername, signUpEmail, signUpPassword).then((data) => {
       console.log(data);
       if (data.result) {
-        console.log("ok : ", data);
+        console.log("Inscription OK : ", data);
         dispatch(login({ username: signUpUsername, token: data.token })); // Enregistrement des données de l'utilisateur dans le store Redux
         emptyStates(); // Réinitialisation des états
         navigation.navigate("TabNavigator"); // Redirection vers l'écran d'accueil
       } else {
-        console.log("error : ", data);
+        console.log("Inscription error : ", data);
         setErrorMessage("Erreur !");
       }
     });
