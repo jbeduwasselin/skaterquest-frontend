@@ -11,7 +11,7 @@ import { login } from "../reducers/user";
 import { FontAwesome } from "@expo/vector-icons";
 
 export default function LoginScreen({ navigation }) {
-  const IP_ADRESS = process.env.IP_ADRESS; // dotenv est-il capable d'aller chercher depuis ici les infos dans le .env du backend ???
+  const IP_ADRESS = process.env.IP_ADRESS;
 
   const dispatch = useDispatch();
 
@@ -26,6 +26,20 @@ export default function LoginScreen({ navigation }) {
   const [signUpEmail, setSignUpEmail] = useState("");
   const [signUpPassword, setSignUpPassword] = useState("");
 
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Fonction pour réinitialiser les états
+  const emptyStates = () => {
+    setShowSignInModal(false);
+    setErrorMessage("");
+    setSignInEmail("");
+    setSignInPassword("");
+    setShowSignUpModal(false);
+    setSignUpUsername("");
+    setSignUpEmail("");
+    setSignUpPassword("");
+  };
+
   // Fonction de connexion
   const handleSignIn = () => {
     fetch(`http://${IP_ADRESS}:3000/users/signin`, {
@@ -39,16 +53,11 @@ export default function LoginScreen({ navigation }) {
       .then((res) => res.json())
       .then((data) => {
         if (data.result) {
-          // Enregistrement des données de l'utilisateur dans le store Redux
-          dispatch(login({ username: signInEmail, token: data.token }));
-          // Réinitialisation des états
-          setSignInEmail("");
-          setSignInPassword("");
-          setShowSignInModal(false);
-          // Redirection vers l'écran d'accueil
-          navigation.navigate("TabNavigator");
+          dispatch(login({ username: signInEmail, token: data.token })); // Enregistrement des données de l'utilisateur dans le store Redux
+          emptyStates(); // Réinitialisation des états
+          navigation.navigate("TabNavigator"); // Redirection vers l'écran d'accueil
         } else {
-          // Afficher un message en cas d'échec de connexion
+          setErrorMessage("Erreur !");
         }
       });
   };
@@ -67,17 +76,11 @@ export default function LoginScreen({ navigation }) {
       .then((res) => res.json())
       .then((data) => {
         if (data.result) {
-          // Enregistrement des données de l'utilisateur dans le store Redux
-          dispatch(login({ username: signUpUsername, token: data.token }));
-          // Réinitialisation des états
-          setSignUpUsername("");
-          setSignUpEmail("");
-          setSignUpPassword("");
-          setShowSignUpModal(false);
-          // Redirection vers l'écran d'accueil
-          navigation.navigate("TabNavigator");
+          dispatch(login({ username: signUpUsername, token: data.token })); // Enregistrement des données de l'utilisateur dans le store Redux
+          emptyStates(); // Réinitialisation des états
+          navigation.navigate("TabNavigator"); // Redirection vers l'écran d'accueil
         } else {
-          // Afficher un message en cas d'échec d'inscription
+          setErrorMessage("Erreur !");
         }
       });
   };
@@ -86,7 +89,9 @@ export default function LoginScreen({ navigation }) {
   const signInModalContent = (
     <View style={styles.signInContainer}>
       <TouchableOpacity
-        onPress={() => setShowSignInModal(false)}
+        onPress={() => {
+          emptyStates(); // Réinitialisation des états
+        }}
         style={styles.closeButton}
         activeOpacity={0.8}
       >
@@ -112,6 +117,7 @@ export default function LoginScreen({ navigation }) {
       >
         <Text style={styles.textButton}>Valider</Text>
       </TouchableOpacity>
+      <Text style={styles.errorMessage}>{errorMessage}</Text>
     </View>
   );
 
@@ -119,7 +125,9 @@ export default function LoginScreen({ navigation }) {
   const signUpModalContent = (
     <View style={styles.signUpContainer}>
       <TouchableOpacity
-        onPress={() => setShowSignUpModal(false)}
+        onPress={() => {
+          emptyStates(); // Réinitialisation des états
+        }}
         style={styles.closeButton}
         activeOpacity={0.8}
       >
@@ -151,6 +159,7 @@ export default function LoginScreen({ navigation }) {
       >
         <Text style={styles.textButton}>Valider l'inscription !</Text>
       </TouchableOpacity>
+      <Text style={styles.errorMessage}>{errorMessage}</Text>
     </View>
   );
 
@@ -234,4 +243,7 @@ const styles = StyleSheet.create({
     borderRadius: "100%",
   },
   inputs: {},
+  errorMessage: {
+    color: "red",
+  },
 });
