@@ -15,7 +15,7 @@ const IconButton = ({
   iconName, // Nom de l'icône
   onPress, // Fonction appelée au clic
   iconColor = "#fff", // Par défaut, la couleur de l'icône est blanche
-  iconSize = 48, // Par défaut, la taille de l'icône est 48px
+  iconSize = 20, // Par défaut, la taille de l'icône est 48px
   buttonText, // Texte à afficher dans le bouton
   style, // Style personnalisé du bouton
 }) => {
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   gradientButton: {
     borderRadius: 5,
     width: "80%", // Largeur des boutons ajustée à 80% de l'écran
-    padding: 15, // Espacement interne
+    padding: 10, // Espacement interne
     justifyContent: "center", // Centrer le contenu
     alignItems: "center", // Centrer l'icône
   },

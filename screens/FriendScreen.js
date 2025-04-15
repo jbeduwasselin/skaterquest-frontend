@@ -1,6 +1,7 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TextInput } from "react-native";
 import BackgroundWrapper from "../components/background";
+import IconButton from "../components/IconButton"; // Assure-toi du bon chemin
 
 export default function FriendScreen({ navigation }) {
   return (
@@ -8,22 +9,21 @@ export default function FriendScreen({ navigation }) {
       <View style={styles.container}>
         <Text style={styles.title}>Tu veux ajouter un ami ?</Text>
 
-        <View style={styles.buttonContainer}>
-          {/* Remplacement des Buttons par TouchableOpacity */}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate("Tricks")}
-          >
-            <Text style={styles.buttonText}>Voir les tricks</Text>
-          </TouchableOpacity>
+        {/* Champ de recherche */}
+        <TextInput
+          placeholder="Entre son SkaterTag ou email"
+          placeholderTextColor="#ccc"
+          style={styles.input}
+        />
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate("Spots")}
-          >
-            <Text style={styles.buttonText}>Explorer les spots</Text>
-          </TouchableOpacity>
-        </View>
+        {/* Bouton d'ajout avec icône */}
+        <IconButton
+          iconName="user-plus"
+          buttonText="Ajouter"
+          iconSize={24}
+          style={styles.iconButton}
+          onPress={() => alert("Ami ajouté (soon™)")}
+        />
       </View>
     </BackgroundWrapper>
   );
@@ -39,23 +39,20 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 12,
+    marginBottom: 20,
     color: "#fff",
   },
-  buttonContainer: {
+  input: {
+    backgroundColor: "#fff",
+    padding: 12,
+    borderRadius: 8,
     width: "100%",
-    gap: 10,
+    marginBottom: 20,
+    fontSize: 16,
+    color: "#000",
   },
-  button: {
-    backgroundColor: "#3498db",
-    padding: 15,
-    borderRadius: 5,
-    alignItems: "center",
-    width: "100%",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
+  iconButton: {
+    width: "100%", // Prend toute la largeur
+    height: 60, // Tu peux ajuster la hauteur ici
   },
 });
