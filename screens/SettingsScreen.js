@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { updateAvatar } from "../reducers/user";
 import {
   View,
   Text,
@@ -9,12 +11,31 @@ import {
 } from "react-native";
 import BackgroundWrapper from "../components/background";
 import * as ImagePicker from "expo-image-picker";
-import IconButton from "../components/IconButton"; // ✅ Import de IconButton
+import IconButton from "../components/IconButton";
 
 export default function SettingsScreen({ navigation }) {
-  const [profileImage, setProfileImage] = useState(null);
+  const dispatch = useDispatch();
+  const avatar = useSelector((state) => state.user.value.avatar);
+  const [profileImage, setProfileImage] = useState(avatar);
+
+  useEffect(() => {
+    // Si l'avatar du store est mis à jour depuis ailleurs
+    if (avatar) setProfileImage(avatar);
+  }, [avatar]);
+
+  const requestPermission = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permission requise", "Autorise l'accès à la galerie");
+      return false;
+    }
+    return true;
+  };
 
   const pickImageFromLibrary = async () => {
+    const hasPermission = await requestPermission();
+    if (!hasPermission) return;
+
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
         allowsEditing: true,
@@ -22,8 +43,10 @@ export default function SettingsScreen({ navigation }) {
         quality: 1,
       });
 
-      if (!result.canceled) {
-        setProfileImage(result.uri);
+      if (!result.canceled && result.assets?.length > 0) {
+        const uri = result.assets[0].uri;
+        setProfileImage(uri);         // Local state
+        dispatch(updateAvatar(uri));  // Redux store
       }
     } catch (error) {
       console.error("Erreur lors de la sélection de l'image:", error);
@@ -54,7 +77,6 @@ export default function SettingsScreen({ navigation }) {
         <Text style={styles.title}>Settings bro !</Text>
 
         <View style={styles.buttonContainer}>
-          {/* ✅ Remplacé par IconButton */}
           <IconButton
             iconName="edit"
             buttonText="Changer SkaterTag"
