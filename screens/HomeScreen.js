@@ -1,18 +1,19 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import BackgroundWrapper from "../components/background";
-import IconButton from "../components/IconButton"; // Importation de IconButton
+import IconButton from "../components/IconButton";
+import { useSelector } from "react-redux"; // Importation du hook useSelector
 
 export default function HomeScreen({ navigation }) {
-  const [profileImage, setProfileImage] = useState(null);
+  // Utilisation du hook useSelector pour obtenir l'avatar depuis Redux
+  const avatar = useSelector((state) => state.user.value.avatar); // L'avatar est récupéré depuis le store
 
   return (
     <BackgroundWrapper>
       <View style={styles.container}>
-        {/* Container pour les icônes et la photo de profil */}
+        {/* Icône des paramètres en haut à gauche */}
         <View style={styles.headerContainer}>
-          {/* Icône des paramètres en haut à gauche */}
           <TouchableOpacity
             style={styles.settingsIcon}
             onPress={() => navigation.navigate("AppSettingsScreen")}
@@ -29,18 +30,16 @@ export default function HomeScreen({ navigation }) {
           <Icon name="edit" size={24} color="#fff" />
         </TouchableOpacity>
 
-        {/* Image de profil */}
+        {/* Image de profil qui récupère l'avatar depuis Redux */}
         <Image
           source={
-            profileImage
-              ? { uri: profileImage }
-              : require("../assets/Thomas surf.jpg") // Photo de profil par défaut
+            avatar ? { uri: avatar } : require("../assets/Thomas surf.jpg") // Photo de profil par défaut
           }
           style={styles.profileImage}
         />
 
         <View style={styles.buttonContainer}>
-          {/* Utilisation de IconButton pour les boutons */}
+          {/* Boutons */}
           <View style={styles.alignLeft}>
             <IconButton
               iconName="book"

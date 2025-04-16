@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import Icon from "react-native-vector-icons/Feather"; // Seul Icon de Feather sera utilisé
+import Icon from "react-native-vector-icons/Feather";
 
 // Imports des screens
 import LoginScreen from "./screens/LoginScreen";
@@ -16,19 +16,42 @@ import VideoScreen from "./screens/VideoScreen";
 import TricksScreen from "./screens/TricksScreen";
 import AppSettingsScreen from "./screens/AppSettingsScreen";
 import SettingsScreen from "./screens/SettingsScreen";
+import GosVersusScreen from "./screens/GosVersusScreen";
 
-// Imports de Redux
+// Redux
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 
-// Import des états
+// import { persistStore, persistReducer } from "redux-persist";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+// import { PersistGate } from "redux-persist/integration/react";
+import { combineReducers } from "redux";
+
 import user from "./reducers/user";
 
-// Initialisation du store
+// Persist config
+// const persistConfig = {
+//   key: "root",
+//   storage: AsyncStorage,
+// };
+
+// const rootReducer = combineReducers({ user });
+// const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+// const store = configureStore({
+//   reducer: persistedReducer,
+//   middleware: (getDefaultMiddleware) =>
+//     getDefaultMiddleware({ serializableCheck: false }),
+// });
+
+// const persistor = persistStore(store);
 const store = configureStore({
-  reducer: { user },
+  reducer: {
+    user,
+  },
 });
 
+// Création de la navigation
 // Création de la navigation
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -40,22 +63,22 @@ const TabNavigator = () => {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: "#1e1e1e", // Urbain / sombre
+          backgroundColor: "#1e1e1e",
           borderTopWidth: 0,
           height: 70,
           elevation: 10,
-          shadowColor: "#FF650C", // reflet sunset
+          shadowColor: "#FF650C",
           shadowOpacity: 0.25,
           shadowRadius: 6,
         },
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ focused }) => {
           let iconName;
           switch (route.name) {
             case "Home":
               iconName = "home";
               break;
             case "GoS":
-              iconName = "crosshair"; // Exemple de remplacement pour l'icône GoS
+              iconName = "crosshair";
               break;
             case "Spots":
               iconName = "map";
@@ -85,6 +108,7 @@ const TabNavigator = () => {
 export default function App() {
   return (
     <Provider store={store}>
+      {/* <PersistGate loading={null} persistor={persistor}> */}
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={LoginScreen} />
@@ -97,8 +121,14 @@ export default function App() {
             component={AppSettingsScreen}
           />
           <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+          <Stack.Screen
+            name="GosVersusScreen"
+            component={GosVersusScreen}
+          />
+          {/* Nouvelle route pour GosVersusScreen */}
         </Stack.Navigator>
       </NavigationContainer>
+      {/* </PersistGate> */}
     </Provider>
   );
 }

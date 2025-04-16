@@ -12,6 +12,7 @@ import {
 import BackgroundWrapper from "../components/background";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ProgressBar from "../components/ProgressBar";
 
 const getDifficultyColor = (difficulty) => {
   switch (difficulty) {
@@ -28,6 +29,7 @@ const getDifficultyColor = (difficulty) => {
 
 const difficultyLevels = ["Facile", "Moyen", "Difficile"];
 const categories = ["Flat", "Grind", "Stairs", "Wall"];
+
 
 const tricksData = [
   {
@@ -309,6 +311,7 @@ const tricksData = [
 ];
 
 export default function TricksScreen() {
+  
   const [expandedTricks, setExpandedTricks] = useState({});
   const [validatedTricks, setValidatedTricks] = useState({});
   const [selectedDifficulties, setSelectedDifficulties] = useState({
@@ -325,6 +328,8 @@ export default function TricksScreen() {
 
   const [showOnlyValidated, setShowOnlyValidated] = useState(false);
   const [showSkillTree, setShowSkillTree] = useState(false);
+  const [validationPercentage, setValidationPercentage] = useState(0);
+
 
   // Charger les données sauvegardées au démarrage
   useEffect(() => {
@@ -400,12 +405,24 @@ export default function TricksScreen() {
   };
 
   const toggleValidation = (index) => {
-    setValidatedTricks((prev) => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
+    setValidatedTricks((prev) => {
+      const newValidatedTricks = { ...prev };
+      newValidatedTricks[index] = !newValidatedTricks[index];
+  
+      // Calculer la nouvelle barre de progression
+      const totalValidated = filteredTricks.reduce((count, _, idx) => {
+        return newValidatedTricks[idx] ? count + 1 : count;
+      }, 0);
+      const totalDisplayed = filteredTricks.length;
+      const newValidationPercentage = totalDisplayed === 0 ? 0 : totalValidated / totalDisplayed;
+  
+      // Mettre à jour la barre de progression
+      setValidationPercentage(newValidationPercentage);
+      return newValidatedTricks;
+    });
   };
-
+  
+  
   const toggleDifficulty = (difficulty) => {
     setSelectedDifficulties((prev) => ({
       ...prev,
@@ -430,16 +447,18 @@ export default function TricksScreen() {
   const totalValidated = filteredTricks.reduce((count, _, index) => {
     return validatedTricks[index] ? count + 1 : count;
   }, 0);
-  const validationPercentage =
-    totalDisplayed === 0 ? 0 : totalValidated / totalDisplayed;
+
+
 
   // Fonction pour choisir un trick aléatoire en fonction du niveau et de la progression
   const getRandomTrick = () => {
     const availableTricks = filteredTricks.filter(
       (trick, index) =>
-        validatedTricks[index] || selectedDifficulties[trick.difficulty]
+        validatedTricks[index] || (selectedDifficulties[trick.difficulty] && !validatedTricks[index])
     );
+    
 
+    // Vérification si un trick est disponible en fonction des critères
     if (availableTricks.length === 0) {
       alert("Aucun trick disponible selon ton niveau et ta progression !");
       return;
@@ -455,25 +474,27 @@ export default function TricksScreen() {
   // Fonction pour afficher l'arbre de compétences
   // Fonction pour afficher l'arbre de compétences, uniquement avec les tricks validés
   const renderSkillTree = () => {
-    // Filtrage des tricks validés
     const validatedTricksList = filteredTricks.filter(
       (trick, index) => validatedTricks[index]
     );
-
+  
     if (validatedTricksList.length === 0) {
       return (
         <Text style={styles.noTricksText}>
           Aucune compétence validée pour l'instant.
         </Text>
       );
-    }
+    
+  
+    // Rendu de l'arbre de compétences
+  };
+  
 
     return (
       <ScrollView style={styles.skillTreeContainer}>
         <Text style={styles.skillTreeTitle}>Arbre de compétences</Text>
-
         <View style={styles.treeWrapper}>
-          {/* Afficher les tricks validés sous forme d'arbre avec des liens entre eux */}
+          {/* Afficher les tricks validés sous forme d'arbre */}
           {validatedTricksList.map((trick, index) => (
             <View
               key={index}
@@ -498,21 +519,13 @@ export default function TricksScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Livre des tricks</Text>
 
-        {/* ✅ Progress bar */}
-        <View style={styles.progressContainer}>
-          <Text style={styles.progressText}>
-            Validé : {totalValidated} / {totalDisplayed} (
-            {Math.round(validationPercentage * 100)}%)
-          </Text>
-          <View style={styles.progressBarBackground}>
-            <View
-              style={[
-                styles.progressBarFill,
-                { width: `${validationPercentage * 100}%` },
-              ]}
-            />
-          </View>
-        </View>
+        {/* Ici ta progress bar : */}
+        <ProgressBar
+          progress={validationPercentage}
+          label={`Validé : ${totalValidated} / ${totalDisplayed} (${Math.round(
+            validationPercentage * 100
+          )}%)`}
+        />
 
         {/* Boutons "Donne-moi un trick" et "Voir l’arbre de compétences" */}
         <View style={styles.randomButtonContainer}>
@@ -537,11 +550,7 @@ export default function TricksScreen() {
               />
             </View>
           ))}
-        </View>
 
-        {/* Filtres par catégorie */}
-        <View style={styles.filterContainer}>
-          <Text style={styles.filterTitle}>Filtrer par catégorie</Text>
           {categories.map((cat) => (
             <View key={cat} style={styles.filterRow}>
               <Text style={styles.filterLabel}>{cat}</Text>
