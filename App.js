@@ -9,6 +9,7 @@ import Icon from "react-native-vector-icons/Feather";
 import LoginScreen from "./screens/LoginScreen";
 import HomeScreen from "./screens/HomeScreen";
 import GosPlayScreen from "./screens/GosPlayScreen";
+import GosVersusScreen from "./screens/GosVersusScreen";
 import MapScreen from "./screens/MapScreen";
 import FriendScreen from "./screens/FriendScreen";
 import CrewScreen from "./screens/CrewScreen";
@@ -121,6 +122,7 @@ export default function App() {
           <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
           <Stack.Screen name="AddSpotScreen" component={AddSpotScreen} />
           <Stack.Screen name="SpotScreen" component={SpotScreen} />
+          <Stack.Screen name="GosVersusScreen" component={GosVersusScreen} />
         </Stack.Navigator>
       </NavigationContainer>
       {/* </PersistGate> */}
