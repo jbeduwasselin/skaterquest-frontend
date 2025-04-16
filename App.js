@@ -16,6 +16,8 @@ import VideoScreen from "./screens/VideoScreen";
 import TricksScreen from "./screens/TricksScreen";
 import AppSettingsScreen from "./screens/AppSettingsScreen";
 import SettingsScreen from "./screens/SettingsScreen";
+import AddSpotScreen from "./screens/AddSpotScreen";
+import SpotScreen from "./screens/SpotScreen";
 
 // Imports de Redux
 import { Provider } from "react-redux";
@@ -92,11 +94,10 @@ export default function App() {
           <Stack.Screen name="CrewScreen" component={CrewScreen} />
           <Stack.Screen name="VideoScreen" component={VideoScreen} />
           <Stack.Screen name="TricksScreen" component={TricksScreen} />
-          <Stack.Screen
-            name="AppSettingsScreen"
-            component={AppSettingsScreen}
-          />
+          <Stack.Screen name="AppSettingsScreen" component={AppSettingsScreen} />
           <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+          <Stack.Screen name="AddSpotScreen" component={AddSpotScreen} />
+          <Stack.Screen name="SpotScreen" component={SpotScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
