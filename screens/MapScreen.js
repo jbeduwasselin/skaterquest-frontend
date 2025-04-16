@@ -5,8 +5,13 @@ import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import IconButton from "../components/IconButton"; // ✅ Import du bouton personnalisé
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useDispatch } from 'react-redux';
+import { updateSpot } from '../reducers/spot';
+
 
 export default function MapScreen({ navigation }) {
+  const dispatch = useDispatch();
+
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
@@ -33,6 +38,8 @@ export default function MapScreen({ navigation }) {
   }
 
   const addSpot = () => {
+    // console.log(location);
+    dispatch(updateSpot(location)); // Enregistrement des coordonnées actuelles dans le store
     navigation.navigate("AddSpotScreen");
   };
 
@@ -62,7 +69,7 @@ export default function MapScreen({ navigation }) {
             />
           </MapView>
         ) : (
-          <Text>{text}</Text>
+          <Text style={styles.mapText}>{text}</Text>
         )}
 
         <TouchableOpacity
@@ -102,5 +109,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 10,
+  },
+  mapText: {
+    color: "orange",
   },
 });

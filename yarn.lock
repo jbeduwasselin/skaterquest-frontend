@@ -1142,7 +1142,7 @@
 
 "@expo/cli@0.22.24":
   version "0.22.24"
-  resolved "https://registry.npmjs.org/@expo/cli/-/cli-0.22.24.tgz"
+  resolved "https://registry.yarnpkg.com/@expo/cli/-/cli-0.22.24.tgz#8fe2291e53a536869832e6700918175481936f88"
   integrity sha512-lhdenxBC8/x/vL39j79eXE09mOaqNNLmiSDdY/PblnI+UNzGgsQ48hBTYa/MQhd0ioXXVKurZL2941dLKwcxJw==
   dependencies:
     "@0no-co/graphql.web" "^1.0.8"
