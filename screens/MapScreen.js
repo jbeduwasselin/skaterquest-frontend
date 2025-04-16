@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import BackgroundWrapper from "../components/background";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import IconButton from "../components/IconButton"; // ✅ Import du bouton personnalisé
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export default function MapScreen({ navigation }) {
   const [location, setLocation] = useState(null);
@@ -30,6 +31,10 @@ export default function MapScreen({ navigation }) {
   } else if (location) {
     text = "Position obtenue!";
   }
+
+  const addSpot = () => {
+    navigation.navigate("AddSpotScreen");
+  };
 
   return (
     <BackgroundWrapper>
@@ -60,14 +65,15 @@ export default function MapScreen({ navigation }) {
           <Text>{text}</Text>
         )}
 
-        {/* ✅ Bouton remplacé par IconButton */}
-        <View style={styles.buttonContainer}>
-          <IconButton
-            iconName="plus"
-            buttonText="Ajouter un spot"
-            onPress={() => navigation.navigate("AddSpotScreen")}
-          />
-        </View>
+        <TouchableOpacity
+          onPress={() => {
+            addSpot();
+          }}
+          style={styles.buttonContainer}
+          activeOpacity={0.8}
+        >
+          <MaterialIcons name="add-location" size={50} color="orange" />
+        </TouchableOpacity>
       </View>
     </BackgroundWrapper>
   );
@@ -88,13 +94,13 @@ const styles = StyleSheet.create({
   },
   map: {
     width: "100%",
-    height: 500,
-    marginBottom: 20,
+    height: "80%",
+    marginBottom: 0,
   },
   buttonContainer: {
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 10,
   },
 });

@@ -79,7 +79,7 @@ export default function LoginScreen({ navigation }) {
         style={styles.closeButton}
         activeOpacity={0.8}
       >
-        <FontAwesome name={"close"} />
+        <FontAwesome name={"close"} color="black" size={16}/>
       </TouchableOpacity>
       <Text>Connexion</Text>
       <TextInput
@@ -115,7 +115,7 @@ export default function LoginScreen({ navigation }) {
         style={styles.closeButton}
         activeOpacity={0.8}
       >
-        <FontAwesome name={"close"} />
+        <FontAwesome name={"close"} color="black" size={16}/>
       </TouchableOpacity>
       <Text>Inscription</Text>
       <TextInput
@@ -225,8 +225,8 @@ const styles = StyleSheet.create({
   closeButton: {
     alignSelf: "flex-end",
     padding: 8,
-    backgroundColor: "orange",
-    borderRadius: "100%",
+    /*backgroundColor: "orange",*/
+    /*borderRadius: "100%",*/
   },
   inputs: {
     borderBottomColor: "orange",
