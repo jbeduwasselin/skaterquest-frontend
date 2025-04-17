@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   StyleSheet,
   View,
@@ -8,6 +8,7 @@ import {
   Animated,
   TouchableOpacity,
 } from "react-native";
+import BackgroundWrapper from "../components/background";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
@@ -22,14 +23,14 @@ const images = [
 const { width: screenWidth } = Dimensions.get("window");
 
 // Variables pour gérer les dimensions des photos (en responsive grâce à screenWidth)
-const PHOTO_WIDTH = screenWidth * 0.5; // 50% de la largeur de l'écran
+const PHOTO_WIDTH = screenWidth * 0.7; // 70% de la largeur de l'écran
 const PHOTO_HEIGHT = PHOTO_WIDTH * 0.75; // Format 3:4
-const PHOTO_SPACING = 16; // Espacement horizontal entre les photos
+const PHOTO_SPACING = 6; // Espacement horizontal entre les photos
 
 // Variables pour gérer les dimensions des vidéos (en responsive grâce à screenWidth)
-const VIDEO_WIDTH = screenWidth * 0.7; // 70% de la largeur de l'écran
+const VIDEO_WIDTH = screenWidth * 0.5; // 50% de la largeur de l'écran
 const VIDEO_HEIGHT = PHOTO_WIDTH * 0.75;
-const VIDEO_SPACING = 16;
+const VIDEO_SPACING = 6;
 
 export default function SpotScreen({ navigation }) {
   // On déclare un scrollX par gallerie à afficher. scrollX crée une valeur animée qui suit la position du scroll (X car horizontal)
@@ -47,13 +48,13 @@ export default function SpotScreen({ navigation }) {
     style
   ) => (
     <Animated.FlatList // FlatList sert pour l'affichage des images en défilement et Animated pour la dynamisation
-      data={data} // Mettre ici les images (photos ou vidéos) voulues
+    data={data} // Mettre ici les images (photos ou vidéos) voulues
       keyExtractor={(_, index) => index.toString()} // Pour identifier quelle image est au centre ou non et gérer son affichage en fonction
       horizontal // Scroll horizontal (par défaut FlatList est en scroll vertical)
       showsHorizontalScrollIndicator={false} // Cache la barre de scroll horizontale
       contentContainerStyle={{
         paddingHorizontal: (screenWidth - itemWidth) / 2, // Centre les premières/dernières images dans l'écran
-        paddingVertical: 20, // Ajoute un peu d'espace vertical pour éviter que le zoom coupe l'image du milieu
+        paddingVertical: 10, // Ajoute un peu d'espace vertical pour éviter que le zoom coupe l'image du milieu
       }}
       snapToInterval={itemWidth + spacing} // Fluidifie le défilement en snappant automatiquement chaque image quand on scrolle
       decelerationRate="fast" // Rend le scroll plus "snappy" (rapide) à s’arrêter
@@ -64,14 +65,14 @@ export default function SpotScreen({ navigation }) {
       // Fonction renderItem() pour afficher les éléments (items) de la FlatList
       renderItem={({ item, index }) => {
         const inputRange = [
-          (index - 1) * (itemWidth + spacing),
-          index * (itemWidth + spacing),
-          (index + 1) * (itemWidth + spacing),
+          (index - 1) * (itemWidth + spacing), // Image précédente
+          index * (itemWidth + spacing), // Image "actuelle" (au milieu)
+          (index + 1) * (itemWidth + spacing), // Image suivante
         ];
         // Effet de zoom dynamique
         const scale = scrollX.interpolate({
           inputRange,
-          outputRange: [0.9, 1.1, 0.9], // Scale de 1.1 pour l'image centrale, 0.9 pour les autres
+          outputRange: [0.7, 1, 0.7], // Scale de 1 pour l'image centrale, 0.7 pour les autres
           extrapolate: "clamp",
         });
 
@@ -94,121 +95,135 @@ export default function SpotScreen({ navigation }) {
     //...
   };
 
+  useEffect(/* montage du composant : lancer route getSpotInfo() */);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Spot de type (...)</Text>
-        <Text style={styles.subtitle}>Créé le (...) par (...)</Text>
+    <BackgroundWrapper>
+      <View style={styles.container}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>(nomDuSpot)</Text>
+          <Text style={styles.text}>Spot de type (...) ajouté le (...) par (...)</Text>
+        </View>
+
+        {renderCarrousel(
+          images,
+          scrollXPhotos,
+          PHOTO_WIDTH,
+          PHOTO_HEIGHT,
+          PHOTO_SPACING,
+          styles.photosCarrousel
+        )}
+
+        <Text style={styles.text}>Vidéos postées cette semaine</Text>
+
+        {renderCarrousel(
+          images,
+          scrollXWeek,
+          VIDEO_WIDTH,
+          VIDEO_HEIGHT,
+          VIDEO_SPACING,
+          styles.videosCarrousel
+        )}
+
+        <Text style={styles.text}>Vidéos depuis la création du spot</Text>
+
+        {renderCarrousel(
+          images,
+          scrollXAllTime,
+          VIDEO_WIDTH,
+          VIDEO_HEIGHT,
+          VIDEO_SPACING,
+          styles.videosCarrousel
+        )}
+
+        <TouchableOpacity
+          onPress={() => {
+            takeVideo();
+          }}
+          activeOpacity={0.8}
+        >
+          <MaterialCommunityIcons
+            style={styles.takeVideoButton}
+            name="video-plus"
+            size={42}
+            color="orange"
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.returnButtonContainer}
+          onPress={() => {
+            navigation.navigate("TabNavigator", {
+              screen: "MapScreen",
+            }); // Cette structure sert à naviguer en tab navigation sans menu
+          }}
+          activeOpacity={0.8}
+        >
+          <MaterialIcons
+            style={styles.returnButton}
+            name="keyboard-return"
+            size={36}
+            color="orange"
+          />
+        </TouchableOpacity>
       </View>
-
-      {renderCarrousel(
-        images,
-        scrollXPhotos,
-        PHOTO_WIDTH,
-        PHOTO_HEIGHT,
-        PHOTO_SPACING,
-        styles.photosCarrousel
-      )}
-
-      <Text>Vidéos postées cette semaine</Text>
-
-      {renderCarrousel(
-        images,
-        scrollXWeek,
-        VIDEO_WIDTH,
-        VIDEO_HEIGHT,
-        VIDEO_SPACING,
-        styles.videosCarrousel
-      )}
-
-      <Text>Vidéos depuis la création du spot</Text>
-
-      {renderCarrousel(
-        images,
-        scrollXAllTime,
-        VIDEO_WIDTH,
-        VIDEO_HEIGHT,
-        VIDEO_SPACING,
-        styles.videosCarrousel
-      )}
-
-      <TouchableOpacity
-        onPress={() => {
-          takeVideo();
-        }}
-        activeOpacity={0.8}
-      >
-        <MaterialCommunityIcons
-          style={styles.takeVideoButton}
-          name="video-plus"
-          size={36}
-          color="orange"
-        />
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.returnButtonContainer}
-        onPress={() => {
-          navigation.navigate("TabNavigator", {
-            screen: "MapScreen",
-          }); // Cette structure sert à naviguer en tab navigation sans menu
-        }}
-        activeOpacity={0.8}
-      >
-        <MaterialIcons
-          style={styles.returnButton}
-          name="keyboard-return"
-          size={36}
-          color="orange"
-        />
-      </TouchableOpacity>
-    </View>
+    </BackgroundWrapper>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 50,
+    marginTop: 30,
     alignItems: "center",
-    height: "93%",
+    height: "95%",
   },
   titleContainer: {
     fontWeight: "bold",
     marginVertical: 10,
+    backgroundColor: "black",
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 10,
   },
   title: {
     fontSize: 26,
     fontWeight: "bold",
+    color: "orange",
   },
-  subtitle: {
+  text: {
     fontSize: 18,
+    color: "orange",
+    marginTop: 6,
   },
   photosCarrouselContainer: {},
   photosCarrousel: {
-    width: PHOTO_WIDTH,
+    // width: PHOTO_WIDTH,
+    // height: PHOTO_HEIGHT,
     marginHorizontal: PHOTO_SPACING / 2,
     alignItems: "center",
     justifyContent: "center",
   },
   image: {
-    width: PHOTO_WIDTH,
-    height: PHOTO_HEIGHT,
+    // width: PHOTO_WIDTH,
+    // height: PHOTO_HEIGHT,
     borderRadius: 10,
-    resizeMode: "cover",
+    resizeMode: "cover", // ou "contain" si problème
   },
   weekVideosCarrouselContainer: {},
   allTimeVideosCarrouselContainer: {},
   videosCarrousel: {
-    width: VIDEO_WIDTH,
+    // width: VIDEO_WIDTH,
+    // height: VIDEO_HEIGHT,
     marginHorizontal: VIDEO_SPACING / 2,
     alignItems: "center",
     justifyContent: "center",
+    // overflow: "visible",
   },
   video: {
-    width: VIDEO_WIDTH,
-    height: VIDEO_HEIGHT,
+    // width: VIDEO_WIDTH,
+    // height: VIDEO_HEIGHT,
     borderRadius: 10,
-    resizeMode: "cover",
+    resizeMode: "contain",
   },
   takeVideoButton: {
     paddingVertical: 4,
