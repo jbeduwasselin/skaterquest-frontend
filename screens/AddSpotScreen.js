@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   camera: {
-    width: (width - 110) * 1.33, // Format 4:3
+    width: (width - 110) * 1.33, // Format 3:4
     height: width - 110,
     borderRadius: 10,
     overflow: "hidden",
