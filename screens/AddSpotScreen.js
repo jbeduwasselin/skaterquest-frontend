@@ -57,6 +57,13 @@ export default function AddSpotScreen({ navigation }) {
       spotCategory
     );
     console.log(spotResponse);
+     /*
+        - result : true => ok tout vas bien
+        - result : false :
+            - erreur utilatsateur => blcké ici
+            - {fallback : spotID} => renvoyer l'utilisateur vers l'écran
+            du spotID 
+     */
 
     // Ajouter en BDD les photos prises (pas dans la même route que createSpot)
 
