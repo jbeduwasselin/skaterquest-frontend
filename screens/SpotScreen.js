@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -7,10 +7,14 @@ import {
   Dimensions,
   Animated,
   TouchableOpacity,
+  Platform,
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import { Video } from "expo-av";
 import BackgroundWrapper from "../components/background";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Tableau temporaire pour tester
 const images = [
@@ -32,11 +36,13 @@ const VIDEO_WIDTH = screenWidth * 0.5; // 50% de la largeur de l'écran
 const VIDEO_HEIGHT = PHOTO_WIDTH * 0.75;
 const VIDEO_SPACING = 6;
 
-export default function SpotScreen({ navigation }) {
+export default function SpotScreen({ navigation, route }) {
   // On déclare un scrollX par gallerie à afficher. scrollX crée une valeur animée qui suit la position du scroll (X car horizontal)
   const scrollXPhotos = useRef(new Animated.Value(0)).current; // Pour le carrousel des photos
   const scrollXWeek = useRef(new Animated.Value(0)).current; // Pour le carrousel des vidéos postées cette semaine
   const scrollXAllTime = useRef(new Animated.Value(0)).current; // Pour le carrousel des vidéos postées depuis la création du spot
+
+  const [videos, setVideos] = React.useState([]); // Pour stocker les vidéos prises
 
   // Fonction pour rendre une galerie sous forme de carrousel
   const renderCarrousel = (
@@ -48,7 +54,7 @@ export default function SpotScreen({ navigation }) {
     style
   ) => (
     <Animated.FlatList // FlatList sert pour l'affichage des images en défilement et Animated pour la dynamisation
-    data={data} // Mettre ici les images (photos ou vidéos) voulues
+      data={data} // Mettre ici les images (photos ou vidéos) voulues
       keyExtractor={(_, index) => index.toString()} // Pour identifier quelle image est au centre ou non et gérer son affichage en fonction
       horizontal // Scroll horizontal (par défaut FlatList est en scroll vertical)
       showsHorizontalScrollIndicator={false} // Cache la barre de scroll horizontale
@@ -63,26 +69,59 @@ export default function SpotScreen({ navigation }) {
         { useNativeDriver: true } // Rend l’animation exécutable directement par le moteur natif du téléphone (donc + fluide, + rapide et ne bloque pas le reste de l’UI)
       )}
       // Fonction renderItem() pour afficher les éléments (items) de la FlatList
+      // Remplace ton renderItem dans renderCarrousel par celui-ci :
+
       renderItem={({ item, index }) => {
         const inputRange = [
-          (index - 1) * (itemWidth + spacing), // Image précédente
-          index * (itemWidth + spacing), // Image "actuelle" (au milieu)
-          (index + 1) * (itemWidth + spacing), // Image suivante
+          (index - 1) * (itemWidth + spacing),
+          index * (itemWidth + spacing),
+          (index + 1) * (itemWidth + spacing),
         ];
-        // Effet de zoom dynamique
+
         const scale = scrollX.interpolate({
           inputRange,
-          outputRange: [0.7, 1, 0.7], // Scale de 1 pour l'image centrale, 0.7 pour les autres
+          outputRange: [0.7, 1, 0.7],
           extrapolate: "clamp",
         });
 
         return (
           <View style={[style.container]}>
             <Animated.View style={{ transform: [{ scale }] }}>
-              <Image
-                source={item}
-                style={[style.image, { width: itemWidth, height: itemHeight }]}
-              />
+              <View>
+                {item?.uri ? (
+                  <Video
+                    source={{ uri: item.uri }}
+                    style={[
+                      style.image,
+                      { width: itemWidth, height: itemHeight },
+                    ]}
+                    useNativeControls
+                    resizeMode="contain"
+                    isLooping
+                  />
+                ) : (
+                  <Image
+                    source={item}
+                    style={[
+                      style.image,
+                      { width: itemWidth, height: itemHeight },
+                    ]}
+                  />
+                )}
+                {/* Si l’élément a un _id, c’est qu’il vient du backend → afficher le bouton */}
+                {item?._id && (
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => handleDeleteVideo(item._id, index)}
+                  >
+                    <MaterialCommunityIcons
+                      name="delete"
+                      size={24}
+                      color="red"
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
             </Animated.View>
           </View>
         );
@@ -91,18 +130,113 @@ export default function SpotScreen({ navigation }) {
   );
 
   // Fonction pour prendre une vidéo
-  const takeVideo = () => {
-    //...
+  const takeVideo = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (!permissionResult.granted) {
+      alert("L'autorisation d'accéder à la caméra est requise !");
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+      videoMaxDuration: 60,
+      quality:
+        Platform.OS === "ios"
+          ? ImagePicker.UIImagePickerControllerQualityType.Medium
+          : 1,
+    });
+
+    if (!result.canceled) {
+      const videoAsset = result.assets[0];
+
+      const token = await AsyncStorage.getItem("userToken");
+      const userId = await AsyncStorage.getItem("userId");
+      const spotId = route.params.spotId; // si passé depuis
+      if (!token || !userId || !spotId) {
+        alert("Token, ID utilisateur ou ID spot manquant !");
+        return; // On arrête la fonction si l'un de ces éléments est manquant
+      }
+      const trick = "ollie"; // ou depuis un champ UI
+
+      const formData = new FormData();
+      formData.append("videoFile", {
+        uri: videoAsset.uri,
+        name: "video.mp4",
+        type: "video/mp4",
+      });
+      formData.append("tricks", trick);
+      formData.append("spot", spotId);
+      formData.append("userData", JSON.stringify({ _id: userId }));
+
+      try {
+        const response = await fetch(`http://192.168.1.100:3000/video`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: "Bearer " + token,
+          },
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (data.result) {
+          setVideos((prev) => [
+            ...prev,
+            { uri: data.data.url, _id: data.data._id },
+          ]);
+        } else {
+          alert("Erreur upload: " + data.reason);
+        }
+      } catch (err) {
+        console.error("Upload error", err);
+      }
+    }
   };
 
-  useEffect(/* montage du composant : lancer route getSpotInfo() */);
+  // Fonction pour supprimer une video
+  const deleteVideo = (indexToDelete) => {
+    setVideos((prevVideos) =>
+      prevVideos.filter((_, index) => index !== indexToDelete)
+    );
+  };
+
+  const handleDeleteVideo = async (videoID, index) => {
+    try {
+      const response = await fetch(`http://<TON_BACKEND>/video/${videoID}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userData: { _id: "ID_UTILISATEUR" }, // à récupérer dynamiquement si besoin
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.result) {
+        deleteVideo(index); // Supprime de l'affichage local
+      } else {
+        alert("Erreur suppression : " + data.reason);
+      }
+    } catch (error) {
+      console.error("Erreur delete", error);
+    }
+  };
+
+  //useEffect(/* montage du composant : lancer route getSpotInfo() */);
 
   return (
     <BackgroundWrapper>
       <View style={styles.container}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>(nomDuSpot)</Text>
-          <Text style={styles.text}>Spot de type (...) ajouté le (...) par (...)</Text>
+          <Text style={styles.text}>
+            Spot de type (...) ajouté le (...) par (...)
+          </Text>
         </View>
 
         {renderCarrousel(
@@ -117,7 +251,7 @@ export default function SpotScreen({ navigation }) {
         <Text style={styles.text}>Vidéos postées cette semaine</Text>
 
         {renderCarrousel(
-          images,
+          videos,
           scrollXWeek,
           VIDEO_WIDTH,
           VIDEO_HEIGHT,
@@ -128,7 +262,7 @@ export default function SpotScreen({ navigation }) {
         <Text style={styles.text}>Vidéos depuis la création du spot</Text>
 
         {renderCarrousel(
-          images,
+          videos,
           scrollXAllTime,
           VIDEO_WIDTH,
           VIDEO_HEIGHT,
@@ -234,5 +368,15 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     marginRight: 10,
     marginLeft: 280, // Temporairement mais le positionner de manière plus clean plus tard
+  },
+
+  deleteButton: {
+    position: "absolute",
+    top: 5,
+    right: 5,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    borderRadius: 20,
+    padding: 4,
+    zIndex: 10,
   },
 });
