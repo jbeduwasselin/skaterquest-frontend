@@ -28,9 +28,6 @@ export default function LoginScreen({ navigation }) {
   const [errorMessage, setErrorMessage] = useState("");
 
   // Fonction pour réinitialiser les états
-  // Henry le Fou :  pas sur que ce soit nécessaire car :
-  // connection ok => on change de state et le composant est unmount
-  // connection !ok => jamais appellé
   const emptyStates = () => {
     setShowSignInModal(false);
     setErrorMessage("");
@@ -48,7 +45,6 @@ export default function LoginScreen({ navigation }) {
     if (result) {
       console.log("Connection OK : ", data);
       dispatch(login(data)); // Enregistrement des données de l'utilisateur dans le store Redux
-      emptyStates(); // Réinitialisation des états
       navigation.navigate("TabNavigator"); // Redirection vers l'écran d'accueil
     } else {
       console.log("Connection error : ", data);
@@ -63,7 +59,6 @@ export default function LoginScreen({ navigation }) {
         if (result) {
           console.log("Inscription OK : ", data);
           dispatch(login(data)); // Enregistrement des données de l'utilisateur dans le store Redux
-          emptyStates(); // Réinitialisation des états
           navigation.navigate("TabNavigator"); // Redirection vers l'écran d'accueil
         } else {
           console.log("Inscription error : ", data);
