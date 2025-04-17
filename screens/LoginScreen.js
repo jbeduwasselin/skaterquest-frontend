@@ -41,11 +41,10 @@ export default function LoginScreen({ navigation }) {
 
   // Fonction de connexion
   const handleSignIn = async () => {
-    const data = await signInRequest(signInEmail, signInPassword); // Requête vers le back gérée par le module signInRequest()
-    if (data.result) {
+    const { result, data } = await signInRequest(signInEmail, signInPassword); // Requête vers le back gérée par le module signInRequest()
+    if (result) {
       console.log("Connection OK : ", data);
-      dispatch(login({ username: signInEmail, token: data.token })); // Enregistrement des données de l'utilisateur dans le store Redux
-      emptyStates(); // Réinitialisation des états
+      dispatch(login(data)); // Enregistrement des données de l'utilisateur dans le store Redux
       navigation.navigate("TabNavigator"); // Redirection vers l'écran d'accueil
     } else {
       console.log("Connection error : ", data);
@@ -55,18 +54,18 @@ export default function LoginScreen({ navigation }) {
 
   // Fonction d'inscription
   const handleSignUp = () => {
-    signUpRequest(signUpUsername, signUpEmail, signUpPassword).then((data) => {
-      console.log(data);
-      if (data.result) {
-        console.log("Inscription OK : ", data);
-        dispatch(login({ username: signUpUsername, token: data.token })); // Enregistrement des données de l'utilisateur dans le store Redux
-        emptyStates(); // Réinitialisation des états
-        navigation.navigate("TabNavigator"); // Redirection vers l'écran d'accueil
-      } else {
-        console.log("Inscription error : ", data);
-        setErrorMessage("Erreur !");
+    signUpRequest(signUpUsername, signUpEmail, signUpPassword).then(
+      ({ result, data }) => {
+        if (result) {
+          console.log("Inscription OK : ", data);
+          dispatch(login(data)); // Enregistrement des données de l'utilisateur dans le store Redux
+          navigation.navigate("TabNavigator"); // Redirection vers l'écran d'accueil
+        } else {
+          console.log("Inscription error : ", data);
+          setErrorMessage("Erreur !");
+        }
       }
-    });
+    );
   };
 
   // Fenêtre modale de connexion
@@ -79,7 +78,7 @@ export default function LoginScreen({ navigation }) {
         style={styles.closeButton}
         activeOpacity={0.8}
       >
-        <FontAwesome name={"close"} color="black" size={16}/>
+        <FontAwesome name={"close"} color="black" size={16} />
       </TouchableOpacity>
       <Text>Connexion</Text>
       <TextInput
@@ -115,7 +114,7 @@ export default function LoginScreen({ navigation }) {
         style={styles.closeButton}
         activeOpacity={0.8}
       >
-        <FontAwesome name={"close"} color="black" size={16}/>
+        <FontAwesome name={"close"} color="black" size={16} />
       </TouchableOpacity>
       <Text>Inscription</Text>
       <TextInput

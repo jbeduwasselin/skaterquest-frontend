@@ -33,7 +33,9 @@ yarn-error.*
 .env*.local
 config.js
 
-config.js
+#lock file (no conflict)
+package-lock.json
+yarn.lock
 
 # typescript
 *.tsbuildinfo
