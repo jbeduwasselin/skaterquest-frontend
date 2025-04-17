@@ -6,13 +6,14 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  TextInput,
 } from "react-native";
 import BackgroundWrapper from "../components/background";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateSpot } from "../reducers/spot";
 import { CameraView, Camera } from "expo-camera";
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from "@react-navigation/native";
 
 export default function AddSpotScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -21,6 +22,9 @@ export default function AddSpotScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(false);
   const cameraRef = useRef(null); // Référence du composant CameraView afin de pouvoir prendre une photo
 
+  const user = useSelector((state) => state.user.value); // On récupère depuis le store les infos de l'utilisateur
+
+  const [spotName, setSpotName] = useState(""); // État pour enregistrer le nom donné au spot par l'utilisateur
   const [spotCategory, setSpotCategory] = useState(""); // État pour enregistrer la catégorie du spot choisie par l'utilisateur
 
   // Hook d'effet pour vérifier la permission de la caméra
@@ -42,9 +46,8 @@ export default function AddSpotScreen({ navigation }) {
     // Lancer la route qui enregistre le spot, en vérifiant que spotCategory n'est pas vide et que la photo a été prise.
     // Envoyer les infos de localisation enregistrées dans le store depuis MapScreen, ainsi que les infos de spotCategory et la photo
 
-    // On vide les états
-    setSpotCategory("");
-    dispatch(updateSpot(null));
+    createSpot(user.token, { spotName, /*lon, lat,*/ spotCategory }); //et le creator ??
+
     navigation.navigate("SpotScreen");
   };
 
@@ -52,6 +55,13 @@ export default function AddSpotScreen({ navigation }) {
     <BackgroundWrapper>
       <View style={styles.container}>
         <Text style={styles.mainTitle}>Ajout d'un nouveau spot</Text>
+
+        <TextInput
+          style={styles.inputContainer}
+          placeholder="Nomme ce spot ici !"
+          onChangeText={(value) => setSpotName(value)}
+          value={spotName}
+        />
 
         <View style={styles.spotChoiceContainer}>
           <Text style={styles.title}>Sélectionne le type de spot :</Text>
@@ -95,7 +105,7 @@ export default function AddSpotScreen({ navigation }) {
         <View style={styles.cameraContainer}>
           <Text style={styles.title}>Prends une photo du spot !</Text>
 
-          {(!hasPermission || !isFocused) ? (
+          {!hasPermission || !isFocused ? (
             <View>
               <Text>
                 Pour prendre une photo de ce spot, tu dois autoriser l'appli à
@@ -174,14 +184,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 30,
     marginTop: 75,
-    marginBottom: 20,
+  },
+  inputContainer:{
+    width: "100%",
+    textAlign: "center",
+    backgroundColor: "orange",
+    marginVertical: 4,
+    color: "black",
+    fontWeight: "bold",
+    fontSize: 18,
   },
   spotChoiceContainer: {
     alignItems: "center",
     width: "90%",
     backgroundColor: "white",
     borderRadius: 10,
-    marginBottom: 20,
+    marginBottom: 6,
   },
   spotChoiceImagesContainer: {
     flexDirection: "row",
