@@ -11,16 +11,13 @@ export const userSlice = createSlice({
     // Action de connexion
     login: (state, action) => {
       const { token, username, email, uID } = action.payload;
-      token &&
-        username &&
-        email &&
-        uID &&
-        (state.value = {
-          token,
-          username,
-          email,
-          uID,
-        });
+
+      state.value = {
+        token,
+        username,
+        email,
+        uID,
+      };
     },
     // Action de déconnexion
     logout: (state) => {
