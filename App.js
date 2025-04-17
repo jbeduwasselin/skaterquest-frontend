@@ -31,6 +31,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { combineReducers } from "redux";
 
 import user from "./reducers/user";
+import spot from "./reducers/spot";
 
 // Persist config
 // const persistConfig = {
@@ -51,6 +52,7 @@ import user from "./reducers/user";
 const store = configureStore({
   reducer: {
     user,
+    spot,
   },
 });
 

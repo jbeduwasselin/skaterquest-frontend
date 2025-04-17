@@ -38,7 +38,7 @@ export default function MapScreen({ navigation }) {
   }
 
   const addSpot = () => {
-    // console.log(location);
+    console.log("Infos position :", location);
     dispatch(updateSpot(location)); // Enregistrement des coordonnées actuelles dans le store
     navigation.navigate("AddSpotScreen");
   };

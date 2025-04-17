@@ -22,7 +22,9 @@ export default function AddSpotScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(false);
   const cameraRef = useRef(null); // Référence du composant CameraView afin de pouvoir prendre une photo
 
-  const user = useSelector((state) => state.user.value); // On récupère depuis le store les infos de l'utilisateur
+  // Récupération des infos depuis le store
+  const user = useSelector((state) => state.user.value);
+  const spot = useSelector((state) => state.spot.value);
 
   const [spotName, setSpotName] = useState(""); // État pour enregistrer le nom donné au spot par l'utilisateur
   const [spotCategory, setSpotCategory] = useState(""); // État pour enregistrer la catégorie du spot choisie par l'utilisateur
@@ -46,7 +48,7 @@ export default function AddSpotScreen({ navigation }) {
     // Lancer la route qui enregistre le spot, en vérifiant que spotCategory n'est pas vide et que la photo a été prise.
     // Envoyer les infos de localisation enregistrées dans le store depuis MapScreen, ainsi que les infos de spotCategory et la photo
 
-    //createSpot(user.token, { spotName, /*lon, lat,*/ spotCategory }); //et le creator ??
+    //createSpot(user.token, { spotName, spot.longitude, spot.latitude, spotCategory });
 
     navigation.navigate("SpotScreen");
   };

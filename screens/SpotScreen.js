@@ -95,7 +95,7 @@ export default function SpotScreen({ navigation }) {
     //...
   };
 
-  useEffect(/* montage du composant : lancer route getSpotInfo() */);
+  //useEffect(/* montage du composant : lancer route getSpotInfo() */);
 
   return (
     <BackgroundWrapper>
