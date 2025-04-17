@@ -1,26 +1,20 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Modal,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, Modal, Image } from "react-native";
 import BackgroundWrapper from "../components/background";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 import IconButton from "../components/IconButton";
 import ConfettiCannon from "react-native-confetti-cannon";
+import { Picker } from "@react-native-picker/picker";
 
-export default function GosVersusScreen({ route, navigation }) {
+export default function GosVersusScreenBis({ route, navigation }) {
   const { skater1, skater2, gameMode } = route.params;
 
   const [skater1Score, setSkater1Score] = useState(0);
   const [skater2Score, setSkater2Score] = useState(0);
   const [skater1Letters, setSkater1Letters] = useState("");
   const [skater2Letters, setSkater2Letters] = useState("");
-  const [currentTrick, setCurrentTrick] = useState("");
+  const [selectedTrick, setSelectedTrick] = useState("Ollie");
   const [isGameOver, setIsGameOver] = useState(false);
 
   const handleTrickSuccess = (player) => {
@@ -54,57 +48,6 @@ export default function GosVersusScreen({ route, navigation }) {
 
   const endGame = (loser) => {
     setIsGameOver(true);
-  };
-
-  const nextTrick = () => {
-    const tricks = [
-      "Ollie",
-      "No Comply",
-      "Revert",
-      "Caveman",
-      "Acid Drop",
-      "Body Varial",
-      "Footplant",
-      "Firecracker",
-      "Pivot",
-      "Boneless",
-      "Shuvit",
-      "Pop Shuvit",
-      "Manual",
-      "Nose Manual",
-      "Kickflip",
-      "Heelflip",
-      "Frontside 180",
-      "Backside 180",
-      "Railstand",
-      "Boned Ollie",
-      "Nollie",
-      "Fakie Ollie",
-      "Switch Ollie",
-      "Wallride",
-      "Wallie",
-      "Powerslide",
-      "Slappy",
-      "Varial Kickflip",
-      "360 Flip",
-      "Hardflip",
-      "Impossible",
-      "Frontside Flip",
-      "Backside Flip",
-      "Bigspin",
-      "Casper Flip",
-      "Darkslide",
-      "Primo Slide",
-      "Tiger Claw",
-      "Underflip",
-      "Hospital Flip",
-      "Double Kickflip",
-      "Triple Kickflip",
-      "Laser Flip",
-      "Gazelle Flip",
-      "Blunt Slide",
-    ];
-    setCurrentTrick(tricks[Math.floor(Math.random() * tricks.length)]);
   };
 
   const handleCloseModal = () => {
@@ -153,21 +96,65 @@ export default function GosVersusScreen({ route, navigation }) {
           </View>
         </Animatable.View>
 
-        {/* Trick actuel */}
+        {/* Picker encapsulé */}
         <Animatable.View
           animation="zoomIn"
           duration={1000}
           style={[styles.trickContainer, styles.trickCard]}
         >
-          <Text style={styles.trickText}>
-            Trick en cours: {currentTrick || "Push sur Next Trick"}
-          </Text>
-          <IconButton
-            iconName="refresh-cw"
-            buttonText="Next Trick"
-            onPress={nextTrick}
-            style={styles.nextTrickButton}
-          />
+          <Text style={styles.trickText}>Choisis ton Trick :</Text>
+          <Picker
+            selectedValue={selectedTrick}
+            onValueChange={(itemValue) => setSelectedTrick(itemValue)}
+            style={styles.picker}
+            dropdownIconColor="#FFF"
+          >
+            <Picker.Item label="Ollie" value="Ollie" />
+            <Picker.Item label="No Comply" value="No Comply" />
+            <Picker.Item label="Revert" value="Revert" />
+            <Picker.Item label="Caveman" value="Caveman" />
+            <Picker.Item label="Acid Drop" value="Acid Drop" />
+            <Picker.Item label="Body Varial" value="Body Varial" />
+            <Picker.Item label="Footplant" value="Footplant" />
+            <Picker.Item label="Firecracker" value="Firecracker" />
+            <Picker.Item label="Pivot" value="Pivot" />
+            <Picker.Item label="Boneless" value="Boneless" />
+            <Picker.Item label="Shuvit" value="Shuvit" />
+            <Picker.Item label="Pop Shuvit" value="Pop Shuvit" />
+            <Picker.Item label="Manual" value="Manual" />
+            <Picker.Item label="Nose Manual" value="Nose Manual" />
+            <Picker.Item label="Kickflip" value="Kickflip" />
+            <Picker.Item label="Heelflip" value="Heelflip" />
+            <Picker.Item label="Frontside 180" value="Frontside 180" />
+            <Picker.Item label="Backside 180" value="Backside 180" />
+            <Picker.Item label="Railstand" value="Railstand" />
+            <Picker.Item label="Boned Ollie" value="Boned Ollie" />
+            <Picker.Item label="Nollie" value="Nollie" />
+            <Picker.Item label="Fakie Ollie" value="Fakie Ollie" />
+            <Picker.Item label="Switch Ollie" value="Switch Ollie" />
+            <Picker.Item label="Wallride" value="Wallride" />
+            <Picker.Item label="Wallie" value="Wallie" />
+            <Picker.Item label="Powerslide" value="Powerslide" />
+            <Picker.Item label="Slappy" value="Slappy" />
+            <Picker.Item label="Varial Kickflip" value="Varial Kickflip" />
+            <Picker.Item label="360 Flip" value="360 Flip" />
+            <Picker.Item label="Hardflip" value="Hardflip" />
+            <Picker.Item label="Impossible" value="Impossible" />
+            <Picker.Item label="Frontside Flip" value="Frontside Flip" />
+            <Picker.Item label="Backside Flip" value="Backside Flip" />
+            <Picker.Item label="Bigspin" value="Bigspin" />
+            <Picker.Item label="Casper Flip" value="Casper Flip" />
+            <Picker.Item label="Darkslide" value="Darkslide" />
+            <Picker.Item label="Primo Slide" value="Primo Slide" />
+            <Picker.Item label="Tiger Claw" value="Tiger Claw" />
+            <Picker.Item label="Underflip" value="Underflip" />
+            <Picker.Item label="Hospital Flip" value="Hospital Flip" />
+            <Picker.Item label="Double Kickflip" value="Double Kickflip" />
+            <Picker.Item label="Triple Kickflip" value="Triple Kickflip" />
+            <Picker.Item label="Laser Flip" value="Laser Flip" />
+            <Picker.Item label="Gazelle Flip" value="Gazelle Flip" />
+            <Picker.Item label="Blunt Slide" value="Blunt Slide" />
+          </Picker>
         </Animatable.View>
 
         {/* Actions */}
@@ -186,7 +173,7 @@ export default function GosVersusScreen({ route, navigation }) {
               />
               <IconButton
                 iconName="x-circle"
-                buttonText="Aïe !"
+                buttonText="Ouille !"
                 onPress={() => handleTrickFailure("skater1")}
                 style={[styles.actionButton, styles.smallButton]}
               />
@@ -201,7 +188,7 @@ export default function GosVersusScreen({ route, navigation }) {
               />
               <IconButton
                 iconName="x-circle"
-                buttonText="Aïe !"
+                buttonText="Ouille !"
                 onPress={() => handleTrickFailure("skater2")}
                 style={[styles.actionButton, styles.smallButton]}
               />
@@ -225,14 +212,11 @@ export default function GosVersusScreen({ route, navigation }) {
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
-              {/* Confettis */}
               <ConfettiCannon
                 count={80}
                 origin={{ x: 150, y: 0 }}
                 fadeOut={true}
               />
-
-              {/* Trophée animé */}
               <Animatable.Image
                 animation="bounceIn"
                 duration={1500}
@@ -240,7 +224,6 @@ export default function GosVersusScreen({ route, navigation }) {
                 source={require("../assets/trophy.png")}
                 style={styles.modalImage}
               />
-
               <Text style={styles.modalText}>Game over !</Text>
               <Text style={styles.modalText}>
                 {skater1Score > skater2Score
@@ -366,9 +349,25 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 10,
   },
-  nextTrickButton: {
-    marginTop: 10,
-    alignSelf: "center",
+  picker: {
+    color: "#FFF",
+    width: 200,
+    height: 60,
+  },
+  trickCard: {
+    backgroundColor: "rgba(172, 100, 6, 0.23)",
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: "#ff6f00",
+    shadowColor: "#ff6f00",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.6,
+    shadowRadius: 6,
+    elevation: 6,
+    alignItems: "center",
+    marginBottom: 20,
+    minWidth: 250,
   },
   actionsContainer: {
     width: "100%",
@@ -398,21 +397,6 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginTop: 12,
-  },
-  trickCard: {
-    backgroundColor: "rgba(172, 100, 6, 0.23)",
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: "#ff6f00",
-    shadowColor: "#ff6f00",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.6,
-    shadowRadius: 6,
-    elevation: 6,
-    alignItems: "center",
-    marginBottom: 20,
-    minWidth: 250,
   },
   modalOverlay: {
     flex: 1,
