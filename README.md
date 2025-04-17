@@ -19,3 +19,20 @@ Ah oui j'ai aussi installé les librairies necessaire pour la la camera, la navi
 Librairie pour la conversion de vidéo : https://www.npmjs.com/package/@config-plugins/ffmpeg-kit-react-native
 (On va essayer d'éviter de stocker des videos de 18GB) /!\ ne marche pas sur expo GO à implementer sur les .apk/.app 
 
+Thomas : Création des screens avec les liens entres eux + la stab navigator. Mise en place de la carte avec la géoloc. Du game of Skate. des Settings. des tricks
+
+ce que j'ai installer :
+-yarn add @react-native-picker/picker
+c'est pour un menu déroulant dans le game of skate
+-yarn add react-native-confetti-cannon
+c'est pour les confettis quand il y victoire/défaite (trop rigolo ! )
+-yarn add react-native-animatable
+pour des petites animations sympas.
+-expo install @expo/vector-icons
+j'en ai besoin pour trouver un icone de "versus" cool.
+-yarn add @react-native-async-storage/async-storage
+à installer pour pouvoir sauvegarder sa progression dans les tricks même après le redémarrage de l'appli
+-npm install @react-native-picker/picker
+pour les menus déroulants
+-expo install expo-linear-gradient
+pour les couleurs dégrader sur les boutons
