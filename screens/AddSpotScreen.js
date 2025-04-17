@@ -46,10 +46,17 @@ export default function AddSpotScreen({ navigation }) {
   };
 
   // Fonction pour enregistrer le spot
-  const saveSpot = () => {
+  const saveSpot = async () => {
     // Ajouter une vérif que spotCategory n'est pas vide et qu'au moins 1 photo a été prise
 
-    createSpot(user.token, { spotName, spotLat, spotLon, spotCategory });
+    const spotResponse = await createSpot(
+      user.token,
+      spotName,
+      spotLat,
+      spotLon,
+      spotCategory
+    );
+    console.log(spotResponse);
 
     // Ajouter en BDD les photos prises (pas dans la même route que createSpot)
 
@@ -190,7 +197,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     marginTop: 75,
   },
-  inputContainer:{
+  inputContainer: {
     width: "100%",
     textAlign: "center",
     backgroundColor: "orange",
