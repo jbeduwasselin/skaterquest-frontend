@@ -10,6 +10,7 @@ import LoginScreen from "./screens/LoginScreen";
 import HomeScreen from "./screens/HomeScreen";
 import GosPlayScreen from "./screens/GosPlayScreen";
 import GosVersusScreen from "./screens/GosVersusScreen";
+import GosVersusScreenBis from "./screens/GosVersusScreenBis";
 import MapScreen from "./screens/MapScreen";
 import FriendScreen from "./screens/FriendScreen";
 import CrewScreen from "./screens/CrewScreen";
@@ -80,7 +81,7 @@ const TabNavigator = () => {
               iconName = "home";
               break;
             case "GoS":
-              iconName = "crosshair";
+              iconName = "target";
               break;
             case "Spots":
               iconName = "map";
@@ -123,6 +124,7 @@ export default function App() {
           <Stack.Screen name="AddSpotScreen" component={AddSpotScreen} />
           <Stack.Screen name="SpotScreen" component={SpotScreen} />
           <Stack.Screen name="GosVersusScreen" component={GosVersusScreen} />
+          <Stack.Screen name="GosVersusScreenBis" component={GosVersusScreenBis} />
         </Stack.Navigator>
       </NavigationContainer>
       {/* </PersistGate> */}

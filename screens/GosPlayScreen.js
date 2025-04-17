@@ -1,80 +1,65 @@
-import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import BackgroundWrapper from "../components/background";
-import { FontAwesome5 } from "@expo/vector-icons";
 import IconButton from "../components/IconButton";
-import { useSelector } from "react-redux";
 import * as Animatable from "react-native-animatable";
 
-export default function GosPlayScreen({ navigation, route }) {
-  const user = useSelector((state) => state.user.value);
+export default function GosPlayScreen({ navigation }) {
+  const [modalVisible, setModalVisible] = useState(true);
+  const [skater1, setSkater1] = useState("");
+  const [skater2, setSkater2] = useState("");
 
-  // Joueur externe fictif
-  const externalUser = {
-    name: "Ami Externe",
-    avatar: "https://example.com/external-user-avatar.jpg",
-    email: "external@example.com",
-    age: 28,
+  // Fonction pour démarrer le jeu
+  const startGame = () => {
+    if (skater1 && skater2) {
+      setModalVisible(false);
+    }
   };
 
   return (
     <BackgroundWrapper>
       <View style={styles.container}>
-        <IconButton
-          iconName="play"
-          buttonText="Play"
-          onPress={() => navigation.navigate("GosVersusScreen")}
-          style={styles.playButton}
-        />
+        {/* MODAL DE CONFIGURATION */}
+        <Modal animationType="slide" transparent={true} visible={modalVisible}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Entrez les SkaterTags !</Text>
 
-        {/* Utilisation d'animations pour les profils */}
-        <View style={styles.profileContainer}>
-          <Animatable.View
-            animation="fadeInLeft"
-            duration={1000}
-            style={styles.profile}
-          >
-            <Image
-              source={
-                user.avatar
-                  ? { uri: user.avatar }
-                  : require("../assets/LOGO TEMPORAIRE.png")
-              }
-              style={styles.avatar}
-            />
-            <Text style={styles.name}>
-              {user.name ? user.name : "Utilisateur"}
-            </Text>
-          </Animatable.View>
+              <TextInput
+                placeholder="SkaterTag Joueur 1"
+                placeholderTextColor="#aaa"
+                style={styles.input}
+                onChangeText={setSkater1}
+                value={skater1}
+                maxLength={8}
+              />
+              <TextInput
+                placeholder="SkaterTag Joueur 2"
+                placeholderTextColor="#aaa"
+                style={styles.input}
+                onChangeText={setSkater2}
+                value={skater2}
+                maxLength={8}
+              />
 
-          {/* Icône VERSUS entre les avatars */}
-          <Animatable.View
-            animation="zoomIn"
-            duration={800}
-            style={styles.versusIconContainer}>
-            <View style={styles.iconWrapper}>
-              <FontAwesome5 name="battle-net" size={60} color="#FF650C" />
+              <TouchableOpacity
+                style={styles.validateButton}
+                onPress={startGame}
+              >
+                <Text style={styles.validateText}>Valider</Text>
+              </TouchableOpacity>
             </View>
-          </Animatable.View>
+          </View>
+        </Modal>
 
-          <Animatable.View
-            animation="fadeInRight"
-            duration={1000}
-            style={styles.profile}
-          >
-            <Image
-              source={
-                externalUser.avatar
-                  ? { uri: externalUser.avatar }
-                  : require("../assets/LOGO TEMPORAIRE.png")
-              }
-              style={styles.avatar}
-            />
-            <Text style={styles.name}>{externalUser.name}</Text>
-          </Animatable.View>
-        </View>
-
-        {/* Déplacer GAME OF SKATE sous le bouton Play et ajouter plus d'espace */}
+        {/* TITRE */}
         <Animatable.View
           animation="fadeInDown"
           duration={1200}
@@ -83,25 +68,75 @@ export default function GosPlayScreen({ navigation, route }) {
           <Text style={styles.gameTitle}>GAME OF SKATE</Text>
         </Animatable.View>
 
-        {/* Historique du jeu avec animation et plus d'espace entre le titre et l'historique */}
+        {/* INFOS SKATERS */}
+        <View style={styles.profileContainer}>
+          <Animatable.View
+            animation="fadeInLeft"
+            duration={1000}
+            style={styles.profile}
+          >
+            <Text style={styles.name}>{skater1}</Text>
+          </Animatable.View>
+
+          <Animatable.View
+            animation="zoomIn"
+            duration={800}
+            style={styles.versusIconContainer}
+          >
+            <Text style={styles.versus}>VS</Text>
+          </Animatable.View>
+
+          <Animatable.View
+            animation="fadeInRight"
+            duration={1000}
+            style={styles.profile}
+          >
+            <Text style={styles.name}>{skater2}</Text>
+          </Animatable.View>
+        </View>
+
+        {/* BOUTONS POUR DÉMARRER LE JEU */}
         <Animatable.View
           animation="zoomIn"
           duration={1200}
-          style={styles.historyCard}
+          style={styles.buttonContainer}
         >
-          <Text style={styles.sectionTitle}>Game History</Text>
+          {/* Bouton "Tricks aléatoires" */}
+          <IconButton
+            iconName="shuffle"
+            buttonText="Tricks aléatoires"
+            onPress={() =>
+              navigation.navigate("GosVersusScreen", {
+                skater1,
+                skater2,
+                gameMode: "Random",
+              })
+            }
+            style={styles.gameButton}
+          />
 
-          <View style={styles.historyContainer}>
-            {/* Affichage des statistiques */}
-            <View style={styles.historyRow}>
-              <Text style={styles.trickText}>Total Matches: 0</Text>
-            </View>
-            <View style={styles.historyRow}>
-              <Text style={styles.trickText}>Evan Wins: 0</Text>
-              <Text style={styles.trickText}>Tyler Wins: 0</Text>
-            </View>
-          </View>
+          {/* Bouton "Choix des tricks" */}
+          <IconButton
+            iconName="list"
+            buttonText="Choix des tricks"
+            onPress={() =>
+              navigation.navigate("GosVersusScreenBis", {
+                skater1,
+                skater2,
+                gameMode: "Choix",
+              })
+            }
+            style={styles.gameButton}
+          />
         </Animatable.View>
+
+        {/* Nouveau bouton "Joueurs" */}
+        <IconButton
+          iconName="repeat"
+          buttonText="Joueurs"
+          onPress={() => setModalVisible(true)}
+          style={styles.reconfigButton}
+        />
       </View>
     </BackgroundWrapper>
   );
@@ -112,11 +147,10 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     alignItems: "center",
-    justifyContent: "center", // Centrage vertical
+    justifyContent: "center",
   },
   gameTitleContainer: {
-    marginTop: 30,
-    marginBottom: 40, // Augmentation de l'espace entre le titre et l'historique
+    marginBottom: 30,
   },
   gameTitle: {
     fontSize: 60,
@@ -130,85 +164,79 @@ const styles = StyleSheet.create({
     letterSpacing: 3,
     transform: [{ scale: 1.1 }],
   },
-  playButton: {
-    marginTop: 40,
-    marginBottom: 30,
-  },
   profileContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
     width: "100%",
     marginBottom: 20,
+    alignItems: "center",
   },
   profile: {
     alignItems: "center",
   },
-  avatar: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    marginBottom: 6,
-    borderWidth: 2,
-    borderColor: "#fff",
-  },
   name: {
     color: "#fff",
     fontWeight: "700",
-    fontSize: 16,
+    fontSize: 25,
     textTransform: "uppercase",
+    textShadowColor: "#000",
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 5,
   },
   versusIconContainer: {
     justifyContent: "center",
     alignItems: "center",
     marginHorizontal: 10,
   },
-  historyCard: {
-    width: "100%",
-    backgroundColor: "rgba(172, 100, 6, 0.23)", // Fond transparent
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: "#ff6f00",
-    shadowColor: "#ff6f00",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.6,
-    shadowRadius: 6,
-    elevation: 6,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: "900",
-    color: "#fff",
-    textTransform: "uppercase",
-    marginBottom: 16,
-    fontFamily: "sans-serif-condensed",
-    textShadowColor: "#FF650C",
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 4,
-  },
-  historyContainer: {
-    width: "100%",
-  },
-  historyRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#666",
-  },
-  trickText: {
-    flex: 1,
-    fontSize: 18,
+  versus: {
+    fontSize: 36,
+    color: "#FF650C",
     fontWeight: "bold",
-    color: "#fff",
   },
-  iconWrapper: {
-    shadowColor: "#FFF",
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.6,
-    shadowRadius: 4,
-    elevation: 6, 
-  }
-  
-  
+  buttonContainer: {
+    marginTop: 30,
+  },
+  gameButton: {
+    marginBottom: 20,
+    width: 250,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.8)",
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: "#1f1f1f",
+    padding: 20,
+    borderRadius: 16,
+  },
+  modalTitle: {
+    fontSize: 24,
+    color: "#fff",
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  input: {
+    backgroundColor: "#333",
+    color: "#fff",
+    padding: 12,
+    borderRadius: 10,
+    marginBottom: 15,
+  },
+  validateButton: {
+    backgroundColor: "#FF650C",
+    padding: 12,
+    borderRadius: 10,
+  },
+  validateText: {
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  reconfigButton: {
+    marginTop: 50,
+    backgroundColor: "#444",
+  },
 });
