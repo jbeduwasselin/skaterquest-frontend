@@ -195,38 +195,6 @@ export default function SpotScreen({ navigation, route }) {
     }
   };
 
-  // Fonction pour supprimer une video
-  const deleteVideo = (indexToDelete) => {
-    setVideos((prevVideos) =>
-      prevVideos.filter((_, index) => index !== indexToDelete)
-    );
-  };
-
-  const handleDeleteVideo = async (videoID, index) => {
-    try {
-      const response = await fetch(`http://<TON_BACKEND>/video/${videoID}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userData: { _id: "ID_UTILISATEUR" }, // à récupérer dynamiquement si besoin
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.result) {
-        deleteVideo(index); // Supprime de l'affichage local
-      } else {
-        alert("Erreur suppression : " + data.reason);
-      }
-    } catch (error) {
-      console.error("Erreur delete", error);
-    }
-  };
-
   //useEffect(/* montage du composant : lancer route getSpotInfo() */);
 
   return (

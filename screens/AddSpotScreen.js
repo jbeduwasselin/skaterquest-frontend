@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateSpot } from "../reducers/spot";
 import { CameraView, Camera } from "expo-camera";
 import { useIsFocused } from "@react-navigation/native";
+import { createSpot } from "../lib/request";
 
 export default function AddSpotScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -22,7 +23,10 @@ export default function AddSpotScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(false);
   const cameraRef = useRef(null); // Référence du composant CameraView afin de pouvoir prendre une photo
 
-  const user = useSelector((state) => state.user.value); // On récupère depuis le store les infos de l'utilisateur
+  // Récupération des infos depuis le store
+  const user = useSelector((state) => state.user.value);
+  const spotLat = useSelector((state) => state.spot.value.latitude);
+  const spotLon = useSelector((state) => state.spot.value.longitude);
 
   const [spotName, setSpotName] = useState(""); // État pour enregistrer le nom donné au spot par l'utilisateur
   const [spotCategory, setSpotCategory] = useState(""); // État pour enregistrer la catégorie du spot choisie par l'utilisateur
@@ -42,11 +46,26 @@ export default function AddSpotScreen({ navigation }) {
   };
 
   // Fonction pour enregistrer le spot
-  const saveSpot = () => {
-    // Lancer la route qui enregistre le spot, en vérifiant que spotCategory n'est pas vide et que la photo a été prise.
-    // Envoyer les infos de localisation enregistrées dans le store depuis MapScreen, ainsi que les infos de spotCategory et la photo
+  const saveSpot = async () => {
+    // Ajouter une vérif que spotCategory n'est pas vide et qu'au moins 1 photo a été prise
 
-    //createSpot(user.token, { spotName, /*lon, lat,*/ spotCategory }); //et le creator ??
+    const spotResponse = await createSpot(
+      user.token,
+      spotName,
+      spotLat,
+      spotLon,
+      spotCategory
+    );
+    console.log(spotResponse);
+     /*
+        - result : true => ok tout vas bien
+        - result : false :
+            - erreur utilatsateur => blcké ici
+            - {fallback : spotID} => renvoyer l'utilisateur vers l'écran
+            du spotID 
+     */
+
+    // Ajouter en BDD les photos prises (pas dans la même route que createSpot)
 
     navigation.navigate("SpotScreen");
   };
@@ -103,7 +122,7 @@ export default function AddSpotScreen({ navigation }) {
         </View>
 
         <View style={styles.cameraContainer}>
-          <Text style={styles.title}>Prends une photo du spot !</Text>
+          <Text style={styles.title}>Prends des photos du spot !</Text>
 
           {!hasPermission || !isFocused ? (
             <View>
@@ -185,7 +204,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     marginTop: 75,
   },
-  inputContainer:{
+  inputContainer: {
     width: "100%",
     textAlign: "center",
     backgroundColor: "orange",
