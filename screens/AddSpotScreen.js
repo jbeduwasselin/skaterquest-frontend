@@ -46,7 +46,7 @@ export default function AddSpotScreen({ navigation }) {
     // Lancer la route qui enregistre le spot, en vérifiant que spotCategory n'est pas vide et que la photo a été prise.
     // Envoyer les infos de localisation enregistrées dans le store depuis MapScreen, ainsi que les infos de spotCategory et la photo
 
-    createSpot(user.token, { spotName, /*lon, lat,*/ spotCategory }); //et le creator ??
+    //createSpot(user.token, { spotName, /*lon, lat,*/ spotCategory }); //et le creator ??
 
     navigation.navigate("SpotScreen");
   };
