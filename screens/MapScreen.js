@@ -5,8 +5,9 @@ import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import IconButton from "../components/IconButton"; // ✅ Import du bouton personnalisé
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useDispatch } from 'react-redux';
-import { updateSpot } from '../reducers/spot';
+import { useDispatch, useSelector } from "react-redux";
+import { updateSpot } from "../reducers/spot";
+import { getOwnUserInfo, getNearestSpot } from "../lib/request";
 
 
 export default function MapScreen({ navigation }) {
@@ -14,7 +15,15 @@ export default function MapScreen({ navigation }) {
 
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const { token } = useSelector((state) => state.user.value);
+  useEffect(() => {
+    getOwnUserInfo(token).then(({ result, data }) => {
+      result && setUserData(data);
+    });
+  }, []);
 
+  // Hook d'effet pour vérifier la permission de localisation au montage du screen
   useEffect(() => {
     const getLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -28,6 +37,9 @@ export default function MapScreen({ navigation }) {
     };
 
     getLocation();
+
+    // Récupération des spots en BDD
+    //getNearestSpot(token, location.longitude, location.latitude); // mis en commentaire car cause problème (longitude === null)
   }, []);
 
   let text = "Chargement de la carte...";
