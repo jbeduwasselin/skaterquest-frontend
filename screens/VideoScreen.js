@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,11 +9,13 @@ import {
 } from "react-native";
 import BackgroundWrapper from "../components/background";
 import Icon from "react-native-vector-icons/Feather";
+import { useSelector } from "react-redux";
+import { getOwnUserInfo, getUserInfo } from "../lib/request";
 
 // fausse liste en attendant les vraies vidéos
 const fakeVideos = [
   {
-    id: "1",
+    _id: "1",
     title: "360 Flip au park",
     thumbnail: require("../assets/Lennie Skate.jpeg"),
     votes: 23,
@@ -21,7 +23,7 @@ const fakeVideos = [
     spot: "Skatepark Btwin village",
   },
   {
-    id: "2",
+    _id: "2",
     title: "Kickflip sur 5 marches",
     thumbnail: require("../assets/Lennie Skate.jpeg"),
     votes: 41,
@@ -29,7 +31,7 @@ const fakeVideos = [
     spot: "Skatepark Btwin village",
   },
   {
-    id: "3",
+    _id: "3",
     title: "Kickflip sur 5 marches",
     thumbnail: require("../assets/Lennie Skate.jpeg"),
     votes: 52,
@@ -39,37 +41,56 @@ const fakeVideos = [
 ];
 
 export default function VideoScreen({ navigation }) {
-  const renderItem = ({ item }) => (
+  const [userData, setUserData] = useState(null);
+  const { token } = useSelector((state) => state.user.value);
+
+  useEffect(() => {
+    getOwnUserInfo(token).then(({ result, data }) => {
+      result && setUserData(data);
+    });
+  }, []);
+
+  console.log(userData?.videos[0]);
+  return (
+    <BackgroundWrapper>
+      <View style={styles.container}>
+        <Text style={styles.title}>Mes vidéos</Text>
+        <FlatList
+          data={userData?.videos}
+          renderItem={(data, id) => data && <VideoCard videoData={data.item} />}
+          keyExtractor={(item) => item._id}
+          contentContainerStyle={styles.list}
+        />
+      </View>
+    </BackgroundWrapper>
+  );
+}
+
+function VideoCard({ videoData }) {
+  console.log(Object.keys(videoData), videoData.totalVote);
+  function formatDate(creationDate) {
+    const date = new Date(creationDate);
+    return ` ${new Intl.DateTimeFormat("fr-FR", { weekday: "long" }).format(date)} ${date.getUTCDate()}/${date.getUTCMonth()}/${date.getFullYear()}`;
+  }
+
+  return (
     <TouchableOpacity style={styles.videoItem}>
       <View style={styles.thumbnailWrapper}>
-        <Image source={item.thumbnail} style={styles.thumbnail} />
+        <Image source={videoData.thumbnail} style={styles.thumbnail} />
         <View style={styles.playIconContainer}>
           <Icon name="play-circle" size={36} color="#fff" />
         </View>
       </View>
 
       <View style={styles.infoContainer}>
-        <Text style={styles.videoTitle}>{item.title}</Text>
-        <Text style={styles.infoText}>👍 {item.votes} votes</Text>
-        <Text style={styles.infoText}>📍 {item.spot}</Text>
-        <Text style={styles.infoText}>🕒 {item.date}</Text>
+        <Text style={styles.videoTitle}>{videoData.title}</Text>
+        <Text style={styles.infoText}>👍 {videoData.totalVote.length} votes</Text>
+        <Text style={styles.infoText}>📍 {videoData.spot?.name}</Text>
+        <Text style={styles.infoText}>
+          🕒 {formatDate(videoData.creationDate)}
+        </Text>
       </View>
     </TouchableOpacity>
-  );
-
-  return (
-    <BackgroundWrapper>
-      <View style={styles.container}>
-        <Text style={styles.title}>Mes vidéos</Text>
-
-        <FlatList
-          data={fakeVideos}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.list}
-        />
-      </View>
-    </BackgroundWrapper>
   );
 }
 
