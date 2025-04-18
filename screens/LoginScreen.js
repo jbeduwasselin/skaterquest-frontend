@@ -14,7 +14,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import { FontAwesome } from "@expo/vector-icons";
 import { signInRequest, signUpRequest } from "../lib/request";
-import IconButton from "../components/IconButton"; // ✅ Ajout de l'import
+import IconButton from "../components/IconButton";
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
