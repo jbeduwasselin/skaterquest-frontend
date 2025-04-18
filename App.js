@@ -15,7 +15,7 @@ import MapScreen from "./screens/MapScreen";
 import FriendScreen from "./screens/FriendScreen";
 import CrewScreen from "./screens/CrewScreen";
 import VideoScreen from "./screens/VideoScreen";
-import TricksScreen from "./screens/TricksScreen";
+import TricksScreen from "./screens/TricksScreenZB";
 import AppSettingsScreen from "./screens/AppSettingsScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import AddSpotScreen from "./screens/AddSpotScreen";
@@ -32,6 +32,7 @@ import { combineReducers } from "redux";
 
 import user from "./reducers/user";
 import spot from "./reducers/spot";
+import tricks from "./reducers/tricks";
 
 // Persist config
 // const persistConfig = {
@@ -52,6 +53,7 @@ import spot from "./reducers/spot";
 const store = configureStore({
   reducer: {
     user,
+    tricks,
     spot,
   },
 });
@@ -121,12 +123,18 @@ export default function App() {
           <Stack.Screen name="CrewScreen" component={CrewScreen} />
           <Stack.Screen name="VideoScreen" component={VideoScreen} />
           <Stack.Screen name="TricksScreen" component={TricksScreen} />
-          <Stack.Screen name="AppSettingsScreen" component={AppSettingsScreen} />
+          <Stack.Screen
+            name="AppSettingsScreen"
+            component={AppSettingsScreen}
+          />
           <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
           <Stack.Screen name="AddSpotScreen" component={AddSpotScreen} />
           <Stack.Screen name="SpotScreen" component={SpotScreen} />
           <Stack.Screen name="GosVersusScreen" component={GosVersusScreen} />
-          <Stack.Screen name="GosVersusScreenBis" component={GosVersusScreenBis} />
+          <Stack.Screen
+            name="GosVersusScreenBis"
+            component={GosVersusScreenBis}
+          />
         </Stack.Navigator>
       </NavigationContainer>
       {/* </PersistGate> */}
