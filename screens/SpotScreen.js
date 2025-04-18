@@ -131,34 +131,44 @@ export default function SpotScreen({ navigation, route }) {
 
   // Fonction pour prendre une vidéo
   const takeVideo = async () => {
+    // 1. Demande de permission pour accéder à la caméra
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
+    // 2. Si la permission est refusée, on affiche une alerte et on arrête la fonction
     if (!permissionResult.granted) {
       alert("L'autorisation d'accéder à la caméra est requise !");
       return;
     }
 
+    // 3. Lancement de la caméra pour enregistrer une vidéo
     const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-      videoMaxDuration: 60,
+      mediaTypes: ImagePicker.MediaTypeOptions.Videos, // On précise qu'on veut uniquement des vidéos
+      videoMaxDuration: 60, // Durée maximale de la vidéo (en secondes)
       quality:
         Platform.OS === "ios"
-          ? ImagePicker.UIImagePickerControllerQualityType.Medium
-          : 1,
+          ? ImagePicker.UIImagePickerControllerQualityType.Medium // Qualité moyenne sur iOS
+          : 1, // Pleine qualité sur Android
     });
 
+    // 4. Si l'utilisateur n'a pas annulé l'enregistrement
     if (!result.canceled) {
-      const videoAsset = result.assets[0];
+      const videoAsset = result.assets[0]; // On récupère la vidéo
 
+      // 5. Récupération du token, de l'ID utilisateur et de l'ID du spot depuis le stockage local et les paramètres de navigation
       const token = await AsyncStorage.getItem("userToken");
       const userId = await AsyncStorage.getItem("userId");
-      const spotId = route.params.spotId; // si passé depuis
+      const spotId = route.params.spotId;
+
+      // 6. Si l'un des éléments est manquant, on affiche une alerte et on arrête la fonction
       if (!token || !userId || !spotId) {
         alert("Token, ID utilisateur ou ID spot manquant !");
-        return; // On arrête la fonction si l'un de ces éléments est manquant
+        return;
       }
-      const trick = "ollie"; // ou depuis un champ UI
 
+      // 7. Le nom de la figure (trick) réalisée, ici en dur mais pourrait venir d'un input
+      const trick = "ollie";
+
+      // 8. Création d'un formulaire pour envoyer la vidéo et les données associées
       const formData = new FormData();
       formData.append("videoFile", {
         uri: videoAsset.uri,
@@ -170,26 +180,30 @@ export default function SpotScreen({ navigation, route }) {
       formData.append("userData", JSON.stringify({ _id: userId }));
 
       try {
+        // 9. Envoi de la vidéo et des infos au backend via une requête POST
         const response = await fetch(`http://192.168.1.100:3000/video`, {
           method: "POST",
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: "Bearer " + token,
+            Authorization: "Bearer " + token, // Authentification via token
           },
           body: formData,
         });
 
         const data = await response.json();
 
+        // 10. Si le backend renvoie un succès, on ajoute la vidéo à la liste locale
         if (data.result) {
           setVideos((prev) => [
             ...prev,
             { uri: data.data.url, _id: data.data._id },
           ]);
         } else {
+          // Sinon, on affiche un message d'erreur retourné par le serveur
           alert("Erreur upload: " + data.reason);
         }
       } catch (err) {
+        // 11. Gestion des erreurs lors de l'appel réseau
         console.error("Upload error", err);
       }
     }

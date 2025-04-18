@@ -3,7 +3,7 @@ import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import BackgroundWrapper from "../components/background";
 import IconButton from "../components/IconButton";
-import { useSelector } from "react-redux"; // Importation du hook useSelector
+import { useSelector } from "react-redux";
 
 export default function HomeScreen({ navigation }) {
   // Utilisation du hook useSelector pour obtenir l'avatar depuis Redux
