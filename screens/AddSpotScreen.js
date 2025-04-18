@@ -62,7 +62,16 @@ export default function AddSpotScreen({ navigation }) {
         - result : false :
             - erreur utilatsateur => blcké ici
             - {fallback : spotID} => renvoyer l'utilisateur vers l'écran
-            du spotID 
+            du spotID
+
+        navigation.navigate("MyScreen", {spotID : BLABLA})
+
+        export function MyScreen({route}){
+            route.params.spotID => BLABLA
+            useEffect(()=>{
+                vas chercher les info pour mon spotID
+                },[])
+        }
      */
 
     // Ajouter en BDD les photos prises (pas dans la même route que createSpot)
