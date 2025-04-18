@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateSpot } from "../reducers/spot";
 import { CameraView, Camera } from "expo-camera";
 import { useIsFocused } from "@react-navigation/native";
-import { createSpot } from "../lib/request";
+import { getOwnUserInfo, createSpot, addPictureToSpot } from "../lib/request";
 
 export default function AddSpotScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -24,12 +24,13 @@ export default function AddSpotScreen({ navigation }) {
   const cameraRef = useRef(null); // Référence du composant CameraView afin de pouvoir prendre une photo
 
   // Récupération des infos depuis le store
-  const user = useSelector((state) => state.user.value);
   const spotLat = useSelector((state) => state.spot.value.latitude);
   const spotLon = useSelector((state) => state.spot.value.longitude);
+  const { token } = useSelector((state) => state.user.value);
 
   const [spotName, setSpotName] = useState(""); // État pour enregistrer le nom donné au spot par l'utilisateur
   const [spotCategory, setSpotCategory] = useState(""); // État pour enregistrer la catégorie du spot choisie par l'utilisateur
+  const [photosSpot, setPhotosSpot] = useState([]); // État pour enregistrer les photos du spot prises par l'utilisateur
 
   // Hook d'effet pour vérifier la permission de la caméra
   useEffect(() => {
@@ -43,30 +44,49 @@ export default function AddSpotScreen({ navigation }) {
   const takePicture = async () => {
     const photo = await cameraRef.current?.takePictureAsync({ quality: 0.3 });
     photo && console.log("Taken photo :", photo);
+    photo && setPhotosSpot(...photosSpot, photo); // Ajout de la photo dans l'état photoSpot
   };
 
   // Fonction pour enregistrer le spot
   const saveSpot = async () => {
-    // Ajouter une vérif que spotCategory n'est pas vide et qu'au moins 1 photo a été prise
+    // On vérifie que les infos sont complètes
+    if (!spotName || !spotCategory || !photosSpot) {
+      // faudrait afficher un message d'erreur ou entourer en rouge le champ manquant
+      return; // On interrompt la fonction s'il n'y a pas de nom, de catégorie et/ou de photo pour enregistrer le spot
+    }
 
+    // On crée le spot en BDD
     const spotResponse = await createSpot(
-      user.token,
+      token,
       spotName,
       spotLat,
       spotLon,
       spotCategory
     );
-    console.log(spotResponse);
-     /*
-        - result : true => ok tout vas bien
+    console.log("spotResponse :", spotResponse);
+
+    // On enregistre les infos du spot dans le store (mais finalement je pense que c'est inutile, confirmer ça et le cas échéant supprimer ce reducer et les dispatch)
+    dispatch(updateSpot(spotResponse));
+
+    console.log(photosSpot);
+    // On ajoute dans la BDD les photos prises
+    for (photoSpot of photosSpot) {
+      await addPictureToSpot(
+        token,
+        photoSpot.uri,
+        spotResponse._id,
+      );
+    }
+
+    // On gère les éventuelles erreurs de réponse
+      /* notes Baptiste :
+        - result : true => ok tout va bien
         - result : false :
-            - erreur utilatsateur => blcké ici
-            - {fallback : spotID} => renvoyer l'utilisateur vers l'écran
-            du spotID 
-     */
+          - erreur utilisateur => blocké ici
+          - {fallback : spotID} => renvoyer l'utilisateur vers l'écran du spotID 
+      */
 
-    // Ajouter en BDD les photos prises (pas dans la même route que createSpot)
-
+    // On redirige l'utilisateur vers l'écran du spot ajouté
     navigation.navigate("SpotScreen");
   };
 
