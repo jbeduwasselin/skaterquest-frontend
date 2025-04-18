@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,67 +9,118 @@ import {
 } from "react-native";
 import BackgroundWrapper from "../components/background";
 import Icon from "react-native-vector-icons/Feather";
+import { useSelector } from "react-redux";
+import { getOwnUserInfo } from "../lib/request";
+import VideoPlayer from "../components/VideoPlayer";
+import { useBackHandler } from "@react-native-community/hooks";
 
-// fausse liste en attendant les vraies vidéos
-const fakeVideos = [
-  {
-    id: "1",
-    title: "360 Flip au park",
-    thumbnail: require("../assets/Lennie Skate.jpeg"),
-    votes: 23,
-    date: "2025-04-10",
-    spot: "Skatepark Btwin village",
-  },
-  {
-    id: "2",
-    title: "Kickflip sur 5 marches",
-    thumbnail: require("../assets/Lennie Skate.jpeg"),
-    votes: 41,
-    date: "2025-08-15",
-    spot: "Skatepark Btwin village",
-  },
-  {
-    id: "3",
-    title: "Kickflip sur 5 marches",
-    thumbnail: require("../assets/Lennie Skate.jpeg"),
-    votes: 52,
-    date: "2025-02-22",
-    spot: "Skatepark Btwin village",
-  },
-];
+/*
+Ce screen est un bon exemple de comment on peut gérer le video player.
+
+
+  const [videoPlaying, setVideoPlaying] = useState(null);
+
+  un state qui contien l'url de la video a jouer
+
+    useBackHandler(() => {
+    if (videoPlaying) {
+      setVideoPlaying(null);
+      return true;
+    }
+    return false;
+  });
+
+  Un hook pour faire en sorte que le backbutton ferme la vidéo
+
+   {videoPlaying ? (
+          <VideoPlayer
+            source={videoPlaying}
+            onClose={() => setVideoPlaying(null)}
+          />
+        ) : ( ..... )
+
+    un petit check, si la videoPlaying est true (contient une url) on charge
+    le composant videoPlayer
+    Sinon on charge le screen normal.
+*/
 
 export default function VideoScreen({ navigation }) {
-  const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.videoItem}>
+  const [userData, setUserData] = useState(null);
+  const [videoPlaying, setVideoPlaying] = useState(null);
+  const { token } = useSelector((state) => state.user.value);
+
+  useEffect(() => {
+    getOwnUserInfo(token).then(({ result, data }) => {
+      result && setUserData(data);
+    });
+  }, []);
+
+  useBackHandler(() => {
+    if (videoPlaying) {
+      setVideoPlaying(null);
+      return true;
+    }
+    return false;
+  });
+
+  return (
+    <BackgroundWrapper>
+      <View style={styles.container}>
+        {videoPlaying ? (
+          <VideoPlayer
+            source={videoPlaying}
+            onClose={() => setVideoPlaying(null)}
+          />
+        ) : (
+          <>
+            <Text style={styles.title}>Mes vidéos</Text>
+            <FlatList
+              data={userData?.videos}
+              renderItem={({ item }) =>
+                item && (
+                  <VideoCard
+                    videoData={item}
+                    onPress={() => {
+                      setVideoPlaying(item.url);
+                    }}
+                  />
+                )
+              }
+              keyExtractor={(item) => item._id}
+              contentContainerStyle={styles.list}
+            />
+          </>
+        )}
+      </View>
+    </BackgroundWrapper>
+  );
+}
+
+function VideoCard({ videoData, onPress }) {
+  function formatDate(creationDate) {
+    const date = new Date(creationDate);
+    return ` ${new Intl.DateTimeFormat("fr-FR", { weekday: "long" }).format(date)} ${date.getUTCDate()}/${date.getUTCMonth()}/${date.getFullYear()}`;
+  }
+
+  return (
+    <TouchableOpacity style={styles.videoItem} onPress={onPress}>
       <View style={styles.thumbnailWrapper}>
-        <Image source={item.thumbnail} style={styles.thumbnail} />
+        <Image source={videoData.thumbnail} style={styles.thumbnail} />
         <View style={styles.playIconContainer}>
           <Icon name="play-circle" size={36} color="#fff" />
         </View>
       </View>
 
       <View style={styles.infoContainer}>
-        <Text style={styles.videoTitle}>{item.title}</Text>
-        <Text style={styles.infoText}>👍 {item.votes} votes</Text>
-        <Text style={styles.infoText}>📍 {item.spot}</Text>
-        <Text style={styles.infoText}>🕒 {item.date}</Text>
+        <Text style={styles.infoText}>
+          👍 {videoData.totalVote.length} votes
+        </Text>
+        <Text style={styles.infoText}>📍 {videoData.spot?.name}</Text>
+        <Text style={styles.infoText}>
+          🕒 {formatDate(videoData.creationDate)}
+        </Text>
       </View>
     </TouchableOpacity>
-  );
-
-  return (
-    <BackgroundWrapper>
-      <View style={styles.container}>
-        <Text style={styles.title}>Mes vidéos</Text>
-
-        <FlatList
-          data={fakeVideos}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.list}
-        />
-      </View>
-    </BackgroundWrapper>
   );
 }
 

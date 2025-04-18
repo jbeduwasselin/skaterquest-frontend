@@ -80,10 +80,20 @@ export default function AddSpotScreen({ navigation }) {
 
     // On gère les éventuelles erreurs de réponse
       /* notes Baptiste :
-        - result : true => ok tout va bien
+        - result : true => ok tout vas bien
         - result : false :
-          - erreur utilisateur => blocké ici
-          - {fallback : spotID} => renvoyer l'utilisateur vers l'écran du spotID 
+            - erreur utilatsateur => blcké ici
+            - {fallback : spotID} => renvoyer l'utilisateur vers l'écran
+            du spotID
+
+        navigation.navigate("MyScreen", {spotID : BLABLA})
+
+        export function MyScreen({route}){
+            route.params.spotID => BLABLA
+            useEffect(()=>{
+                vas chercher les info pour mon spotID
+                },[])
+        }
       */
 
     // On redirige l'utilisateur vers l'écran du spot ajouté
