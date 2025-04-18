@@ -11,13 +11,26 @@ import { login } from "../reducers/user";
 import { FontAwesome } from "@expo/vector-icons";
 import { signInRequest, signUpRequest } from "../lib/request";
 
+/*
+Blabla Baptiste :
+
+    POUR LE DEV :  j'ai mit l'utilisateur par default en dur dans le useState
+    (j'en avait marre de me connecter tout le temps)
+
+    PLUS TARD :  ajouter une méchanique qui checke si un token est déja présent
+    (via le store persistant, teste sa validité via extendTokenRequest et le met à jours)
+    puis skip le connextion screen si tout se passe bien
+                aussi il faudra faire en sorte que le chemin signUp => connection
+    fait naviguer vers le tuto screen 
+*/
+
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
 
   // Initialisation des états liés à la connexion
   const [showSignInModal, setShowSignInModal] = useState(false);
-  const [signInEmail, setSignInEmail] = useState("");
-  const [signInPassword, setSignInPassword] = useState("");
+  const [signInEmail, setSignInEmail] = useState("text0@test.test");
+  const [signInPassword, setSignInPassword] = useState("test");
 
   // Initialisation des états liés à l'inscription
   const [showSignUpModal, setShowSignUpModal] = useState(false);
