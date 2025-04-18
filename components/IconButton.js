@@ -21,7 +21,7 @@ const IconButton = ({
 }) => {
   return (
     <LinearGradient
-      colors={["#FFC1C6", "#FF650C"]} // Dégradé du bouton
+      colors={["#ce5c24", "#FF650C"]} // Dégradé du bouton
       style={[styles.gradientButton, style]} // Applique le style personnalisé
     >
       <TouchableOpacity style={styles.buttonContent} onPress={onPress}>
