@@ -2,39 +2,27 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
   TextInput,
+  ImageBackground,
+  Image,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import { FontAwesome } from "@expo/vector-icons";
 import { signInRequest, signUpRequest } from "../lib/request";
-import { ImageBackground } from "react-native";
-import { Image } from "react-native";
-
-/*
-Blabla Baptiste :
-
-    POUR LE DEV :  j'ai mit l'utilisateur par default en dur dans le useState
-    (j'en avait marre de me connecter tout le temps)
-
-    PLUS TARD :  ajouter une méchanique qui checke si un token est déja présent
-    (via le store persistant, teste sa validité via extendTokenRequest et le met à jours)
-    puis skip le connextion screen si tout se passe bien
-                aussi il faudra faire en sorte que le chemin signUp => connection
-    fait naviguer vers le tuto screen 
-*/
+import IconButton from "../components/IconButton";
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
 
-  // Initialisation des états liés à la connexion
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [signInEmail, setSignInEmail] = useState("text0@test.test");
   const [signInPassword, setSignInPassword] = useState("test");
 
-  // Initialisation des états liés à l'inscription
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [signUpUsername, setSignUpUsername] = useState("");
   const [signUpEmail, setSignUpEmail] = useState("");
@@ -42,7 +30,10 @@ export default function LoginScreen({ navigation }) {
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Fonction pour réinitialiser les états
+  const [showTuto1, setShowTuto1] = useState(false);
+  const [showTuto2, setShowTuto2] = useState(false);
+  const [showTuto3, setShowTuto3] = useState(false);
+
   const emptyStates = () => {
     setShowSignInModal(false);
     setErrorMessage("");
@@ -54,27 +45,26 @@ export default function LoginScreen({ navigation }) {
     setSignUpPassword("");
   };
 
-  // Fonction de connexion
   const handleSignIn = async () => {
-    const { result, data } = await signInRequest(signInEmail, signInPassword); // Requête vers le back gérée par le module signInRequest()
+    const { result, data } = await signInRequest(signInEmail, signInPassword);
     if (result) {
       console.log("Connection OK : ", data);
-      dispatch(login(data)); // Enregistrement des données de l'utilisateur dans le store Redux
-      navigation.navigate("TabNavigator"); // Redirection vers l'écran d'accueil
+      dispatch(login(data));
+      navigation.navigate("TabNavigator");
     } else {
       console.log("Connection error : ", data);
       setErrorMessage("Erreur !");
     }
   };
 
-  // Fonction d'inscription
   const handleSignUp = () => {
     signUpRequest(signUpUsername, signUpEmail, signUpPassword).then(
       ({ result, data }) => {
         if (result) {
           console.log("Inscription OK : ", data);
-          dispatch(login(data)); // Enregistrement des données de l'utilisateur dans le store Redux
-          navigation.navigate("TabNavigator"); // Redirection vers l'écran d'accueil
+          dispatch(login(data));
+          setShowSignUpModal(false);
+          setShowTuto1(true);
         } else {
           console.log("Inscription error : ", data);
           setErrorMessage("Erreur !");
@@ -83,36 +73,32 @@ export default function LoginScreen({ navigation }) {
     );
   };
 
-  // Fenêtre modale de connexion
   const signInModalContent = (
     <View style={styles.signInContainer}>
       <TouchableOpacity
-        onPress={() => {
-          emptyStates(); // Réinitialisation des états
-        }}
+        onPress={emptyStates}
         style={styles.closeButton}
         activeOpacity={0.8}
       >
         <FontAwesome name={"close"} color="black" size={16} />
       </TouchableOpacity>
       <Text style={styles.modalText}>Connexion</Text>
-
       <TextInput
         style={styles.inputs}
         placeholder="Ton adresse mail"
         placeholderTextColor="white"
-        onChangeText={(value) => setSignInEmail(value)}
+        onChangeText={setSignInEmail}
         value={signInEmail}
       />
       <TextInput
         style={styles.inputs}
         placeholder="Ton mot de passe"
         placeholderTextColor="white"
-        onChangeText={(value) => setSignInPassword(value)}
+        onChangeText={setSignInPassword}
         value={signInPassword}
       />
       <TouchableOpacity
-        onPress={() => handleSignIn()}
+        onPress={handleSignIn}
         style={styles.button}
         activeOpacity={0.8}
       >
@@ -122,43 +108,39 @@ export default function LoginScreen({ navigation }) {
     </View>
   );
 
-  // Fenêtre modale d'inscription
   const signUpModalContent = (
     <View style={styles.signUpContainer}>
       <TouchableOpacity
-        onPress={() => {
-          emptyStates(); // Réinitialisation des états
-        }}
+        onPress={emptyStates}
         style={styles.closeButton}
         activeOpacity={0.8}
       >
         <FontAwesome name={"close"} color="black" size={16} />
       </TouchableOpacity>
       <Text style={styles.modalText}>Inscription</Text>
-
       <TextInput
         style={styles.inputs}
-        placeholder="Ton pseudo"
+        placeholder="Ton SkateurTag"
         placeholderTextColor="white"
-        onChangeText={(value) => setSignUpUsername(value)}
+        onChangeText={setSignUpUsername}
         value={signUpUsername}
       />
       <TextInput
         style={styles.inputs}
         placeholder="Ton adresse mail"
         placeholderTextColor="white"
-        onChangeText={(value) => setSignUpEmail(value)}
+        onChangeText={setSignUpEmail}
         value={signUpEmail}
       />
       <TextInput
         style={styles.inputs}
         placeholder="Ton mot de passe"
         placeholderTextColor="white"
-        onChangeText={(value) => setSignUpPassword(value)}
+        onChangeText={setSignUpPassword}
         value={signUpPassword}
       />
       <TouchableOpacity
-        onPress={() => handleSignUp()}
+        onPress={handleSignUp}
         style={styles.button}
         activeOpacity={0.8}
       >
@@ -170,7 +152,7 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <ImageBackground
-      source={require("../assets/brique.jpg")} // remplace avec ton image
+      source={require("../assets/brique.jpg")}
       style={styles.background}
       resizeMode="cover"
     >
@@ -181,37 +163,130 @@ export default function LoginScreen({ navigation }) {
         />
 
         {!showSignInModal ? (
-          <TouchableOpacity
+          <IconButton
+            iconName="log-in"
+            buttonText="Connexion"
             onPress={() => {
               setShowSignUpModal(false);
               setShowSignInModal(true);
             }}
-            style={styles.button}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.textButton}>Connexion</Text>
-          </TouchableOpacity>
+            style={{ width: 200,marginTop: 20 }}
+          />
         ) : (
           signInModalContent
         )}
 
         {!showSignUpModal ? (
-          <TouchableOpacity
+          <IconButton
+            iconName="user-plus"
+            buttonText="T'es nouveau ? Créer un compte ici !"
             onPress={() => {
               setShowSignInModal(false);
               setShowSignUpModal(true);
             }}
-            style={styles.button}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.textButton}>
-              T'es nouveau ? Crée un compte ici !
-            </Text>
-          </TouchableOpacity>
+            style={{ width: 250,marginTop: 20 }}
+          />
         ) : (
           signUpModalContent
         )}
       </View>
+
+      {(showTuto1 || showTuto2 || showTuto3) && (
+        <View style={styles.overlayBackground}></View>
+      )}
+
+      {showTuto1 && (
+        <View style={styles.tutoModal}>
+          <Text style={styles.tutoTitle}>
+            Bienvenue sur l'app SkaterQuest ! 🛹
+          </Text>
+          <Text style={styles.tutoText}>
+            Ici, tu pourras suivre ta progression en skate grâce à un livre de
+            tricks, trouver des spots et défier tes potes sur un Game of Skate !
+          </Text>
+
+          <View style={styles.tutoButtons}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                setShowTuto1(false);
+                setShowTuto2(true);
+              }}
+            >
+              <Text style={styles.textButton}>Suivant</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.button, { backgroundColor: "grey" }]}
+              onPress={() => {
+                setShowTuto1(false);
+                setShowTuto2(false);
+                navigation.navigate("TabNavigator");
+              }}
+            >
+              <Text style={styles.textButton}>Passer</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {showTuto2 && (
+        <View style={styles.tutoModal}>
+          <Text style={styles.tutoTitle}>Un Game of Skate c'est quoi ?🤔</Text>
+          <Text style={styles.tutoText}>
+            Un skateur fait un trick, l'autre doit le reproduire : à chaque
+            échec, il gagne une lettre du mot SKATE jusqu'à être éliminé. 🛹🔥
+          </Text>
+
+          <View style={styles.tutoButtons}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                setShowTuto2(false);
+                setShowTuto3(true);
+              }}
+            >
+              <Text style={styles.textButton}>Suivant</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.button, { backgroundColor: "grey" }]}
+              onPress={() => {
+                setShowTuto1(false);
+                setShowTuto2(false);
+                setShowTuto3(false);
+                navigation.navigate("TabNavigator");
+              }}
+            >
+              <Text style={styles.textButton}>Passer</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {showTuto3 && (
+        <View style={styles.tutoModal}>
+          <Text style={styles.tutoTitle}>T'es prêt à rider ? 🛹😎</Text>
+          <Text style={styles.tutoText}>
+            Tu trouveras dans ton livre des tricks les tricks que tu maîtrises
+            et ceux que tu vas devoir apprendre pour atteindre le 100% !
+          </Text>
+          <Text style={styles.tutoTitle}>T'es chaud patate ? 🛹💪</Text>
+          <View style={styles.tutoButtons}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                setShowTuto1(false);
+                setShowTuto2(false);
+                setShowTuto3(false);
+                navigation.navigate("TabNavigator");
+              }}
+            >
+              <Text style={styles.textButton}>C'est parti ! 🤙🛹</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </ImageBackground>
   );
 }
@@ -225,13 +300,12 @@ const styles = StyleSheet.create({
     borderRadius: 1,
     paddingTop: 100,
   },
-  title: {},
   button: {
     alignItems: "center",
     padding: 12,
     width: "50%",
     marginTop: 40,
-    backgroundColor: "orange",
+    backgroundColor: "#FF650C",
     borderRadius: 10,
   },
   signUpContainer: {
@@ -257,8 +331,6 @@ const styles = StyleSheet.create({
   closeButton: {
     alignSelf: "flex-end",
     padding: 8,
-    /*backgroundColor: "orange",*/
-    /*borderRadius: "100%",*/
   },
   inputs: {
     borderBottomColor: "orange",
@@ -274,7 +346,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-
   overlay: {
     flex: 1,
     alignItems: "center",
@@ -289,5 +360,43 @@ const styles = StyleSheet.create({
   },
   modalText: {
     color: "white",
+  },
+  overlayBackground: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(51, 49, 49, 0.7)",
+    zIndex: 999,
+  },
+  tutoModal: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -180 }, { translateY: -150 }],
+    backgroundColor: "rgba(0,0,0,0.8)",
+    borderRadius: 10,
+    padding: 20,
+    alignItems: "center",
+    zIndex: 1000,
+    width: "90%",
+  },
+  tutoTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "white",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  tutoText: {
+    color: "white",
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  tutoButtons: {
+    flexDirection: "row",
+    gap: 10,
   },
 });
