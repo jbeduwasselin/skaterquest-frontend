@@ -152,7 +152,7 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <ImageBackground
-      source={require("../assets/brique.jpg")}
+      source={require("../assets/Autre fond.png")}
       style={styles.background}
       resizeMode="cover"
     >
