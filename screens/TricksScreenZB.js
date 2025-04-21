@@ -6,14 +6,13 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { categories, difficultyLevels, tricksData } from "../data/trickList";
 import { act, useState } from "react";
 import BackgroundWrapper from "../components/background";
-import { addToSet, removeFromSet } from "../lib/addToSet";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTrick } from "../reducers/tricks";
+import ProgressBar from "../components/ProgressBar";
 
 const initialSettings = Object.freeze({
   excludedDificulty: [],
@@ -61,6 +60,7 @@ export default function TricksScreen() {
   return (
     <BackgroundWrapper>
       <Text style={styles.screenTitle}>Livre de Tricks</Text>
+      <ProgressBar label={"Tricks Validé"} />
       <View style={styles.settingsContainer}>
         {categories.map((category, id) => (
           <FilterButton
@@ -110,14 +110,14 @@ function FilterButton({ text, color, onPress }) {
       style={{
         ...styles.filterButton,
         backgroundColor: color,
-        opacity: active ? 1 : 0.2,
+        opacity: active ? 0.2 : 1,
       }}
       onPress={() => {
         onPress(!active);
         setActive(!active);
       }}
     >
-      <Text>{text}</Text>
+      <Text style={styles.filterButtonText}>{text}</Text>
     </TouchableOpacity>
   );
 }
@@ -171,7 +171,13 @@ const styles = StyleSheet.create({
     width: "90%",
     margin: 5,
   },
-  filterButton: {},
+  filterButton: {
+    padding: 2,
+    borderRadius: 5,
+  },
+  filterButtonText: {
+    fontSize: 18,
+  },
   tricksList: {
     backgroundColor: "#A0A0A0A0",
     minWidth: "80%",

@@ -15,6 +15,8 @@ import BackgroundWrapper from "../components/background";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getSpotInfo } from "../lib/request";
+import { useSelector } from "react-redux";
 
 // Tableau temporaire pour tester
 const images = [
@@ -37,6 +39,18 @@ const VIDEO_HEIGHT = PHOTO_WIDTH * 0.75;
 const VIDEO_SPACING = 6;
 
 export default function SpotScreen({ navigation, route }) {
+  const [spotData, setSpotData] = useState(null);
+  const { token } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    getOwnUserInfo(token).then(({ result, data }) => {
+      result && setUserData(data);
+    });
+    getSpotInfo(token, spotId).then(({ result, data }) => {
+      result && setSpotData(data);
+    });
+  }, []);
+
   // On déclare un scrollX par gallerie à afficher. scrollX crée une valeur animée qui suit la position du scroll (X car horizontal)
   const scrollXPhotos = useRef(new Animated.Value(0)).current; // Pour le carrousel des photos
   const scrollXWeek = useRef(new Animated.Value(0)).current; // Pour le carrousel des vidéos postées cette semaine
@@ -155,7 +169,6 @@ export default function SpotScreen({ navigation, route }) {
       const videoAsset = result.assets[0]; // On récupère la vidéo
 
       // 5. Récupération du token, de l'ID utilisateur et de l'ID du spot depuis le stockage local et les paramètres de navigation
-      const token = await AsyncStorage.getItem("userToken");
       const userId = await AsyncStorage.getItem("userId");
       const spotId = route.params.spotId;
 
@@ -208,8 +221,6 @@ export default function SpotScreen({ navigation, route }) {
       }
     }
   };
-
-  //useEffect(/* montage du composant : lancer route getSpotInfo() */);
 
   return (
     <BackgroundWrapper>
