@@ -9,22 +9,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateSpot } from "../reducers/spot";
 import { getOwnUserInfo, getNearestSpot } from "../lib/request";
 
-
 export default function MapScreen({ navigation }) {
   const dispatch = useDispatch();
 
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [visibleSpots, setVisibleSpots] = useState(null);
   const { token } = useSelector((state) => state.user.value);
+  
+  let nearSpotsMarkers = [];
+
   useEffect(() => {
+    // Récupération du token
     getOwnUserInfo(token).then(({ result, data }) => {
       result && setUserData(data);
     });
-  }, []);
 
-  // Hook d'effet pour vérifier la permission de localisation au montage du screen
-  useEffect(() => {
+    // Vérification de la permission de localisation
     const getLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
@@ -37,10 +39,34 @@ export default function MapScreen({ navigation }) {
     };
 
     getLocation();
+  }, []);
+
+  // Hook d'effet pour l'affichage des spots proches (pas à l'initialisation du composant car il faut un petit temps pour récupérer les infos de location)
+  useEffect(() => {
+    console.log("location :", location);
 
     // Récupération des spots en BDD
-    //getNearestSpot(token, location.longitude, location.latitude); // mis en commentaire car cause problème (longitude === null)
-  }, []);
+    if (location) {
+      getNearestSpot(token, location.longitude, location.latitude).then(
+        ({ result, data }) => {
+          result && setVisibleSpots(data);
+        }
+      );
+    }
+
+    // Affichage des spots
+    if (visibleSpots) {
+      nearSpotsMarkers = visibleSpots.map((data, i) => {
+        return (
+          <Marker
+            key={i}
+            coordinate={{ latitude: data.latitude, longitude: data.longitude }}
+            title={data.name}
+          />
+        );
+      });
+    }
+  }, [location]); // Re-render du composant quand location a eu le temps de "charger"
 
   let text = "Chargement de la carte...";
   if (errorMsg) {
@@ -79,6 +105,16 @@ export default function MapScreen({ navigation }) {
               }}
               title="Vous êtes ici"
             />
+            <TouchableOpacity
+              onPress={() => {
+                console.log("Infos position :", location);
+                dispatch(updateSpot(/* mettre le spot clické dans l'état */));
+                navigation.navigate("SpotScreen");
+              }}
+              activeOpacity={0.8}
+            >
+              {nearSpotsMarkers}
+            </TouchableOpacity>
           </MapView>
         ) : (
           <Text style={styles.mapText}>{text}</Text>
