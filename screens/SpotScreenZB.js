@@ -22,26 +22,10 @@ export default function SpotScreen({ navigation, route }) {
   const [videoPlaying, setVideoPlaying] = useState(null);
   const [spotData, setSpotData] = useState(route.params.spotData);
 
-  const [thumbnails, setThumbnails] = useState([]);
-  async function loadThumbnails(videos) {
-    const uris = await Promise.all(
-      videos.map(async ({ url }) => {
-        try {
-          const uri = await VideoThumbnails.getThumbnailAsync(url);
-          return uri;
-        } catch (error) {
-          console.log("error", error);
-        }
-      })
-    );
-    setThumbnails(uris);
-  }
-
   useEffect(() => {
     getSpotInfo(token, spotData._id).then(({ result, data, reason }) => {
       console.log(result, reason, data);
       result && setSpotData(data);
-      result && loadThumbnails(data.videos);
     });
   }, []);
 
@@ -52,6 +36,7 @@ export default function SpotScreen({ navigation, route }) {
     }
     return false;
   });
+
   if (videoPlaying) {
     return (
       <VideoPlayer
@@ -77,14 +62,14 @@ export default function SpotScreen({ navigation, route }) {
       <Animated.FlatList
         horizontal
         pagingEnabled
-        data={thumbnails}
+        data={spotData.videos}
         renderItem={({ item, index }) => {
+          console.log(item);
           return (
             <VideoCard
-              videoData={spotData.videos[index]}
-              thumbnail={item.uri}
+              videoData={item}
               onPress={() => {
-                setVideoPlaying(spotData.videos[index].url);
+                setVideoPlaying(item.url);
               }}
             />
           );
@@ -97,16 +82,25 @@ export default function SpotScreen({ navigation, route }) {
   );
 }
 
-function VideoCard({ videoData, thumbnail, onPress }) {
+function VideoCard({ videoData, onPress }) {
   const { token, uID } = useSelector((state) => state.user.value);
+  const [thumbnail, setThumbnails] = useState(null);
   function formatDate(creationDate) {
     const date = new Date(creationDate);
     return ` ${new Intl.DateTimeFormat("fr-FR", { weekday: "long" }).format(date)} ${date.getUTCDate()}/${date.getUTCMonth()}/${date.getFullYear()}`;
   }
+  useEffect(() => {
+    (async function getThumbnail() {
+      VideoThumbnails.getThumbnailAsync(videoData.url).then(setThumbnails);
+    })();
+  }, []);
+  console.log(thumbnail);
   return (
     <Pressable style={styles.videoItem} onPress={onPress}>
       <View style={styles.thumbnailWrapper}>
-        <Image source={{ uri: thumbnail }} height={200} width={400} />
+        {thumbnail && (
+          <Image source={{ uri: thumbnail.uri }} height={200} width={400} />
+        )}
       </View>
       <View style={styles.infoContainer}>
         <Text>
@@ -129,7 +123,10 @@ function VideoCard({ videoData, thumbnail, onPress }) {
 }
 
 function LikeButton({ onLike, isLiked }) {
-  const [liked, setLiked] = useState(isLiked);
+  const [liked, setLiked] = useState(false);
+  useEffect(() => {
+    setLiked(isLiked);
+  }, []);
   return (
     <TouchableOpacity
       onPress={() => {
