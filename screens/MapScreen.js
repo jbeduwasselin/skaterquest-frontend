@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import BackgroundWrapper from "../components/background";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
-import IconButton from "../components/IconButton"; // ✅ Import du bouton personnalisé
+import IconButton from "../components/IconButton";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useDispatch, useSelector } from "react-redux";
 import { updateSpot } from "../reducers/spot";
