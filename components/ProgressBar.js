@@ -4,9 +4,7 @@ import { useSelector } from "react-redux";
 import { tricksData } from "../data/trickList";
 
 export default function ProgressBar({ label }) {
-  const progress = useSelector(
-    (state) => state.tricks.value.length / tricksData.length
-  );
+  const progress = useSelector((state) => state.tricks.value.length);
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
@@ -14,7 +12,9 @@ export default function ProgressBar({ label }) {
         <View
           style={[
             styles.barFill,
-            { width: `${Math.min(progress * 100, 100)}%` },
+            {
+              width: `${Math.min((progress / tricksData.length) * 100, 100)}%`,
+            },
           ]}
         />
       </View>

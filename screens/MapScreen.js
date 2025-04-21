@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
 import BackgroundWrapper from "../components/background";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
@@ -17,7 +23,7 @@ export default function MapScreen({ navigation }) {
   const [userData, setUserData] = useState(null);
   const [visibleSpots, setVisibleSpots] = useState(null);
   const { token } = useSelector((state) => state.user.value);
-  
+
   let nearSpotsMarkers = [];
 
   useEffect(() => {
@@ -67,7 +73,6 @@ export default function MapScreen({ navigation }) {
       });
     }
   }, [location]); // Re-render du composant quand location a eu le temps de "charger"
-
 
   let text = "Chargement de la carte...";
   if (errorMsg) {
@@ -149,8 +154,8 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   map: {
-    width: "100%",
-    height: "80%",
+    width: Dimensions.get("window").width * 0.95,
+    height: Dimensions.get("window").height * 0.6,
     marginBottom: 0,
   },
   buttonContainer: {

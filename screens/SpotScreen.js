@@ -15,6 +15,8 @@ import BackgroundWrapper from "../components/background";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getSpotInfo } from "../lib/request";
+import { useSelector } from "react-redux";
 
 // Tableau temporaire pour tester
 const images = [
@@ -37,6 +39,18 @@ const VIDEO_HEIGHT = PHOTO_WIDTH * 0.75;
 const VIDEO_SPACING = 6;
 
 export default function SpotScreen({ navigation, route }) {
+  const [spotData, setSpotData] = useState(null);
+  const { token } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    getOwnUserInfo(token).then(({ result, data }) => {
+      result && setUserData(data);
+    });
+    getSpotInfo(token, spotId).then(({ result, data }) => {
+      result && setSpotData(data);
+    });
+  }, []);
+
   // On déclare un scrollX par gallerie à afficher. scrollX crée une valeur animée qui suit la position du scroll (X car horizontal)
   const scrollXPhotos = useRef(new Animated.Value(0)).current; // Pour le carrousel des photos
   const scrollXWeek = useRef(new Animated.Value(0)).current; // Pour le carrousel des vidéos postées cette semaine
@@ -128,15 +142,6 @@ export default function SpotScreen({ navigation, route }) {
       }}
     />
   );
-
-  const { token } = useSelector((state) => state.user.value);
-
-  useEffect(() => {
-    getOwnUserInfo(token).then(({ result, data }) => {
-      result && setUserData(data);
-    });
-    getSpotInfo(token, spotId);
-  }, []);
 
   // Fonction pour prendre une vidéo
   const takeVideo = async () => {
