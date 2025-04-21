@@ -112,9 +112,7 @@ function VideoCard({ videoData, onPress }) {
       </View>
 
       <View style={styles.infoContainer}>
-        <Text style={styles.infoText}>
-          👍 {videoData.totalVote.length} votes
-        </Text>
+        <Text style={styles.infoText}>👍 {videoData.voteCount} votes</Text>
         <Text style={styles.infoText}>📍 {videoData.spot?.name}</Text>
         <Text style={styles.infoText}>
           🕒 {formatDate(videoData.creationDate)}

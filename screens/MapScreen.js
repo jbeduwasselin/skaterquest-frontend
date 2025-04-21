@@ -69,19 +69,20 @@ export default function MapScreen({ navigation }) {
     navigation.navigate("AddSpotScreen");
   };
 
-  const marker = visibleSpots?.map((data, i) => {
+  const marker = visibleSpots?.map((spotData, i) => {
     return (
       <Marker
         key={i}
         coordinate={{
-          longitude: data.location?.coordinates[0],
-          latitude: data.location?.coordinates[1],
+          longitude: spotData.location?.coordinates[0],
+          latitude: spotData.location?.coordinates[1],
         }}
-        title={data.name}
-        onPress={() => navigation.navigate("SpotScreen", { data })}
+        title={spotData.name}
+        onPress={() => navigation.navigate("SpotScreen", { spotData })}
       />
     );
   });
+  console.log(location)
   return (
     <BackgroundWrapper>
       <View style={styles.container}>

@@ -19,7 +19,8 @@ import TricksScreen from "./screens/TricksScreenZB";
 import AppSettingsScreen from "./screens/AppSettingsScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import AddSpotScreen from "./screens/AddSpotScreen";
-import SpotScreen from "./screens/SpotScreen";
+import SpotScreen from "./screens/SpotScreenZB";
+import AddPhotoScreen from "./screens/AddPhotoScreen";
 
 // Redux
 import { Provider } from "react-redux";
@@ -130,6 +131,7 @@ export default function App() {
           <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
           <Stack.Screen name="AddSpotScreen" component={AddSpotScreen} />
           <Stack.Screen name="SpotScreen" component={SpotScreen} />
+          <Stack.Screen name="AddPhotoScreen" component={AddPhotoScreen} />
           <Stack.Screen name="GosVersusScreen" component={GosVersusScreen} />
           <Stack.Screen
             name="GosVersusScreenBis"
