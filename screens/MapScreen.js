@@ -24,8 +24,6 @@ export default function MapScreen({ navigation }) {
   const [visibleSpots, setVisibleSpots] = useState(null);
   const { token } = useSelector((state) => state.user.value);
 
-  let nearSpotsMarkers = [];
-
   useEffect(() => {
     // Récupération du token
     getOwnUserInfo(token).then(({ result, data }) => {
@@ -49,8 +47,6 @@ export default function MapScreen({ navigation }) {
 
   // Hook d'effet pour l'affichage des spots proches (pas à l'initialisation du composant car il faut un petit temps pour récupérer les infos de location)
   useEffect(() => {
-    console.log("location :", location);
-
     // Récupération des spots en BDD
     if (location) {
       getNearestSpot(token, location.longitude, location.latitude).then(
@@ -58,19 +54,6 @@ export default function MapScreen({ navigation }) {
           result && setVisibleSpots(data);
         }
       );
-    }
-
-    // Affichage des spots
-    if (visibleSpots) {
-      nearSpotsMarkers = visibleSpots.map((data, i) => {
-        return (
-          <Marker
-            key={i}
-            coordinate={{ latitude: data.latitude, longitude: data.longitude }}
-            title={data.name}
-          />
-        );
-      });
     }
   }, [location]); // Re-render du composant quand location a eu le temps de "charger"
 
@@ -82,11 +65,23 @@ export default function MapScreen({ navigation }) {
   }
 
   const addSpot = () => {
-    console.log("Infos position :", location);
     dispatch(updateSpot(location)); // Enregistrement des coordonnées actuelles dans le store
     navigation.navigate("AddSpotScreen");
   };
 
+  const marker = visibleSpots?.map((data, i) => {
+    return (
+      <Marker
+        key={i}
+        coordinate={{
+          longitude: data.location?.coordinates[0],
+          latitude: data.location?.coordinates[1],
+        }}
+        title={data.name}
+        onPress={() => navigation.navigate("SpotScreen", { data })}
+      />
+    );
+  });
   return (
     <BackgroundWrapper>
       <View style={styles.container}>
@@ -104,23 +99,7 @@ export default function MapScreen({ navigation }) {
             showsUserLocation={true}
             showsMyLocationButton={true}
           >
-            <Marker
-              coordinate={{
-                latitude: location.latitude,
-                longitude: location.longitude,
-              }}
-              title="Vous êtes ici"
-            />
-            <TouchableOpacity
-              onPress={() => {
-                console.log("Infos position :", location);
-                dispatch(updateSpot(/* mettre le spot clické dans l'état */));
-                navigation.navigate("SpotScreen");
-              }}
-              activeOpacity={0.8}
-            >
-              {nearSpotsMarkers}
-            </TouchableOpacity>
+            {marker}
           </MapView>
         ) : (
           <Text style={styles.mapText}>{text}</Text>
