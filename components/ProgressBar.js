@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { tricksData } from "../data/trickList";

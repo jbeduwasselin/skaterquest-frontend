@@ -19,7 +19,7 @@ import TricksScreen from "./screens/TricksScreenZB";
 import AppSettingsScreen from "./screens/AppSettingsScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import AddSpotScreen from "./screens/AddSpotScreen";
-import SpotScreen from "./screens/SpotScreen";
+import SpotScreen from "./screens/SpotScreenZB";
 
 // Redux
 import { Provider } from "react-redux";
