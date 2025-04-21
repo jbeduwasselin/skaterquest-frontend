@@ -15,7 +15,7 @@ import BackgroundWrapper from "../components/background";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getSpotInfo } from "../lib/request";
+import { getOwnUserInfo, getSpotInfo } from "../lib/request";
 import { useSelector } from "react-redux";
 
 // Tableau temporaire pour tester
@@ -39,15 +39,12 @@ const VIDEO_HEIGHT = PHOTO_WIDTH * 0.75;
 const VIDEO_SPACING = 6;
 
 export default function SpotScreen({ navigation, route }) {
-  const [spotData, setSpotData] = useState(null);
   const { token } = useSelector((state) => state.user);
-
+  const { data } = route.params;
+  console.log(data);
   useEffect(() => {
     getOwnUserInfo(token).then(({ result, data }) => {
       result && setUserData(data);
-    });
-    getSpotInfo(token, spotId).then(({ result, data }) => {
-      result && setSpotData(data);
     });
   }, []);
 
