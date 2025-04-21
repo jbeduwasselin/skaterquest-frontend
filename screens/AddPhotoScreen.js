@@ -16,7 +16,7 @@ import { useIsFocused } from "@react-navigation/native";
 import { addPictureToSpot } from "../lib/request";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
-export default function AddPhotoScreen({ route }) {
+export default function AddPhotoScreen({ navigation, route }) {
   const isFocused = useIsFocused(); // La méthode useIsFocused() permet de ne pas afficher la caméra si l'écran n'est pas focus
   const [hasPermission, setHasPermission] = useState(false);
   const cameraRef = useRef(null); // Référence du composant CameraView afin de pouvoir prendre une photo
@@ -24,8 +24,7 @@ export default function AddPhotoScreen({ route }) {
   const [photosSpot, setPhotosSpot] = useState([]); // État pour enregistrer les photos du spot prises par l'utilisateur
 
   const { token } = useSelector((state) => state.user.value);
-  const {spotData} = route.params;
-
+  const { spotData } = route.params;
 
   // Hook d'effet pour vérifier la permission de la caméra
   useEffect(() => {
@@ -43,16 +42,17 @@ export default function AddPhotoScreen({ route }) {
   };
 
   // Fonction pour sauver en BDD les photos prises
-  const savePhotos = () => {
-
+  const savePhotos = async () => {
     if (photosSpot.length > 0) {
-      // console.log("Photos to send :", photosSpot);
-      // console.log("spotData :", spotData);
       for (let takenPhoto of photosSpot) {
-        addPictureToSpot(token, takenPhoto.uri, spotData._id);
+        const { result } = await addPictureToSpot(
+          token,
+          takenPhoto.uri,
+          spotData._id
+        );
       }
     }
-
+    navigation.goBack();
   };
 
   return (

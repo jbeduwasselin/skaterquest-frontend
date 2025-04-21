@@ -16,18 +16,19 @@ import { useBackHandler } from "@react-native-community/hooks";
 import * as VideoThumbnails from "expo-video-thumbnails";
 import VideoPlayer from "../components/VideoPlayer";
 import Icon from "react-native-vector-icons/Feather";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function SpotScreen({ navigation, route }) {
   const { token } = useSelector((state) => state.user.value);
   const [videoPlaying, setVideoPlaying] = useState(null);
   const [spotData, setSpotData] = useState(route.params.spotData);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     getSpotInfo(token, spotData._id).then(({ result, data, reason }) => {
-      console.log(result, reason, data);
       result && setSpotData(data);
     });
-  }, []);
+  }, [isFocused]);
 
   useBackHandler(() => {
     if (videoPlaying) {
@@ -45,7 +46,6 @@ export default function SpotScreen({ navigation, route }) {
       />
     );
   }
-  console.log(spotData);
   return (
     <BackgroundWrapper>
       <Text style={styles.title}>{spotData.name}</Text>
@@ -63,8 +63,7 @@ export default function SpotScreen({ navigation, route }) {
         horizontal
         pagingEnabled
         data={spotData.videos}
-        renderItem={({ item, index }) => {
-          console.log(item);
+        renderItem={({ item }) => {
           return (
             <VideoCard
               videoData={item}
@@ -76,8 +75,10 @@ export default function SpotScreen({ navigation, route }) {
         }}
       />
       <TouchableOpacity
-        onPress={() => navigation.navigate("AddPhotoScreen", {spotData})}
-      ><Text>BOUTON TEMPORAIRE VERS AddPhotoScreen</Text></TouchableOpacity>
+        onPress={() => navigation.navigate("AddPhotoScreen", { spotData })}
+      >
+        <Text>BOUTON TEMPORAIRE VERS AddPhotoScreen</Text>
+      </TouchableOpacity>
     </BackgroundWrapper>
   );
 }
@@ -94,7 +95,6 @@ function VideoCard({ videoData, onPress }) {
       VideoThumbnails.getThumbnailAsync(videoData.url).then(setThumbnails);
     })();
   }, []);
-  console.log(thumbnail);
   return (
     <Pressable style={styles.videoItem} onPress={onPress}>
       <View style={styles.thumbnailWrapper}>
@@ -106,7 +106,7 @@ function VideoCard({ videoData, onPress }) {
         <Text>
           {videoData.author.username} - 🕒 {formatDate(videoData.creationDate)}
         </Text>
-        <Text style={styles.infoText}>👍 {videoData.voteCount} votes</Text>
+        <Text style={styles.infoText}>👍 {videoData.votes.length} votes</Text>
         <Text style={styles.infoText}>📍 {videoData.spot?.name}</Text>
         <Text style={styles.infoText}>{videoData.tricks.join(",")}</Text>
       </View>
@@ -123,10 +123,10 @@ function VideoCard({ videoData, onPress }) {
 }
 
 function LikeButton({ onLike, isLiked }) {
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(isLiked);
   useEffect(() => {
     setLiked(isLiked);
-  }, []);
+  }, [isLiked]);
   return (
     <TouchableOpacity
       onPress={() => {
