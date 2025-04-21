@@ -5,14 +5,19 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Modal,
+  Button,
+  Image,
 } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { categories, difficultyLevels, tricksData } from "../data/trickList";
-import { act, useState } from "react";
+import { useState, useEffect } from "react";
 import BackgroundWrapper from "../components/background";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTrick } from "../reducers/tricks";
 import ProgressBar from "../components/ProgressBar";
+import ConfettiCannon from "react-native-confetti-cannon";
+import IconButton from "../components/IconButton";
 
 const initialSettings = Object.freeze({
   excludedDificulty: [],
@@ -33,6 +38,7 @@ const getDifficultyColor = (difficulty) => {
 
 export default function TricksScreen() {
   const [settings, setSettings] = useState(initialSettings);
+  const [showModal, setShowModal] = useState(false);
 
   const filteredTricks = tricksData.filter((trick) => {
     return (
@@ -40,6 +46,20 @@ export default function TricksScreen() {
       !settings.excludedDificulty.includes(trick.difficulty)
     );
   });
+
+  const validatedTricks = useSelector((state) => {
+    return filteredTricks.filter((trick) => {
+      return state.tricks.value.includes(trick.name);
+    });
+  });
+
+  const percentage = (validatedTricks.length / filteredTricks.length) * 100;
+
+  useEffect(() => {
+    if (percentage === 100 && filteredTricks.length > 0) {
+      setShowModal(true);
+    }
+  }, [percentage]);
 
   function toggleFilterDifficulty(value) {
     let newFilter;
@@ -60,37 +80,51 @@ export default function TricksScreen() {
   return (
     <BackgroundWrapper>
       <Text style={styles.screenTitle}>Livre de Tricks</Text>
-      <ProgressBar label={"Tricks Validé"} />
-      <View style={styles.settingsContainer}>
-        {categories.map((category, id) => (
-          <FilterButton
-            key={id}
-            text={category}
-            color="gray"
-            onPress={() => toggleFilterCategory(category)}
-          />
-        ))}
-      </View>
 
-      <View style={styles.settingsContainer}>
-        {difficultyLevels.map((dificulty, id) => (
-          <FilterButton
-            key={id}
-            text={dificulty}
-            color={getDifficultyColor(dificulty)}
-            onPress={() => toggleFilterDifficulty(dificulty)}
-          />
-        ))}
-      </View>
-      <FilterButton
-        text="Validé"
-        color="blue"
-        onPress={() =>
-          setSettings({ ...settings, onlyValidated: !settings.onlyValidated })
-        }
+      <ProgressBar
+        label={`Tricks Validés: ${Math.round(percentage)}%`}
+        progress={percentage / 100}
       />
 
-      <View style={styles.settingsContainer}></View>
+      <View style={styles.filterSection}>
+        <Text style={styles.filterSectionTitle}>Catégories</Text>
+        <View style={styles.settingsContainer}>
+          {categories.map((category, id) => (
+            <FilterButton
+              key={id}
+              text={category}
+              color="gray"
+              onPress={() => toggleFilterCategory(category)}
+            />
+          ))}
+        </View>
+      </View>
+
+      <View style={styles.filterSection}>
+        <Text style={styles.filterSectionTitle}>Difficulté</Text>
+        <View style={styles.settingsContainer}>
+          {difficultyLevels.map((difficulty, id) => (
+            <FilterButton
+              key={id}
+              text={difficulty}
+              color={getDifficultyColor(difficulty)}
+              onPress={() => toggleFilterDifficulty(difficulty)}
+            />
+          ))}
+        </View>
+      </View>
+
+      <View style={styles.filterSection}>
+        <Text style={styles.filterSectionTitle}>Validé</Text>
+        <FilterButton
+          text="Validé"
+          color="blue"
+          onPress={() =>
+            setSettings({ ...settings, onlyValidated: !settings.onlyValidated })
+          }
+        />
+      </View>
+
       <FlatList
         data={filteredTricks}
         contentContainerStyle={styles.tricksList}
@@ -98,6 +132,40 @@ export default function TricksScreen() {
           <TricksCard {...item} hideUnvalidated={settings.onlyValidated} />
         )}
       />
+
+      {/* MODAL 100% */}
+      <Modal
+        visible={showModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <ConfettiCannon
+              count={200}
+              origin={{ x: -10, y: 0 }}
+              fadeOut
+              autoStart
+            />
+            <Image
+              source={require("../assets/Trasher.png")}
+              style={styles.skateGif}
+              resizeMode="contain"
+            />
+            <Text style={styles.modalTitle}>🔥 100% Complété ! 🔥</Text>
+            <Text style={styles.modalText}>
+              T'as validé tous les tricks, champion 🍺🏋️‍♂️
+            </Text>
+            <IconButton
+              iconName="book-open"
+              buttonText="Retour au livre"
+              onPress={() => setShowModal(false)}
+              style={{ width: 200 }}
+            />
+          </View>
+        </View>
+      </Modal>
     </BackgroundWrapper>
   );
 }
@@ -126,6 +194,7 @@ function TricksCard({ name, difficulty, description, hideUnvalidated }) {
   const [expanded, setExpanded] = useState(false);
   const validated = useSelector((state) => state.tricks.value.includes(name));
   const dispatch = useDispatch();
+
   return (
     <View
       style={{
@@ -160,23 +229,44 @@ function TricksCard({ name, difficulty, description, hideUnvalidated }) {
 
 const styles = StyleSheet.create({
   screenTitle: {
-    fontSize: 20,
-    fontWeight: 800,
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#FF650C",
+    textAlign: "center",
+    marginTop: 20,
+    marginBottom: 10,
+    textShadowColor: "#FFF",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+    letterSpacing: 1,
+    textTransform: "uppercase",
+  },
+  filterSection: {
     marginVertical: 5,
+    padding: 5,
+    backgroundColor: "#f4f4f4",
+    borderRadius: 10,
+    marginHorizontal: "5%",
+  },
+  filterSectionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
   },
   settingsContainer: {
     display: "flex",
     flexDirection: "row",
+    flexWrap: "wrap",
     justifyContent: "space-evenly",
-    width: "90%",
-    margin: 5,
   },
   filterButton: {
-    padding: 2,
+    padding: 8,
     borderRadius: 5,
+    margin: 3,
   },
   filterButtonText: {
-    fontSize: 18,
+    fontSize: 14,
+    color: "#fff",
   },
   tricksList: {
     backgroundColor: "#A0A0A0A0",
@@ -208,5 +298,39 @@ const styles = StyleSheet.create({
   tricksDescription: {
     maxWidth: "80%",
     padding: "2%",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 15,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#FF650C",
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  modalText: {
+    fontSize: 16,
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  skateGif: {
+    width: 150,
+    height: 150,
+    marginBottom: 10,
   },
 });

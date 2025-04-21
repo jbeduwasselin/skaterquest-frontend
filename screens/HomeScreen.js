@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import BackgroundWrapper from "../components/background";
 import IconButton from "../components/IconButton";
 import { useSelector } from "react-redux";
+import * as Animatable from "react-native-animatable";
 
 export default function HomeScreen({ navigation }) {
-  // Utilisation du hook useSelector pour obtenir l'avatar depuis Redux
-  const avatar = useSelector((state) => state.user.value.avatar); // L'avatar est récupéré depuis le store
+  const avatar = useSelector((state) => state.user.value.avatar);
 
   return (
     <BackgroundWrapper>
@@ -30,26 +30,41 @@ export default function HomeScreen({ navigation }) {
           <Icon name="edit" size={24} color="#fff" />
         </TouchableOpacity>
 
-        {/* Image de profil qui récupère l'avatar depuis Redux */}
+        {/* Image de profil */}
         <Image
           source={
-            avatar ? { uri: avatar } : require("../assets/Thomas surf.jpg") // Photo de profil par défaut
+            avatar ? { uri: avatar } : require("../assets/Thomas surf.jpg")
           }
           style={styles.profileImage}
         />
 
         <View style={styles.buttonContainer}>
-          {/* Boutons */}
-          <View style={styles.alignLeft}>
+          {/* "Livre de tricks" + image à droite */}
+          <View style={styles.row}>
             <IconButton
               iconName="book"
               buttonText="Livre de tricks"
               onPress={() => navigation.navigate("TricksScreen")}
               style={styles.iconButton}
             />
+            <Animatable.Image
+              animation="bounceInRight"
+              duration={1000}
+              source={require("../assets/Skater01.png")}
+              style={styles.sideImage}
+              resizeMode="contain"
+            />
           </View>
 
-          <View style={styles.alignRight}>
+          {/* Image à gauche + "Mes vidéos" */}
+          <View style={styles.row}>
+            <Animatable.Image
+              animation="bounceInLeft"
+              duration={1000}
+              source={require("../assets/Skater02.png")}
+              style={styles.sideImage}
+              resizeMode="contain"
+            />
             <IconButton
               iconName="video"
               buttonText="Mes vidéos"
@@ -58,12 +73,20 @@ export default function HomeScreen({ navigation }) {
             />
           </View>
 
-          <View style={styles.alignLeft}>
+          {/* "Mon équipe" + image à droite */}
+          <View style={styles.row}>
             <IconButton
               iconName="users"
               buttonText="Mon équipe"
               onPress={() => navigation.navigate("CrewScreen")}
               style={styles.iconButton}
+            />
+            <Animatable.Image
+              animation="bounceInUp"
+              duration={1000}
+              source={require("../assets/Skater03.png")}
+              style={styles.sideImage}
+              resizeMode="contain"
             />
           </View>
         </View>
@@ -83,51 +106,48 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 50,
     left: 20,
-    width: "100%", // Pour que le container prenne toute la largeur de l'écran
-    flexDirection: "row", // Aligner les éléments en ligne
-    alignItems: "center", // Centrer verticalement les éléments
-    justifyContent: "flex-start", // Aligné à gauche
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
     zIndex: 1,
   },
   settingsIcon: {
-    marginLeft: 20, // Espacement entre l'icône des paramètres et le bord gauche
+    marginLeft: 20,
   },
   editIcon: {
-    position: "absolute", // Positionnement absolu par rapport au parent
-    top: 50, // Positionné en haut de l'écran
-    right: 20, // Positionné à droite de l'écran
-    zIndex: 2, // Ajout d'un zIndex plus élevé pour que l'icône soit au-dessus des autres éléments
+    position: "absolute",
+    top: 50,
+    right: 20,
+    zIndex: 2,
   },
   profileImage: {
-    width: 120, // Taille de l'image de profil
+    position: "absolute",
+    top: 80,
+    width: 120,
     height: 120,
-    borderRadius: 60, // Circulaire
+    borderRadius: 60,
     borderWidth: 2,
     borderColor: "#fff",
-    marginTop: -10, // Augmentez cette valeur pour faire monter la photo
     zIndex: 0,
-    marginLeft: -170,
-    marginBottom: 80, // S'assurer que l'image est derrière les icônes
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 12,
-    color: "#fff",
   },
   buttonContainer: {
     width: "100%",
-    gap: 30, // Ajout de gap pour espacer les boutons
-    marginTop: 20,
+    gap: 30,
+    marginTop: 200,
   },
-  alignLeft: {
-    alignItems: "flex-start",
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
   },
-  alignRight: {
-    alignItems: "flex-end",
+  sideImage: {
+    width: 130,
+    height: 130,
+    borderRadius: 10,
   },
   iconButton: {
     width: 160,
-    marginBottom: 20,
   },
 });

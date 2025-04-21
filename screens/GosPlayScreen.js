@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
+
 import BackgroundWrapper from "../components/background";
 import IconButton from "../components/IconButton";
 import * as Animatable from "react-native-animatable";
@@ -21,6 +22,11 @@ export default function GosPlayScreen({ navigation }) {
     if (skater1 && skater2) {
       setModalVisible(false);
     }
+  };
+
+  // Fonction pour fermer la modal
+  const closeModal = () => {
+    setModalVisible(false);
   };
 
   return (
@@ -55,6 +61,14 @@ export default function GosPlayScreen({ navigation }) {
               >
                 <Text style={styles.validateText}>Valider</Text>
               </TouchableOpacity>
+
+              {/* Bouton Retour pour fermer la modal */}
+              <TouchableOpacity
+                style={styles.backButton}
+                onPress={closeModal}
+              >
+                <Text style={styles.backText}>Retour</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </Modal>
@@ -75,7 +89,7 @@ export default function GosPlayScreen({ navigation }) {
             duration={1000}
             style={styles.profile}
           >
-            <Text style={styles.name}>{skater1}</Text>
+            <Text style={styles.name}>{skater1 || "Joueur 1"}</Text>
           </Animatable.View>
 
           <Animatable.View
@@ -91,7 +105,7 @@ export default function GosPlayScreen({ navigation }) {
             duration={1000}
             style={styles.profile}
           >
-            <Text style={styles.name}>{skater2}</Text>
+            <Text style={styles.name}>{skater2 || "Joueur 2"}</Text>
           </Animatable.View>
         </View>
 
@@ -238,5 +252,17 @@ const styles = StyleSheet.create({
   reconfigButton: {
     marginTop: 50,
     backgroundColor: "#444",
+  },
+  // Style pour le bouton retour (en gris)
+  backButton: {
+    backgroundColor: "#666", // gris
+    padding: 12,
+    borderRadius: 10,
+    marginTop: 15,
+  },
+  backText: {
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
