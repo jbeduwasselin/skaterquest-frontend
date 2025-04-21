@@ -42,6 +42,7 @@ export default function MapScreen({ navigation }) {
     //getNearestSpot(token, location.longitude, location.latitude); // mis en commentaire car cause problème (longitude === null)
   }, []);
 
+
   let text = "Chargement de la carte...";
   if (errorMsg) {
     text = errorMsg;
