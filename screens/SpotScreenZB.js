@@ -91,8 +91,8 @@ export default function SpotScreen({ navigation, route }) {
         }}
       />
       <TouchableOpacity
-        onPress={() => navigation.navigate("AddPhotoScreen")}
-      ></TouchableOpacity>
+        onPress={() => navigation.navigate("AddPhotoScreen", {spotData})}
+      ><Text>BOUTON TEMPORAIRE VERS AddPhotoScreen</Text></TouchableOpacity>
     </BackgroundWrapper>
   );
 }
