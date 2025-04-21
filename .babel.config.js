@@ -1,5 +1,10 @@
 module.exports = {
-    presets: [
-      ['@babel/preset-env', { targets: { node: 'current' } }]
-    ],
-  };
+  presets: ["babel-preset-expo"],
+  plugins: [],
+  overrides: [
+    {
+      test: /\.js$/,
+      presets: ["@babel/preset-flow"],
+    },
+  ],
+};

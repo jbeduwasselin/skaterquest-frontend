@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Modal, Image } from "react-native";
+import { View, Text, StyleSheet, Modal } from "react-native";
 import BackgroundWrapper from "../components/background";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
@@ -8,7 +8,9 @@ import ConfettiCannon from "react-native-confetti-cannon";
 import { Picker } from "@react-native-picker/picker";
 
 export default function GosVersusScreenBis({ route, navigation }) {
-  const { skater1, skater2, gameMode } = route.params;
+  const { skater1 = "Joueur 1", skater2 = "Joueur 2", gameMode } = route.params;
+  const skater1Final = skater1.trim() === "" ? "Joueur 1" : skater1;
+  const skater2Final = skater2.trim() === "" ? "Joueur 2" : skater2;
 
   const [skater1Score, setSkater1Score] = useState(0);
   const [skater2Score, setSkater2Score] = useState(0);
@@ -31,11 +33,11 @@ export default function GosVersusScreenBis({ route, navigation }) {
     if (player === "skater1") {
       const updated = skater1Letters + letter;
       setSkater1Letters(updated);
-      if (updated.length === 5) endGame(skater2);
+      if (updated.length === 5) endGame(skater2Final);
     } else {
       const updated = skater2Letters + letter;
       setSkater2Letters(updated);
-      if (updated.length === 5) endGame(skater1);
+      if (updated.length === 5) endGame(skater1Final);
     }
   };
 
@@ -65,7 +67,7 @@ export default function GosVersusScreenBis({ route, navigation }) {
           style={styles.profileContainer}
         >
           <View style={styles.profile}>
-            <Text style={styles.name}>{skater1}</Text>
+            <Text style={styles.name}>{skater1Final}</Text>
             <Text style={styles.letters}>{skater1Letters}</Text>
           </View>
 
@@ -74,7 +76,7 @@ export default function GosVersusScreenBis({ route, navigation }) {
           </View>
 
           <View style={styles.profile}>
-            <Text style={styles.name}>{skater2}</Text>
+            <Text style={styles.name}>{skater2Final}</Text>
             <Text style={styles.letters}>{skater2Letters}</Text>
           </View>
         </Animatable.View>
@@ -88,10 +90,10 @@ export default function GosVersusScreenBis({ route, navigation }) {
           <Text style={styles.scoreText}>Score</Text>
           <View style={styles.scoreBoard}>
             <Text style={styles.score}>
-              {skater1}: {skater1Score}
+              {skater1Final}: {skater1Score}
             </Text>
             <Text style={styles.score}>
-              {skater2}: {skater2Score}
+              {skater2Final}: {skater2Score}
             </Text>
           </View>
         </Animatable.View>
@@ -227,8 +229,8 @@ export default function GosVersusScreenBis({ route, navigation }) {
               <Text style={styles.modalText}>Game over !</Text>
               <Text style={styles.modalText}>
                 {skater1Score > skater2Score
-                  ? `${skater1} a gagné !`
-                  : `${skater2} a gagné !`}
+                  ? `${skater1Final} a gagné !`
+                  : `${skater2Final} a gagné !`}
               </Text>
               <IconButton
                 iconName="check-circle"
