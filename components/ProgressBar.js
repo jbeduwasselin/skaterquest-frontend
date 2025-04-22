@@ -2,17 +2,18 @@ import { View, Text, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { tricksData } from "../data/trickList";
 
-export default function ProgressBar({ label }) {
+export default function ProgressBar() {
   const progress = useSelector((state) => state.tricks.value.length);
+  const progressPercent = Math.round((progress / tricksData.length) * 1000)/10;
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+      <Text style={styles.label}>{`Tricks Validés: ${progressPercent}%`}</Text>
       <View style={styles.barBackground}>
         <View
           style={[
             styles.barFill,
             {
-              width: `${Math.min((progress / tricksData.length) * 100, 100)}%`,
+              width: `${progressPercent}%`,
             },
           ]}
         />
