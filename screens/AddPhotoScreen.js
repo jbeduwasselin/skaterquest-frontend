@@ -52,7 +52,7 @@ export default function AddPhotoScreen({ navigation, route }) {
         );
       }
     }
-    navigation.goBack();
+    photosSpot.length > 0 && navigation.goBack();
   };
 
   return (

@@ -80,8 +80,6 @@ export default function SpotScreen({ navigation, route }) {
         { useNativeDriver: true } // Rend l’animation exécutable directement par le moteur natif du téléphone (donc + fluide, + rapide et ne bloque pas le reste de l’UI)
       )}
       // Fonction renderItem() pour afficher les éléments (items) de la FlatList
-      // Remplace ton renderItem dans renderCarrousel par celui-ci :
-
       renderItem={({ item, index }) => {
         const inputRange = [
           (index - 1) * (itemWidth + spacing),
