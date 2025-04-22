@@ -9,11 +9,14 @@ import { useIsFocused } from "@react-navigation/native";
 import { getOwnUserInfo } from "../lib/request";
 import globalStyle from "../globalStyle";
 
+// Import seulement le composant
+import ProgressBar from "../components/ProgressBar";
+
 export default function HomeScreen({ navigation }) {
   const isFocused = useIsFocused();
-  //Recup les info utilisateur
   const { token } = useSelector((state) => state.user.value);
   const [userData, setUserData] = useState(null);
+
   useEffect(() => {
     getOwnUserInfo(token).then(({ result, data }) => {
       result && setUserData(data);
@@ -31,8 +34,6 @@ export default function HomeScreen({ navigation }) {
           <Icon name="settings" size={24} color="#fff" />
         </TouchableOpacity>
         <Text style={globalStyle.screenTitle}>SkaterQuest</Text>
-
-        {/* Icône du crayon en haut à droite */}
         <TouchableOpacity
           style={styles.editIcon}
           onPress={() => navigation.navigate("SettingsScreen")}
@@ -51,8 +52,13 @@ export default function HomeScreen({ navigation }) {
         style={styles.profileImage}
       />
 
+      {/* Barre de progression */}
+      <View style={styles.progressContainer}>
+        <ProgressBar />
+      </View>
+
+      {/* Boutons */}
       <View style={styles.buttonContainer}>
-        {/* "Livre de tricks" + image à droite */}
         <View style={styles.row}>
           <IconButton
             iconName="book"
@@ -69,7 +75,6 @@ export default function HomeScreen({ navigation }) {
           />
         </View>
 
-        {/* Image à gauche + "Mes vidéos" */}
         <View style={styles.row}>
           <Animatable.Image
             animation="bounceInLeft"
@@ -86,7 +91,6 @@ export default function HomeScreen({ navigation }) {
           />
         </View>
 
-        {/* "Mon équipe" + image à droite */}
         <View style={styles.row}>
           <IconButton
             iconName="users"
@@ -116,16 +120,14 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     ...globalStyle.flexRow,
-    width : "100%",
-    justifyContent : "space-between",
-    alignItems : "flex-start"
-
+    width: "100%",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
   },
   settingsIcon: {
     marginLeft: 20,
   },
-  editIcon: {
-  },
+  editIcon: {},
   profileImage: {
     width: 120,
     height: 120,
@@ -134,10 +136,18 @@ const styles = StyleSheet.create({
     borderColor: "#fff",
     zIndex: 0,
   },
+  progressContainer: {
+    marginTop: 20,
+    width: "90%",
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
   buttonContainer: {
     width: "100%",
     gap: 30,
-    marginTop: 200,
+    marginTop: 40,
   },
   row: {
     flexDirection: "row",
