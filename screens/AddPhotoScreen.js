@@ -37,20 +37,22 @@ export default function AddPhotoScreen({ navigation, route }) {
   // Fonction pour prendre une photo
   const takePicture = async () => {
     const photo = await cameraRef.current?.takePictureAsync({ quality: 0.3 });
-    photo && console.log("Taken photo :", photo);
+    console.log("New taken photo :", photo);
     photo && setPhotosSpot([...photosSpot, photo]); // Ajout de la photo dans l'état photoSpot
   };
 
   // Fonction pour sauver en BDD les photos prises
   const savePhotos = async () => {
+    console.log("Number of photos :", photosSpot.length);
     if (photosSpot.length > 0) {
-      for (let takenPhoto of photosSpot) {
+      for (const takenPhoto of photosSpot) {
         const { result, error } = await addPictureToSpot(
           token,
           takenPhoto.uri,
           spotData._id
         );
-        console.log(result, error);
+        console.log("photo URI :", takenPhoto.uri);
+        console.log("result :", result, "error :", error);
       }
     }
     photosSpot.length > 0 && navigation.goBack();
