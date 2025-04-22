@@ -30,7 +30,7 @@ export default function HomeScreen({ navigation }) {
         >
           <Icon name="settings" size={24} color="#fff" />
         </TouchableOpacity>
-        <Text style={globalStyle.screenTitle}>SkateQuest</Text>
+        <Text style={globalStyle.screenTitle}>SkaterQuest</Text>
 
         {/* Icône du crayon en haut à droite */}
         <TouchableOpacity
