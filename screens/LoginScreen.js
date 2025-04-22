@@ -85,7 +85,7 @@ export default function LoginScreen({ navigation }) {
         size={30}
         containerStyle={styles.closeButton}
       />
-      <Text style={styles.modalText}>Connexion</Text>
+      <Text style={globalStyle.screenTitle}>Connexion</Text>
       <KeyboardAvoidingView style={{ width: "100%" }}>
         <TextInput
           style={styles.inputs}
@@ -128,8 +128,7 @@ export default function LoginScreen({ navigation }) {
         size={30}
         containerStyle={styles.closeButton}
       />
-      <Text style={styles.modalText}>Inscription</Text>
-
+      <Text style={globalStyle.screenTitle}>Inscription</Text>
       <KeyboardAvoidingView style={{ width: "100%" }}>
         <TextInput
           style={styles.inputs}
@@ -168,15 +167,15 @@ export default function LoginScreen({ navigation }) {
   const tuto1 = (
     <ModalContent
       visibleState={showTuto1}
-      containerStyle={styles.modalContainer}
+      containerStyle={globalStyle.modalContainer}
     >
-      <Text style={styles.tutoTitle}>Bienvenue sur l'app SkaterQuest ! 🛹</Text>
-      <Text style={styles.tutoText}>
+      <Text style={globalStyle.screenTitle}>Bienvenue sur l'app SkaterQuest ! 🛹</Text>
+      <Text style={globalStyle.subSubTitle}>
         Ici, tu pourras suivre ta progression en skate grâce à un livre de
         tricks, trouver des spots et défier tes potes sur un Game of Skate !
       </Text>
 
-      <View style={styles.tutoButtons}>
+      <View >
         <NextButton
           onPress={() => {
             setShowTuto1(false);
@@ -195,14 +194,14 @@ export default function LoginScreen({ navigation }) {
   );
 
   const tuto2 = (
-    <ModalContent visibleState={showTuto2} containerStyle={styles.tutoModal}>
-      <Text style={styles.tutoTitle}>Un Game of Skate c'est quoi ?🤔</Text>
-      <Text style={styles.tutoText}>
+    <ModalContent visibleState={showTuto2} containerStyle={globalStyle.modalContainer}>
+      <Text style={globalStyle.screenTitle}>Un Game of Skate c'est quoi ?🤔</Text>
+      <Text style={globalStyle.subSubTitle}>
         Un skateur fait un trick, l'autre doit le reproduire : à chaque échec,
         il gagne une lettre du mot SKATE jusqu'à être éliminé. 🛹🔥
       </Text>
 
-      <View style={styles.tutoButtons}>
+      <View >
         <NextButton
           onPress={() => {
             setShowTuto2(false);
@@ -222,13 +221,13 @@ export default function LoginScreen({ navigation }) {
   );
 
   const tuto3 = (
-    <ModalContent visibleState={showTuto3} containerStyle={styles.tutoModal}>
-      <Text style={styles.tutoTitle}>T'es prêt à rider ? 🛹😎</Text>
-      <Text style={styles.tutoText}>
+    <ModalContent visibleState={showTuto3} containerStyle={globalStyle.modalContainer}>
+      <Text style={globalStyle.screenTitle}>T'es prêt à rider ? 🛹😎</Text>
+      <Text style={globalStyle.subSubTitle}>
         Tu trouveras dans ton livre des tricks les tricks que tu maîtrises et
         ceux que tu vas devoir apprendre pour atteindre le 100% !
       </Text>
-      <Text style={styles.tutoTitle}>T'es chaud patate ? 🛹💪</Text>
+      <Text style={globalStyle.screenTitle}>T'es chaud patate ? 🛹💪</Text>
       <View style={styles.tutoButtons}>
         <TextButton
           onPress={() => {
@@ -350,9 +349,6 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     marginBottom: 20,
   },
-  modalText: {
-    ...globalStyle.screenTitle,
-  },
   overlayBackground: {
     position: "absolute",
     top: 0,
@@ -361,17 +357,5 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: "rgba(51, 49, 49, 0.7)",
     zIndex: 999,
-  },
-  tutoModal: {
-    ...globalStyle.modalContainer,
-  },
-  tutoTitle: {
-    ...globalStyle.screenTitle,
-  },
-  tutoText: {
-    ...globalStyle.subSubTitle,
-  },
-  tutoButtons: {
-    gap: 10,
   },
 });

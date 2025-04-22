@@ -19,7 +19,7 @@ import {
   removeUserFromCrew,
   searchUser,
 } from "../lib/request";
-import globalStyle, {COLOR_MAIN } from "../globalStyle";
+import globalStyle, { COLOR_MAIN } from "../globalStyle";
 import {
   IconButton,
   IconTextButton,
@@ -67,7 +67,7 @@ export default function CrewScreen() {
     const isUserAdmin = userData.crew.admins.includes(userData.uID);
     return (
       <BackgroundWrapper>
-        <Text style={styles.title}>{userData.crew.name}</Text>
+        <Text style={globalStyle.screenTitle}>{userData.crew.name}</Text>
         <FlatList
           data={userData.crew.members}
           renderItem={({ item }) => {
@@ -84,7 +84,8 @@ export default function CrewScreen() {
           contentContainerStyle={styles.memberContainer}
         />
         <TextInput
-          style={styles.textInput}
+          style={globalStyle.textInput}
+          placeholderTextColor="white"
           placeholder="Nouveau membre"
           onChangeText={handleSearchResult}
         />
@@ -116,21 +117,27 @@ export default function CrewScreen() {
   //Creation d'un crew
   return (
     <BackgroundWrapper>
-      <Text style={styles.title}>
+      <Text style={globalStyle.screenTitle}>
         Tu n'as pas de crew, fais toi inviter ou crée en un !
       </Text>
       <TextInput
-        style={styles.textInput}
+        style={globalStyle.textInput}
+        placeholderTextColor="white"
         onChangeText={setNewCrewName}
         placeholder=" Nom de Ton crew"
       ></TextInput>
       <IconTextButton
         iconName="send"
-        text="CREATE"
-        textStyle={globalStyle.screenTitle}
+        text="Go"
+        textStyle={{
+          ...globalStyle.screenTitle,
+          fontSize: 32,
+          padding: 0,
+          lineHeight: 32,
+        }}
         containerStyle={styles.createButton}
         color={COLOR_MAIN}
-        size={70}
+        size={48}
         onPress={handleCreateCrew}
       />
     </BackgroundWrapper>
@@ -170,7 +177,7 @@ function MemberCard({ memberData, isAdmin, isUser, isUserAdmin, forceUpdate }) {
         width={50}
         style={styles.userAvatar}
       />
-      <Text>{memberData.username}</Text>
+      <Text style={globalStyle.subTitle}>{memberData.username}</Text>
       <View style={styles.controlContainer}>
         {isUserAdmin && !isUser && (
           <>
@@ -199,7 +206,7 @@ const styles = StyleSheet.create({
   },
   memberCard: {
     ...globalStyle.flexRow,
-    width: "80%",
+    width : "100%",
     justifyContent: "space-between",
   },
   userAvatar: {
@@ -211,15 +218,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     ...globalStyle.flexRow,
   },
-  textInput: {
-    ...globalStyle.textInput,
-    maxHeight: 50,
-    minHeight: 50,
-    width: "80%",
-    margin: "2%",
+  createButton: {
+    padding: 12,
+    backgroundColor: "black",
   },
-  createButton : {
-    padding : 12,
-    minWidth : "40%",
-  }
 });
