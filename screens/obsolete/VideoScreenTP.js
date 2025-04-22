@@ -13,7 +13,7 @@ import { Video } from "expo-av";
 import BackgroundWrapper from "../components/background";
 
 // Importation du composant IconButton
-import IconButton from "../components/IconButton";
+import IconButton from "../../components/IconButton";
 
 export default function VideoScreen() {
   const [videos, setVideos] = useState([]);
