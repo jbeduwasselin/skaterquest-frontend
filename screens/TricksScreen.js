@@ -86,7 +86,7 @@ export default function TricksScreen() {
         label={`Tricks Validés: ${Math.round(percentage)}%`}
         progress={percentage / 100}
       />
-      <View style={globalStyle.flexRow}>
+      <View style={{...globalStyle.flexRow , justifyContent:"center", flexWrap : "wrap"}}>
         <View style={styles.filterSection}>
           <Text style={styles.filterSectionTitle}>Catégories</Text>
           <View style={styles.settingsContainer}>
