@@ -60,24 +60,6 @@ export default function SpotScreen({ navigation, route }) {
     <BackgroundWrapper>
       <Text style={styles.title}>{spotData.name}</Text>
 
-      <TouchableOpacity
-        onPress={() => navigation.navigate("AddPhotoScreen", { spotData })}
-      >
-        <MaterialIcons name="add-a-photo" size={40} color="orange" />
-      </TouchableOpacity>
-
-      <TouchableOpacity
-          onPress={() => {
-            // uploader une vidéo
-          }}
-          style={styles.buttonContainer}
-          activeOpacity={0.8}
-        >
-          <MaterialIcons name="video-call" size={50} color="orange" />
-        </TouchableOpacity>
-
-      
-      
       <Animated.FlatList
         horizontal
         pagingEnabled
@@ -86,6 +68,12 @@ export default function SpotScreen({ navigation, route }) {
           return <Image source={{ uri: item }} height={200} width={400} />;
         }}
       />
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate("AddPhotoScreen", { spotData })}
+      >
+        <MaterialIcons name="add-a-photo" size={40} color="orange" />
+      </TouchableOpacity>
 
       <Animated.FlatList
         horizontal
@@ -103,6 +91,15 @@ export default function SpotScreen({ navigation, route }) {
         }}
       />
 
+      <TouchableOpacity
+        onPress={() => {
+          // uploader une vidéo
+        }}
+        style={styles.buttonContainer}
+        activeOpacity={0.8}
+      >
+        <MaterialIcons name="video-call" size={50} color="orange" />
+      </TouchableOpacity>
     </BackgroundWrapper>
   );
 }
@@ -110,11 +107,13 @@ export default function SpotScreen({ navigation, route }) {
 function VideoCard({ videoData, onPress }) {
   const { token, uID } = useSelector((state) => state.user.value);
   const [thumbnail, setThumbnails] = useState(null);
-  
-  // Formate la date 
+
+  // Formate la date
   function formatDate(creationDate) {
     const date = new Date(creationDate);
-    return ` ${new Intl.DateTimeFormat("fr-FR", { weekday: "long" }).format(date)} ${date.getUTCDate()}/${date.getUTCMonth()}/${date.getFullYear()}`;
+    return ` ${new Intl.DateTimeFormat("fr-FR", { weekday: "long" }).format(
+      date
+    )} ${date.getUTCDate()}/${date.getUTCMonth()}/${date.getFullYear()}`;
   }
 
   // Au montage crée le thumbnail pour la vidéo
@@ -123,7 +122,7 @@ function VideoCard({ videoData, onPress }) {
       VideoThumbnails.getThumbnailAsync(videoData.url).then(setThumbnails);
     })();
   }, []);
-  
+
   return (
     <Pressable style={styles.videoItem} onPress={onPress}>
       <View style={styles.thumbnailWrapper}>
