@@ -66,7 +66,7 @@ export default function MapScreen({ navigation }) {
 
   const addSpot = () => {
     dispatch(updateSpot(location)); // Enregistrement des coordonnées actuelles dans le store
-    navigation.navigate("AddSpotScreen");
+    navigation.navigate("AddSpotScreen"); // Plutôt passer les infos du spot via ce navigate au lieu de passer par le store
   };
 
   const marker = visibleSpots?.map((spotData, i) => {
