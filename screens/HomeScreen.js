@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Image, TouchableOpacity, Text } from "react-native";
-import Icon from "react-native-vector-icons/Feather";
+import { View, StyleSheet, Image, Text } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import { useSelector } from "react-redux";
 import * as Animatable from "react-native-animatable";
@@ -10,11 +9,14 @@ import globalStyle from "../globalStyle";
 import { IconButton, IconTextButton } from "../components/Buttons";
 import ProgressBar from "../components/ProgressBar";
 
+// Import seulement le composant
+import ProgressBar from "../components/ProgressBar";
+
 export default function HomeScreen({ navigation }) {
   const isFocused = useIsFocused();
-  //Recup les info utilisateur
   const { token } = useSelector((state) => state.user.value);
   const [userData, setUserData] = useState(null);
+
   useEffect(() => {
     getOwnUserInfo(token).then(({ result, data }) => {
       result && setUserData(data);
@@ -52,10 +54,14 @@ export default function HomeScreen({ navigation }) {
         }
         style={styles.profileImage}
       />
-      <ProgressBar />
 
+      {/* Barre de progression */}
+      <View style={styles.progressContainer}>
+        <ProgressBar />
+      </View>
+
+      {/* Boutons */}
       <View style={styles.buttonContainer}>
-        {/* "Livre de tricks" + image à droite */}
         <View style={styles.row}>
           <IconTextButton
             iconName="book"
@@ -71,7 +77,6 @@ export default function HomeScreen({ navigation }) {
           />
         </View>
 
-        {/* Image à gauche + "Mes vidéos" */}
         <View style={styles.row}>
           <Animatable.Image
             animation="bounceInLeft"
@@ -105,11 +110,13 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "space-between",
     alignItems: "flex-start",
+    width: "100%",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
   },
   settingsIcon: {
     marginLeft: 20,
   },
-  editIcon: {},
   profileImage: {
     width: 120,
     height: 120,
@@ -118,10 +125,18 @@ const styles = StyleSheet.create({
     borderColor: "#fff",
     zIndex: 0,
   },
+  progressContainer: {
+    marginTop: 20,
+    width: "90%",
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
   buttonContainer: {
     width: "100%",
     gap: 30,
-    marginTop: 200,
+    marginTop: 40,
   },
   row: {
     flexDirection: "row",
