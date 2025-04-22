@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 export const COLOR_BACK = "#858585FF";
 export const COLOR_MODAL = "#49D2EA";
 export const COLOR_MAIN = "#FF650C";
+export const DEFAULT_AVATAR = require("./assets/Trasher.png")
 
 
 const globalStyle = StyleSheet.create({

@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Image, TouchableOpacity, Text } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import BackgroundWrapper from "../components/BackgroundWrapper";
-import IconButton from "../components/IconButton";
 import { useSelector } from "react-redux";
 import * as Animatable from "react-native-animatable";
 import { useIsFocused } from "@react-navigation/native";
 import { getOwnUserInfo } from "../lib/request";
 import globalStyle from "../globalStyle";
+import { IconButton, IconTextButton } from "../components/Buttons";
+import ProgressBar from "../components/ProgressBar";
 
 export default function HomeScreen({ navigation }) {
   const isFocused = useIsFocused();
@@ -19,26 +20,27 @@ export default function HomeScreen({ navigation }) {
       result && setUserData(data);
     });
   }, [isFocused]);
-
   return (
     <BackgroundWrapper>
       {/* Icône des paramètres en haut à gauche */}
+
       <View style={styles.headerContainer}>
-        <TouchableOpacity
-          style={styles.settingsIcon}
+        <IconButton
+          iconName="settings"
+          color="white"
           onPress={() => navigation.navigate("AppSettingsScreen")}
-        >
-          <Icon name="settings" size={24} color="#fff" />
-        </TouchableOpacity>
+          size={30}
+        />
+        {/* Titre de l'écran */}
         <Text style={globalStyle.screenTitle}>SkaterQuest</Text>
 
         {/* Icône du crayon en haut à droite */}
-        <TouchableOpacity
-          style={styles.editIcon}
+        <IconButton
+          iconName="edit"
+          color="white"
           onPress={() => navigation.navigate("SettingsScreen")}
-        >
-          <Icon name="edit" size={24} color="#fff" />
-        </TouchableOpacity>
+          size={30}
+        />
       </View>
 
       {/* Image de profil */}
@@ -50,15 +52,15 @@ export default function HomeScreen({ navigation }) {
         }
         style={styles.profileImage}
       />
+      <ProgressBar />
 
       <View style={styles.buttonContainer}>
         {/* "Livre de tricks" + image à droite */}
         <View style={styles.row}>
-          <IconButton
+          <IconTextButton
             iconName="book"
-            buttonText="Livre de tricks"
+            text="Livre de tricks"
             onPress={() => navigation.navigate("TricksScreen")}
-            style={styles.iconButton}
           />
           <Animatable.Image
             animation="bounceInRight"
@@ -78,28 +80,12 @@ export default function HomeScreen({ navigation }) {
             style={styles.sideImage}
             resizeMode="contain"
           />
-          <IconButton
-            iconName="video"
-            buttonText="Mes vidéos"
-            onPress={() => navigation.navigate("VideoScreen")}
-            style={styles.iconButton}
-          />
-        </View>
 
-        {/* "Mon équipe" + image à droite */}
-        <View style={styles.row}>
-          <IconButton
-            iconName="users"
-            buttonText="Mon équipe"
-            onPress={() => navigation.navigate("CrewScreen")}
-            style={styles.iconButton}
-          />
-          <Animatable.Image
-            animation="bounceInUp"
-            duration={1000}
-            source={require("../assets/Skater03.png")}
-            style={styles.sideImage}
-            resizeMode="contain"
+          <IconTextButton
+            iconName="video-collection"
+            text="Mes vidéos"
+            onPress={() => navigation.navigate("VideoScreen")}
+            iconLeft
           />
         </View>
       </View>
@@ -116,16 +102,14 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     ...globalStyle.flexRow,
-    width : "100%",
-    justifyContent : "space-between",
-    alignItems : "flex-start"
-
+    width: "100%",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
   },
   settingsIcon: {
     marginLeft: 20,
   },
-  editIcon: {
-  },
+  editIcon: {},
   profileImage: {
     width: 120,
     height: 120,

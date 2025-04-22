@@ -11,7 +11,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import { signInRequest, signUpRequest } from "../lib/request";
 import { IconButton, IconTextButton, TextButton } from "../components/Buttons";
-import { COLOR_BACK, COLOR_MAIN } from "../globalStyle";
+import globalStyle, { COLOR_BACK, COLOR_MAIN } from "../globalStyle";
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -77,7 +77,7 @@ export default function LoginScreen({ navigation }) {
         iconName="cancel"
         color="white"
         size={30}
-        containerStyle={{ alignSelf: "flex-end", padding: 5 }}
+        containerStyle={styles.closeButton}
       />
       <Text style={styles.modalText}>Connexion</Text>
       <TextInput
@@ -113,7 +113,7 @@ export default function LoginScreen({ navigation }) {
         iconName="cancel"
         color="white"
         size={30}
-        containerStyle={{ alignSelf: "flex-end", padding: 5 }}
+        containerStyle={styles.closeButton}
       />
       <Text style={styles.modalText}>Inscription</Text>
       <TextInput
@@ -142,7 +142,6 @@ export default function LoginScreen({ navigation }) {
         style={styles.button}
         activeOpacity={0.8}
         text="Valider l'inscription"
-        textStyle={styles.buttonText}
         containerStyle={styles.button}
       />
       <Text style={styles.errorMessage}>{errorMessage}</Text>
@@ -170,7 +169,6 @@ export default function LoginScreen({ navigation }) {
               setShowSignInModal(true);
             }}
             containerStyle={styles.button}
-            textStyle={styles.buttonText}
           />
         ) : (
           signInModalContent
@@ -182,7 +180,6 @@ export default function LoginScreen({ navigation }) {
             text="T'es nouveau ? Créer un compte ici !"
             size={30}
             containerStyle={styles.button}
-            textStyle={styles.buttonText}
             onPress={() => {
               setShowSignInModal(false);
               setShowSignUpModal(true);
@@ -268,7 +265,6 @@ export default function LoginScreen({ navigation }) {
                 setShowTuto3(false);
                 navigation.navigate("TabNavigator");
               }}
-              textStyle={styles.buttonText}
               containerStyle={styles.button}
               text="C'est parti ! 🤙🛹"
             />
@@ -282,8 +278,6 @@ export default function LoginScreen({ navigation }) {
 const NextButton = ({ onPress }) => (
   <TextButton
     text="Suivant"
-    activeOpacity={0.8}
-    textStyle={styles.buttonText}
     containerStyle={styles.button}
     onPress={onPress}
   />
@@ -292,8 +286,6 @@ const NextButton = ({ onPress }) => (
 const SkipButton = ({ onPress }) => (
   <TextButton
     text="Passer"
-    activeOpacity={0.8}
-    textStyle={styles.buttonText}
     containerStyle={{ ...styles.button, backgroundColor: COLOR_BACK }}
     onPress={onPress}
   />
@@ -301,16 +293,7 @@ const SkipButton = ({ onPress }) => (
 
 const styles = StyleSheet.create({
   button: {
-    alignItems: "center",
-    padding: 12,
     minWidth: 200,
-    marginTop: 40,
-    backgroundColor: COLOR_MAIN,
-    borderRadius: 10,
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: 800,
   },
   signUpContainer: {
     alignItems: "center",
@@ -334,13 +317,14 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     alignSelf: "flex-end",
-    padding: 8,
+    backgroundColor : "transparent",
   },
   inputs: {
     borderBottomColor: "orange",
     borderBottomWidth: 1,
     color: "white",
     placeholderTextColor: "white",
+    marginBottom : 5,
   },
   errorMessage: {
     color: "red",
@@ -363,6 +347,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   modalText: {
+    ...globalStyle.subTitle,
     color: "white",
   },
   overlayBackground: {

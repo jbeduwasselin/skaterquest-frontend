@@ -1,10 +1,10 @@
-import { TouchableOpacity, Text } from "react-native";
+import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import globalStyle from "../globalStyle";
+import globalStyle, { COLOR_MAIN } from "../globalStyle";
 
 //Un button avec un icon
 export function IconButton({
-  iconName = "user",
+  iconName = "vaping-rooms",
   size = 20,
   color = "black",
   containerStyle,
@@ -13,7 +13,7 @@ export function IconButton({
   Icon;
   return (
     <TouchableOpacity
-      style={containerStyle}
+      style={{ ...styles.container, backgroundColor : "transparent", ...containerStyle }}
       onPress={onPress}
       activeOpacity={0.6}
     >
@@ -28,14 +28,13 @@ export function TextButton({
   containerStyle,
   onPress = () => {},
 }) {
-  Icon;
   return (
     <TouchableOpacity
-      style={containerStyle}
+      style={{ ...styles.container, ...containerStyle }}
       onPress={onPress}
       activeOpacity={0.6}
     >
-      <Text style={textStyle}>{text}</Text>
+      <Text style={{ ...styles.text, ...textStyle }}>{text}</Text>
     </TouchableOpacity>
   );
 }
@@ -55,7 +54,7 @@ export function IconTextButton({
   return (
     <TouchableOpacity
       style={{
-        ...globalStyle.flexRow,
+        ...styles.container,
         justifyContent: "space-evenly",
         ...containerStyle,
       }}
@@ -65,11 +64,15 @@ export function IconTextButton({
       {iconLeft ? (
         <>
           <Icon name={iconName} size={size} color={color}></Icon>
-          <Text style={{ marginLeft: gap, ...textStyle }}>{text}</Text>
+          <Text style={{ marginLeft: gap, ...styles.text, ...textStyle }}>
+            {text}
+          </Text>
         </>
       ) : (
         <>
-          <Text style={{ marginRight: gap, ...textStyle }}>{text}</Text>
+          <Text style={{ marginRight: gap, ...styles.text, ...textStyle }}>
+            {text}
+          </Text>
           <Icon name={iconName} size={size} color={color}></Icon>
         </>
       )}
@@ -141,3 +144,18 @@ export function StateTextButton({
     />
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    ...globalStyle.flexRow,
+    justifyContent: "center",
+    backgroundColor: COLOR_MAIN,
+    borderRadius: 10,
+    padding: 12,
+    margin: 5,
+  },
+  text: {
+    fontSize: 18,
+    fontWeight: 800,
+  },
+});

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateAvatar } from "../reducers/user";
 import {
@@ -11,17 +11,24 @@ import {
 } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import * as ImagePicker from "expo-image-picker";
-import IconButton from "../components/IconButton";
+import { IconTextButton } from "../components/Buttons";
+import globalStyle, { DEFAULT_AVATAR } from "../globalStyle";
+import { changeUserAvatar, getOwnUserInfo } from "../lib/request";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function SettingsScreen({ navigation }) {
-  const dispatch = useDispatch();
-  const avatar = useSelector((state) => state.user.value.avatar);
-  const [profileImage, setProfileImage] = useState(avatar);
+  //Recup les info utilisateur
 
+  const [updateWatcher, forceUpdate] = useReducer((p) => p + 1, 0);
+  const isFocused = useIsFocused();
+
+  const { token } = useSelector((state) => state.user.value);
+  const [userData, setUserData] = useState(null);
   useEffect(() => {
-    // Si l'avatar du store est mis à jour depuis ailleurs
-    if (avatar) setProfileImage(avatar);
-  }, [avatar]);
+    getOwnUserInfo(token).then(({ result, data }) => {
+      result && setUserData(data);
+    });
+  }, [isFocused, updateWatcher]);
 
   const requestPermission = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -37,16 +44,18 @@ export default function SettingsScreen({ navigation }) {
     if (!hasPermission) return;
 
     try {
-      const result = await ImagePicker.launchImageLibraryAsync({
+      const pickerResult = await ImagePicker.launchImageLibraryAsync({
         allowsEditing: true,
         aspect: [1, 1],
         quality: 1,
       });
 
-      if (!result.canceled && result.assets?.length > 0) {
-        const uri = result.assets[0].uri;
-        setProfileImage(uri);         // Local state
-        dispatch(updateAvatar(uri));  // Redux store
+      if (!pickerResult.canceled && pickerResult.assets?.length > 0) {
+        const uri = pickerResult.assets[0].uri;
+        console.log(uri);
+        const { result } = await changeUserAvatar(token, uri);
+        console.log(result);
+        result && forceUpdate();
       }
     } catch (error) {
       console.error("Erreur lors de la sélection de l'image:", error);
@@ -66,30 +75,29 @@ export default function SettingsScreen({ navigation }) {
         <TouchableOpacity onPress={handleImagePress}>
           <Image
             source={
-              profileImage
-                ? { uri: profileImage }
-                : require("../assets/Thomas surf.jpg")
+              userData?.avatar ? { uri: userData.avatar } : DEFAULT_AVATAR
             }
             style={styles.profileImage}
           />
         </TouchableOpacity>
 
-        <Text style={styles.title}>Settings bro !</Text>
+        <Text style={globalStyle.screenTitle}>Reglages</Text>
 
         <View style={styles.buttonContainer}>
-          <IconButton
+          <IconTextButton
             iconName="edit"
-            buttonText="Changer SkaterTag"
+            text="Changer SkaterTag"
+            iconLeft
             onPress={() => console.log("Changer SkaterTag")}
           />
-          <IconButton
+          <IconTextButton
             iconName="settings"
-            buttonText="Autres options qu'on oublie"
+            text="Autres options qu'on oublie"
             onPress={() => console.log("Autres options")}
           />
-          <IconButton
-            iconName="users"
-            buttonText="Equipes"
+          <IconTextButton
+            iconName="emoji-people"
+            text="Equipes"
             onPress={() => console.log("Equipes")}
           />
         </View>
