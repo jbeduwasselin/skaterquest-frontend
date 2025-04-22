@@ -22,14 +22,22 @@ export default function SpotScreen({ navigation, route }) {
   const { token } = useSelector((state) => state.user.value);
   const [videoPlaying, setVideoPlaying] = useState(null);
   const [spotData, setSpotData] = useState(route.params.spotData);
-  const isFocused = useIsFocused();
 
+  // Hook qui détermine si l'écran est actif
+  const isFocused = useIsFocused();
   useEffect(() => {
-    getSpotInfo(token, spotData._id).then(({ result, data, reason }) => {
-      result && setSpotData(data);
-    });
+    /*
+    isFocused nous dis si l'écran est celui actuellement cahrgé par l'utilisateur.
+    Ici on fetch au montage du composant et au changement d'écran mais seulement
+    si on est sur celui ci isFocused = true.
+    */
+    isFocused &&
+      getSpotInfo(token, spotData._id).then(({ result, data }) => {
+        result && setSpotData(data);
+      });
   }, [isFocused]);
 
+  //Pour que la touche retour ferme le lecteur video.
   useBackHandler(() => {
     if (videoPlaying) {
       setVideoPlaying(null);
@@ -38,6 +46,7 @@ export default function SpotScreen({ navigation, route }) {
     return false;
   });
 
+  //Lecteur video
   if (videoPlaying) {
     return (
       <VideoPlayer
@@ -86,15 +95,20 @@ export default function SpotScreen({ navigation, route }) {
 function VideoCard({ videoData, onPress }) {
   const { token, uID } = useSelector((state) => state.user.value);
   const [thumbnail, setThumbnails] = useState(null);
+  
+  //Formatte la date 
   function formatDate(creationDate) {
     const date = new Date(creationDate);
     return ` ${new Intl.DateTimeFormat("fr-FR", { weekday: "long" }).format(date)} ${date.getUTCDate()}/${date.getUTCMonth()}/${date.getFullYear()}`;
   }
+
+  //Au montage crée la thumbnail pour la video.
   useEffect(() => {
     (async function getThumbnail() {
       VideoThumbnails.getThumbnailAsync(videoData.url).then(setThumbnails);
     })();
   }, []);
+  
   return (
     <Pressable style={styles.videoItem} onPress={onPress}>
       <View style={styles.thumbnailWrapper}>

@@ -5,19 +5,19 @@ import BackgroundWrapper from "../components/background";
 export default function CrewScreen() {
   const [userData, setUserData] = useState(null);
   const { token } = useSelector((state) => state.user.value);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     getOwnUserInfo(token).then(({ result, data }) => {
       result && setUserData(data);
     });
-  }, []);
-  return (
-    <BackgroundWrapper>
-      <View style={styles.container}>
-        <Text style={styles.title}>Bienvenue dans mon équipe !</Text>
-      </View>
-    </BackgroundWrapper>
-  );
+  }, [isFocused]);
+
+  console.log(userData);
+  if (userData.crew) {
+    return <BackgroundWrapper></BackgroundWrapper>;
+  }
+  return <BackgroundWrapper></BackgroundWrapper>;
 }
 
 const styles = StyleSheet.create({
