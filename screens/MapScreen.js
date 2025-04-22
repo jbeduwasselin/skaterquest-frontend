@@ -55,7 +55,7 @@ export default function MapScreen({ navigation }) {
         }
       );
     }
-  }, [location , isFocused]); // Re-render du composant quand location a eu le temps de "charger"
+  }, [location, isFocused]); // Re-render du composant quand location a eu le temps de "charger"
 
   let text = "Chargement de la carte...";
   if (errorMsg) {

@@ -11,12 +11,12 @@ import {
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import { useSelector } from "react-redux";
 import { getSpotInfo, unvoteVideo, upvoteVideo } from "../lib/request";
-import IconButton from "../components/IconButton";
 import { useBackHandler } from "@react-native-community/hooks";
 import * as VideoThumbnails from "expo-video-thumbnails";
 import VideoPlayer from "../components/VideoPlayer";
 import Icon from "react-native-vector-icons/Feather";
 import { useIsFocused } from "@react-navigation/native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export default function SpotScreen({ navigation, route }) {
   const { token } = useSelector((state) => state.user.value);
@@ -27,7 +27,7 @@ export default function SpotScreen({ navigation, route }) {
   const isFocused = useIsFocused();
   useEffect(() => {
     /*
-    isFocused nous dis si l'écran est celui actuellement cahrgé par l'utilisateur.
+    isFocused nous dis si l'écran est celui actuellement chargé par l'utilisateur.
     Ici on fetch au montage du composant et au changement d'écran mais seulement
     si on est sur celui ci isFocused = true.
     */
@@ -37,7 +37,7 @@ export default function SpotScreen({ navigation, route }) {
       });
   }, [isFocused]);
 
-  //Pour que la touche retour ferme le lecteur video.
+  // Fonction pour que la touche retour ferme le lecteur vidéo
   useBackHandler(() => {
     if (videoPlaying) {
       setVideoPlaying(null);
@@ -46,7 +46,7 @@ export default function SpotScreen({ navigation, route }) {
     return false;
   });
 
-  //Lecteur video
+  // Lecteur vidéo
   if (videoPlaying) {
     return (
       <VideoPlayer
@@ -55,10 +55,29 @@ export default function SpotScreen({ navigation, route }) {
       />
     );
   }
+
   return (
     <BackgroundWrapper>
       <Text style={styles.title}>{spotData.name}</Text>
-      <IconButton iconName="plus" />
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate("AddPhotoScreen", { spotData })}
+      >
+        <MaterialIcons name="add-a-photo" size={40} color="orange" />
+      </TouchableOpacity>
+
+      <TouchableOpacity
+          onPress={() => {
+            // uploader une vidéo
+          }}
+          style={styles.buttonContainer}
+          activeOpacity={0.8}
+        >
+          <MaterialIcons name="video-call" size={50} color="orange" />
+        </TouchableOpacity>
+
+      
+      
       <Animated.FlatList
         horizontal
         pagingEnabled
@@ -83,11 +102,7 @@ export default function SpotScreen({ navigation, route }) {
           );
         }}
       />
-      <TouchableOpacity
-        onPress={() => navigation.navigate("AddPhotoScreen", { spotData })}
-      >
-        <Text>BOUTON TEMPORAIRE VERS AddPhotoScreen</Text>
-      </TouchableOpacity>
+
     </BackgroundWrapper>
   );
 }
@@ -96,13 +111,13 @@ function VideoCard({ videoData, onPress }) {
   const { token, uID } = useSelector((state) => state.user.value);
   const [thumbnail, setThumbnails] = useState(null);
   
-  //Formatte la date 
+  // Formate la date 
   function formatDate(creationDate) {
     const date = new Date(creationDate);
     return ` ${new Intl.DateTimeFormat("fr-FR", { weekday: "long" }).format(date)} ${date.getUTCDate()}/${date.getUTCMonth()}/${date.getFullYear()}`;
   }
 
-  //Au montage crée la thumbnail pour la video.
+  // Au montage crée le thumbnail pour la vidéo
   useEffect(() => {
     (async function getThumbnail() {
       VideoThumbnails.getThumbnailAsync(videoData.url).then(setThumbnails);
