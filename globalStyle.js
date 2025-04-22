@@ -1,5 +1,10 @@
 import { StyleSheet } from "react-native";
 
+export const COLOR_BACK = "#858585FF";
+export const COLOR_MODAL = "#49D2EA";
+export const COLOR_MAIN = "#FF650C";
+
+
 const globalStyle = StyleSheet.create({
   container: {
     flex: 1,
@@ -7,7 +12,7 @@ const globalStyle = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
   },
-  flexRow : {
+  flexRow: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -15,7 +20,7 @@ const globalStyle = StyleSheet.create({
   screenTitle: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#FF650C",
+    color: COLOR_MAIN,
     textAlign: "center",
     marginTop: 20,
     marginBottom: 10,
@@ -25,18 +30,18 @@ const globalStyle = StyleSheet.create({
     letterSpacing: 1,
     textTransform: "uppercase",
   },
-  subTitle : {
+  subTitle: {
     fontWeight: 800,
     fontSize: 18,
   },
-
-  subSubTitle : {
+  subSubTitle: {
     fontSize: 16,
     fontWeight: "bold",
+  },
+  textInput: {
+    backgroundColor: "white",
+    borderRadius: 5,
   },
 });
 
 export default globalStyle;
-export const COLOR_BACKGROUND = "#3B3B3B";
-export const COLOR_MODAL = "#49D2EA";
-export const COLOR_MAIN = "#FEA185";

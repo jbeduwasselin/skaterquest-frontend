@@ -5,7 +5,7 @@ import {
   StyleSheet,
   FlatList,
   Image,
-  TouchableOpacity,
+  TextInput,
 } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import { useSelector } from "react-redux";
@@ -19,9 +19,12 @@ import {
   removeUserFromCrew,
   searchUser,
 } from "../lib/request";
-import Icon from "react-native-vector-icons/MaterialIcons";
-import globalStyle from "../globalStyle";
-import { TextInput } from "react-native-paper";
+import globalStyle, {COLOR_MAIN } from "../globalStyle";
+import {
+  IconButton,
+  IconTextButton,
+  StateIconButton,
+} from "../components/Buttons";
 
 export default function CrewScreen() {
   const [updateWatcher, forceUpdate] = useReducer((p) => p + 1, 0);
@@ -121,9 +124,12 @@ export default function CrewScreen() {
         onChangeText={setNewCrewName}
         placeholder=" Nom de Ton crew"
       ></TextInput>
-      <IconButton
+      <IconTextButton
         iconName="send"
-        color="yellow"
+        text="CREATE"
+        textStyle={globalStyle.screenTitle}
+        containerStyle={styles.createButton}
+        color={COLOR_MAIN}
         size={70}
         onPress={handleCreateCrew}
       />
@@ -184,57 +190,9 @@ function MemberCard({ memberData, isAdmin, isUser, isUserAdmin, forceUpdate }) {
   );
 }
 
-function StateIconButton({
-  iconName = "user",
-  size = 20,
-  inactiveColor = "black",
-  activeColor = "blue",
-  containerStyle,
-  value,
-  onPress = () => {},
-}) {
-  const [isActive, setIsActive] = useState(false);
-  useEffect(() => {
-    setIsActive(value);
-  }, [value]);
-
-  return (
-    <IconButton
-      color={isActive ? activeColor : inactiveColor}
-      onPress={() => {
-        onPress(!isActive);
-        setIsActive(!isActive);
-      }}
-      {...{
-        iconName,
-        size,
-        containerStyle,
-      }}
-    />
-  );
-}
-
-function IconButton({
-  iconName = "user",
-  size = 20,
-  color = "black",
-  containerStyle,
-  onPress = () => {},
-}) {
-  return (
-    <TouchableOpacity
-      style={containerStyle}
-      onPress={onPress}
-      activeOpacity={0.6}
-    >
-      <Icon name={iconName} size={size} color={color}></Icon>
-    </TouchableOpacity>
-  );
-}
-
 const styles = StyleSheet.create({
   title: {
-    ...globalStyle.screenTitle
+    ...globalStyle.screenTitle,
   },
   memberContainer: {
     width: "80%",
@@ -254,9 +212,14 @@ const styles = StyleSheet.create({
     ...globalStyle.flexRow,
   },
   textInput: {
+    ...globalStyle.textInput,
     maxHeight: 50,
     minHeight: 50,
-    width : "80%",
-    margin : "2%"
+    width: "80%",
+    margin: "2%",
   },
+  createButton : {
+    padding : 12,
+    minWidth : "40%",
+  }
 });

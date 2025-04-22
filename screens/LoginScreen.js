@@ -5,16 +5,13 @@ import {
   TextInput,
   ImageBackground,
   Image,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
 } from "react-native";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
-import { FontAwesome } from "@expo/vector-icons";
 import { signInRequest, signUpRequest } from "../lib/request";
-import IconButton from "../components/IconButton";
+import { IconButton, IconTextButton, TextButton } from "../components/Buttons";
+import { COLOR_BACK, COLOR_MAIN } from "../globalStyle";
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -75,13 +72,13 @@ export default function LoginScreen({ navigation }) {
 
   const signInModalContent = (
     <View style={styles.signInContainer}>
-      <TouchableOpacity
+      <IconButton
         onPress={emptyStates}
-        style={styles.closeButton}
-        activeOpacity={0.8}
-      >
-        <FontAwesome name={"close"} color="black" size={16} />
-      </TouchableOpacity>
+        iconName="cancel"
+        color="white"
+        size={30}
+        containerStyle={{ alignSelf: "flex-end", padding: 5 }}
+      />
       <Text style={styles.modalText}>Connexion</Text>
       <TextInput
         style={styles.inputs}
@@ -97,26 +94,27 @@ export default function LoginScreen({ navigation }) {
         onChangeText={setSignInPassword}
         value={signInPassword}
       />
-      <TouchableOpacity
+      <TextButton
         onPress={handleSignIn}
         style={styles.button}
         activeOpacity={0.8}
-      >
-        <Text style={styles.textButton}>Valider</Text>
-      </TouchableOpacity>
+        text="Se connecter"
+        textStyle={styles.buttonText}
+        containerStyle={styles.button}
+      />
       <Text style={styles.errorMessage}>{errorMessage}</Text>
     </View>
   );
 
   const signUpModalContent = (
     <View style={styles.signUpContainer}>
-      <TouchableOpacity
+      <IconButton
         onPress={emptyStates}
-        style={styles.closeButton}
-        activeOpacity={0.8}
-      >
-        <FontAwesome name={"close"} color="black" size={16} />
-      </TouchableOpacity>
+        iconName="cancel"
+        color="white"
+        size={30}
+        containerStyle={{ alignSelf: "flex-end", padding: 5 }}
+      />
       <Text style={styles.modalText}>Inscription</Text>
       <TextInput
         style={styles.inputs}
@@ -139,17 +137,17 @@ export default function LoginScreen({ navigation }) {
         onChangeText={setSignUpPassword}
         value={signUpPassword}
       />
-      <TouchableOpacity
+      <TextButton
         onPress={handleSignUp}
         style={styles.button}
         activeOpacity={0.8}
-      >
-        <Text style={styles.textButton}>Valider l'inscription !</Text>
-      </TouchableOpacity>
+        text="Valider l'inscription"
+        textStyle={styles.buttonText}
+        containerStyle={styles.button}
+      />
       <Text style={styles.errorMessage}>{errorMessage}</Text>
     </View>
   );
-
   return (
     <ImageBackground
       source={require("../assets/Autre fond.png")}
@@ -163,28 +161,32 @@ export default function LoginScreen({ navigation }) {
         />
 
         {!showSignInModal ? (
-          <IconButton
-            iconName="log-in"
-            buttonText="Connexion"
+          <IconTextButton
+            iconName="login"
+            text="Connexion"
+            size={30}
             onPress={() => {
               setShowSignUpModal(false);
               setShowSignInModal(true);
             }}
-            style={{ width: 200,marginTop: 20 }}
+            containerStyle={styles.button}
+            textStyle={styles.buttonText}
           />
         ) : (
           signInModalContent
         )}
 
         {!showSignUpModal ? (
-          <IconButton
-            iconName="user-plus"
-            buttonText="T'es nouveau ? Créer un compte ici !"
+          <IconTextButton
+            iconName="person-add"
+            text="T'es nouveau ? Créer un compte ici !"
+            size={30}
+            containerStyle={styles.button}
+            textStyle={styles.buttonText}
             onPress={() => {
               setShowSignInModal(false);
               setShowSignUpModal(true);
             }}
-            style={{ width: 250,marginTop: 20 }}
           />
         ) : (
           signUpModalContent
@@ -206,26 +208,19 @@ export default function LoginScreen({ navigation }) {
           </Text>
 
           <View style={styles.tutoButtons}>
-            <TouchableOpacity
-              style={styles.button}
+            <NextButton
               onPress={() => {
                 setShowTuto1(false);
                 setShowTuto2(true);
               }}
-            >
-              <Text style={styles.textButton}>Suivant</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: "grey" }]}
+            />
+            <SkipButton
               onPress={() => {
                 setShowTuto1(false);
                 setShowTuto2(false);
                 navigation.navigate("TabNavigator");
               }}
-            >
-              <Text style={styles.textButton}>Passer</Text>
-            </TouchableOpacity>
+            />
           </View>
         </View>
       )}
@@ -239,27 +234,20 @@ export default function LoginScreen({ navigation }) {
           </Text>
 
           <View style={styles.tutoButtons}>
-            <TouchableOpacity
-              style={styles.button}
+            <NextButton
               onPress={() => {
                 setShowTuto2(false);
                 setShowTuto3(true);
               }}
-            >
-              <Text style={styles.textButton}>Suivant</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: "grey" }]}
+            />
+            <SkipButton
               onPress={() => {
                 setShowTuto1(false);
                 setShowTuto2(false);
                 setShowTuto3(false);
                 navigation.navigate("TabNavigator");
               }}
-            >
-              <Text style={styles.textButton}>Passer</Text>
-            </TouchableOpacity>
+            />
           </View>
         </View>
       )}
@@ -273,17 +261,17 @@ export default function LoginScreen({ navigation }) {
           </Text>
           <Text style={styles.tutoTitle}>T'es chaud patate ? 🛹💪</Text>
           <View style={styles.tutoButtons}>
-            <TouchableOpacity
-              style={styles.button}
+            <TextButton
               onPress={() => {
                 setShowTuto1(false);
                 setShowTuto2(false);
                 setShowTuto3(false);
                 navigation.navigate("TabNavigator");
               }}
-            >
-              <Text style={styles.textButton}>C'est parti ! 🤙🛹</Text>
-            </TouchableOpacity>
+              textStyle={styles.buttonText}
+              containerStyle={styles.button}
+              text="C'est parti ! 🤙🛹"
+            />
           </View>
         </View>
       )}
@@ -291,22 +279,38 @@ export default function LoginScreen({ navigation }) {
   );
 }
 
+const NextButton = ({ onPress }) => (
+  <TextButton
+    text="Suivant"
+    activeOpacity={0.8}
+    textStyle={styles.buttonText}
+    containerStyle={styles.button}
+    onPress={onPress}
+  />
+);
+
+const SkipButton = ({ onPress }) => (
+  <TextButton
+    text="Passer"
+    activeOpacity={0.8}
+    textStyle={styles.buttonText}
+    containerStyle={{ ...styles.button, backgroundColor: COLOR_BACK }}
+    onPress={onPress}
+  />
+);
+
 const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-    backgroundColor: "white",
-    borderRadius: 1,
-    paddingTop: 100,
-  },
   button: {
     alignItems: "center",
     padding: 12,
-    width: "50%",
+    minWidth: 200,
     marginTop: 40,
-    backgroundColor: "#FF650C",
+    backgroundColor: COLOR_MAIN,
     borderRadius: 10,
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: 800,
   },
   signUpContainer: {
     alignItems: "center",
