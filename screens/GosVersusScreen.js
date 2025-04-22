@@ -122,7 +122,7 @@ export default function GosVersusScreen({ route, navigation }) {
           style={styles.profileContainer}
         >
           <View style={styles.profile}>
-            <Text style={styles.name}>{skater1}</Text>
+            <Text style={styles.name}>{skater1 || "Joueur 1"}</Text>
             <Text style={styles.letters}>{skater1Letters}</Text>
           </View>
 
@@ -131,7 +131,7 @@ export default function GosVersusScreen({ route, navigation }) {
           </View>
 
           <View style={styles.profile}>
-            <Text style={styles.name}>{skater2}</Text>
+            <Text style={styles.name}>{skater2 || "Joueur 2"}</Text>
             <Text style={styles.letters}>{skater2Letters}</Text>
           </View>
         </Animatable.View>
@@ -145,10 +145,10 @@ export default function GosVersusScreen({ route, navigation }) {
           <Text style={styles.scoreText}>Score</Text>
           <View style={styles.scoreBoard}>
             <Text style={styles.score}>
-              {skater1}: {skater1Score}
+              {skater1 || "Joueur 1"}: {skater1Score}
             </Text>
             <Text style={styles.score}>
-              {skater2}: {skater2Score}
+              {skater2 || "Joueur 2"}: {skater2Score}
             </Text>
           </View>
         </Animatable.View>
@@ -244,8 +244,8 @@ export default function GosVersusScreen({ route, navigation }) {
               <Text style={styles.modalText}>Game over !</Text>
               <Text style={styles.modalText}>
                 {skater1Score > skater2Score
-                  ? `${skater1} a gagné !`
-                  : `${skater2} a gagné !`}
+                  ? `${skater1 || "Joueur 1"} a gagné !`
+                  : `${skater2 || "Joueur 2"} a gagné !`}
               </Text>
               <IconButton
                 iconName="check-circle"
