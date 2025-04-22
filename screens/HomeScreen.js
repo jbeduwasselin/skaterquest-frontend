@@ -1,26 +1,36 @@
-import React from "react";
-import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, Image, TouchableOpacity, Text } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
-import BackgroundWrapper from "../components/background";
+import BackgroundWrapper from "../components/BackgroundWrapper";
 import IconButton from "../components/IconButton";
 import { useSelector } from "react-redux";
 import * as Animatable from "react-native-animatable";
+import { useIsFocused } from "@react-navigation/native";
+import { getOwnUserInfo } from "../lib/request";
+import globalStyle from "../globalStyle";
 
 export default function HomeScreen({ navigation }) {
-  const avatar = useSelector((state) => state.user.value.avatar);
+  const isFocused = useIsFocused();
+  //Recup les info utilisateur
+  const { token } = useSelector((state) => state.user.value);
+  const [userData, setUserData] = useState(null);
+  useEffect(() => {
+    getOwnUserInfo(token).then(({ result, data }) => {
+      result && setUserData(data);
+    });
+  }, [isFocused]);
 
   return (
     <BackgroundWrapper>
-      <View style={styles.container}>
-        {/* Icône des paramètres en haut à gauche */}
-        <View style={styles.headerContainer}>
-          <TouchableOpacity
-            style={styles.settingsIcon}
-            onPress={() => navigation.navigate("AppSettingsScreen")}
-          >
-            <Icon name="settings" size={24} color="#fff" />
-          </TouchableOpacity>
-        </View>
+      {/* Icône des paramètres en haut à gauche */}
+      <View style={styles.headerContainer}>
+        <TouchableOpacity
+          style={styles.settingsIcon}
+          onPress={() => navigation.navigate("AppSettingsScreen")}
+        >
+          <Icon name="settings" size={24} color="#fff" />
+        </TouchableOpacity>
+        <Text style={globalStyle.screenTitle}>SkateQuest</Text>
 
         {/* Icône du crayon en haut à droite */}
         <TouchableOpacity
@@ -29,66 +39,68 @@ export default function HomeScreen({ navigation }) {
         >
           <Icon name="edit" size={24} color="#fff" />
         </TouchableOpacity>
+      </View>
 
-        {/* Image de profil */}
-        <Image
-          source={
-            avatar ? { uri: avatar } : require("../assets/Thomas surf.jpg")
-          }
-          style={styles.profileImage}
-        />
+      {/* Image de profil */}
+      <Image
+        source={
+          userData?.avatar
+            ? { uri: userData.avatar }
+            : require("../assets/Trasher.png")
+        }
+        style={styles.profileImage}
+      />
 
-        <View style={styles.buttonContainer}>
-          {/* "Livre de tricks" + image à droite */}
-          <View style={styles.row}>
-            <IconButton
-              iconName="book"
-              buttonText="Livre de tricks"
-              onPress={() => navigation.navigate("TricksScreen")}
-              style={styles.iconButton}
-            />
-            <Animatable.Image
-              animation="bounceInRight"
-              duration={1000}
-              source={require("../assets/Skater01.png")}
-              style={styles.sideImage}
-              resizeMode="contain"
-            />
-          </View>
+      <View style={styles.buttonContainer}>
+        {/* "Livre de tricks" + image à droite */}
+        <View style={styles.row}>
+          <IconButton
+            iconName="book"
+            buttonText="Livre de tricks"
+            onPress={() => navigation.navigate("TricksScreen")}
+            style={styles.iconButton}
+          />
+          <Animatable.Image
+            animation="bounceInRight"
+            duration={1000}
+            source={require("../assets/Skater01.png")}
+            style={styles.sideImage}
+            resizeMode="contain"
+          />
+        </View>
 
-          {/* Image à gauche + "Mes vidéos" */}
-          <View style={styles.row}>
-            <Animatable.Image
-              animation="bounceInLeft"
-              duration={1000}
-              source={require("../assets/Skater02.png")}
-              style={styles.sideImage}
-              resizeMode="contain"
-            />
-            <IconButton
-              iconName="video"
-              buttonText="Mes vidéos"
-              onPress={() => navigation.navigate("VideoScreen")}
-              style={styles.iconButton}
-            />
-          </View>
+        {/* Image à gauche + "Mes vidéos" */}
+        <View style={styles.row}>
+          <Animatable.Image
+            animation="bounceInLeft"
+            duration={1000}
+            source={require("../assets/Skater02.png")}
+            style={styles.sideImage}
+            resizeMode="contain"
+          />
+          <IconButton
+            iconName="video"
+            buttonText="Mes vidéos"
+            onPress={() => navigation.navigate("VideoScreen")}
+            style={styles.iconButton}
+          />
+        </View>
 
-          {/* "Mon équipe" + image à droite */}
-          <View style={styles.row}>
-            <IconButton
-              iconName="users"
-              buttonText="Mon équipe"
-              onPress={() => navigation.navigate("CrewScreen")}
-              style={styles.iconButton}
-            />
-            <Animatable.Image
-              animation="bounceInUp"
-              duration={1000}
-              source={require("../assets/Skater03.png")}
-              style={styles.sideImage}
-              resizeMode="contain"
-            />
-          </View>
+        {/* "Mon équipe" + image à droite */}
+        <View style={styles.row}>
+          <IconButton
+            iconName="users"
+            buttonText="Mon équipe"
+            onPress={() => navigation.navigate("CrewScreen")}
+            style={styles.iconButton}
+          />
+          <Animatable.Image
+            animation="bounceInUp"
+            duration={1000}
+            source={require("../assets/Skater03.png")}
+            style={styles.sideImage}
+            resizeMode="contain"
+          />
         </View>
       </View>
     </BackgroundWrapper>
@@ -103,27 +115,18 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   headerContainer: {
-    position: "absolute",
-    top: 50,
-    left: 20,
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    zIndex: 1,
+    ...globalStyle.flexRow,
+    width : "100%",
+    justifyContent : "space-between",
+    alignItems : "flex-start"
+
   },
   settingsIcon: {
     marginLeft: 20,
   },
   editIcon: {
-    position: "absolute",
-    top: 50,
-    right: 20,
-    zIndex: 2,
   },
   profileImage: {
-    position: "absolute",
-    top: 80,
     width: 120,
     height: 120,
     borderRadius: 60,

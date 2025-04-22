@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import BackgroundWrapper from "../components/background";
+import BackgroundWrapper from "../components/BackgroundWrapper";
 import Icon from "react-native-vector-icons/Feather";
 import { useSelector } from "react-redux";
 import { getOwnUserInfo } from "../lib/request";
@@ -112,7 +112,7 @@ function VideoCard({ videoData, onPress }) {
       </View>
 
       <View style={styles.infoContainer}>
-        <Text style={styles.infoText}>👍 {videoData.voteCount} votes</Text>
+        <Text style={styles.infoText}>👍 {videoData.votes.length} votes</Text>
         <Text style={styles.infoText}>📍 {videoData.spot?.name}</Text>
         <Text style={styles.infoText}>
           🕒 {formatDate(videoData.creationDate)}

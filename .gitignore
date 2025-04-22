@@ -39,3 +39,6 @@ yarn.lock
 
 # typescript
 *.tsbuildinfo
+
+# test pour bootcamp
+user.test.js

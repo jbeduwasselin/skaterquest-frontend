@@ -6,18 +6,18 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
-import BackgroundWrapper from "../components/background";
+import BackgroundWrapper from "../components/BackgroundWrapper";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
-import IconButton from "../components/IconButton";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useDispatch, useSelector } from "react-redux";
 import { updateSpot } from "../reducers/spot";
 import { getOwnUserInfo, getNearestSpot } from "../lib/request";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function MapScreen({ navigation }) {
   const dispatch = useDispatch();
-
+  const isFocused = useIsFocused();
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -55,7 +55,7 @@ export default function MapScreen({ navigation }) {
         }
       );
     }
-  }, [location]); // Re-render du composant quand location a eu le temps de "charger"
+  }, [location, isFocused]); // Re-render du composant quand location a eu le temps de "charger"
 
   let text = "Chargement de la carte...";
   if (errorMsg) {
@@ -66,7 +66,7 @@ export default function MapScreen({ navigation }) {
 
   const addSpot = () => {
     dispatch(updateSpot(location)); // Enregistrement des coordonnées actuelles dans le store
-    navigation.navigate("AddSpotScreen");
+    navigation.navigate("AddSpotScreen"); // Plutôt passer les infos du spot via ce navigate au lieu de passer par le store
   };
 
   const marker = visibleSpots?.map((spotData, i) => {
@@ -82,7 +82,7 @@ export default function MapScreen({ navigation }) {
       />
     );
   });
-  console.log(location)
+  console.log(location);
   return (
     <BackgroundWrapper>
       <View style={styles.container}>

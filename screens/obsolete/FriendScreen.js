@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TextInput } from "react-native";
-import BackgroundWrapper from "../components/background";
-import IconButton from "../components/IconButton"; // Assure-toi du bon chemin
+import BackgroundWrapper from "../../components/background";
+import IconButton from "../../components/IconButton"; // Assure-toi du bon chemin
 
 export default function FriendScreen({ navigation }) {
   return (

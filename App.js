@@ -12,14 +12,13 @@ import GosPlayScreen from "./screens/GosPlayScreen";
 import GosVersusScreen from "./screens/GosVersusScreen";
 import GosVersusScreenBis from "./screens/GosVersusScreenBis";
 import MapScreen from "./screens/MapScreen";
-import FriendScreen from "./screens/FriendScreen";
 import CrewScreen from "./screens/CrewScreen";
 import VideoScreen from "./screens/VideoScreen";
-import TricksScreen from "./screens/TricksScreenZB";
+import TricksScreen from "./screens/TricksScreen";
 import AppSettingsScreen from "./screens/AppSettingsScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import AddSpotScreen from "./screens/AddSpotScreen";
-import SpotScreen from "./screens/SpotScreenZB";
+import SpotScreen from "./screens/SpotScreen";
 import AddPhotoScreen from "./screens/AddPhotoScreen";
 
 // Redux
@@ -108,7 +107,7 @@ const TabNavigator = () => {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="GoS" component={GosPlayScreen} />
       <Tab.Screen name="Spots" component={MapScreen} />
-      <Tab.Screen name="Amis" component={FriendScreen} />
+      <Tab.Screen name="Amis" component={CrewScreen} />
     </Tab.Navigator>
   );
 };

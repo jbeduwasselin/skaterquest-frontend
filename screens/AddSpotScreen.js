@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
-import BackgroundWrapper from "../components/background";
+import BackgroundWrapper from "../components/BackgroundWrapper";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useDispatch, useSelector } from "react-redux";
 import { updateSpot } from "../reducers/spot";
@@ -47,10 +47,10 @@ export default function AddSpotScreen({ navigation }) {
 
     // On redirige l'utilisateur vers l'écran du spot ajouté
     if (spotResponse.result === true) {
-      navigation.navigate("SpotScreen", { spotData: data });
+      navigation.navigate("SpotScreen", { spotData: spotResponse.data });
     } else {
       spotResponse.fallback &&
-        navigation.navigate("SpotScreen", { spotData: fallback });
+        navigation.navigate("SpotScreen", { spotData: spotResponse.fallback });
     }
   };
 
