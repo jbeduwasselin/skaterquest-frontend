@@ -234,15 +234,13 @@ function IconButton({
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#fff",
+    ...globalStyle.screenTitle
   },
   memberContainer: {
     width: "80%",
   },
   memberCard: {
-    ...globalStyle.flewRow,
+    ...globalStyle.flexRow,
     width: "80%",
     justifyContent: "space-between",
   },
@@ -253,7 +251,7 @@ const styles = StyleSheet.create({
   controlContainer: {
     width: "20%",
     justifyContent: "space-evenly",
-    ...globalStyle.flewRow,
+    ...globalStyle.flexRow,
   },
   textInput: {
     maxHeight: 50,
