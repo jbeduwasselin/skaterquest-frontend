@@ -14,10 +14,11 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useDispatch, useSelector } from "react-redux";
 import { updateSpot } from "../reducers/spot";
 import { getOwnUserInfo, getNearestSpot } from "../lib/request";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function MapScreen({ navigation }) {
   const dispatch = useDispatch();
-
+  const isFocused = useIsFocused();
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -43,7 +44,7 @@ export default function MapScreen({ navigation }) {
     };
 
     getLocation();
-  }, []);
+  }, [isFocused]);
 
   // Hook d'effet pour l'affichage des spots proches (pas à l'initialisation du composant car il faut un petit temps pour récupérer les infos de location)
   useEffect(() => {
@@ -82,7 +83,7 @@ export default function MapScreen({ navigation }) {
       />
     );
   });
-  console.log(location)
+  console.log(location);
   return (
     <BackgroundWrapper>
       <View style={styles.container}>
