@@ -44,7 +44,7 @@ export default function MapScreen({ navigation }) {
     };
 
     getLocation();
-  }, [isFocused]);
+  }, []);
 
   // Hook d'effet pour l'affichage des spots proches (pas à l'initialisation du composant car il faut un petit temps pour récupérer les infos de location)
   useEffect(() => {
@@ -56,7 +56,7 @@ export default function MapScreen({ navigation }) {
         }
       );
     }
-  }, [location]); // Re-render du composant quand location a eu le temps de "charger"
+  }, [location, isFocused]); // Re-render du composant quand location a eu le temps de "charger"
 
   let text = "Chargement de la carte...";
   if (errorMsg) {

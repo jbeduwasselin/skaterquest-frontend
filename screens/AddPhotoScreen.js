@@ -45,11 +45,12 @@ export default function AddPhotoScreen({ navigation, route }) {
   const savePhotos = async () => {
     if (photosSpot.length > 0) {
       for (let takenPhoto of photosSpot) {
-        const { result } = await addPictureToSpot(
+        const { result, error } = await addPictureToSpot(
           token,
           takenPhoto.uri,
           spotData._id
         );
+        console.log(result, error);
       }
     }
     photosSpot.length > 0 && navigation.goBack();
