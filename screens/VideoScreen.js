@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import BackgroundWrapper from "../components/background";
+import BackgroundWrapper from "../components/BackgroundWrapper";
 import Icon from "react-native-vector-icons/Feather";
 import { useSelector } from "react-redux";
 import { getOwnUserInfo } from "../lib/request";

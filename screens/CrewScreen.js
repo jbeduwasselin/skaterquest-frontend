@@ -7,7 +7,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import BackgroundWrapper from "../components/background";
+import BackgroundWrapper from "../components/BackgroundWrapper";
 import { useSelector } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
 import {
@@ -114,7 +114,7 @@ export default function CrewScreen() {
   return (
     <BackgroundWrapper>
       <Text style={styles.title}>
-        Tu n'as pas de crew, fait toi inviter ou crée en un !
+        Tu n'as pas de crew, fais toi inviter ou crée en un !
       </Text>
       <TextInput
         style={styles.textInput}
@@ -256,7 +256,9 @@ const styles = StyleSheet.create({
     ...globalStyle.flewRow,
   },
   textInput: {
-    maxHeight: "5%",
-    minHeight: "5%",
+    maxHeight: 50,
+    minHeight: 50,
+    width : "80%",
+    margin : "2%"
   },
 });

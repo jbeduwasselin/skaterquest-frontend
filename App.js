@@ -14,11 +14,11 @@ import GosVersusScreenBis from "./screens/GosVersusScreenBis";
 import MapScreen from "./screens/MapScreen";
 import CrewScreen from "./screens/CrewScreen";
 import VideoScreen from "./screens/VideoScreen";
-import TricksScreen from "./screens/TricksScreenZB";
+import TricksScreen from "./screens/TricksScreen";
 import AppSettingsScreen from "./screens/AppSettingsScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import AddSpotScreen from "./screens/AddSpotScreen";
-import SpotScreen from "./screens/SpotScreenZB";
+import SpotScreen from "./screens/SpotScreen";
 import AddPhotoScreen from "./screens/AddPhotoScreen";
 
 // Redux

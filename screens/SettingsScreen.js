@@ -9,7 +9,7 @@ import {
   Image,
   Alert,
 } from "react-native";
-import BackgroundWrapper from "../components/background";
+import BackgroundWrapper from "../components/BackgroundWrapper";
 import * as ImagePicker from "expo-image-picker";
 import IconButton from "../components/IconButton";
 

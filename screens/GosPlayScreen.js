@@ -7,10 +7,9 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-
-import BackgroundWrapper from "../components/background";
 import IconButton from "../components/IconButton";
 import * as Animatable from "react-native-animatable";
+import BackgroundWrapper from "../components/BackgroundWrapper";
 
 export default function GosPlayScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(true);

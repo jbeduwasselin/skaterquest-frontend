@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Switch,
 } from "react-native";
-import BackgroundWrapper from "../components/background";
+import BackgroundWrapper from "../components/BackgroundWrapper";
 import IconButton from "../components/IconButton";
 import Icon from "react-native-vector-icons/Feather";
 

@@ -10,7 +10,7 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import BackgroundWrapper from "../components/background";
+import BackgroundWrapper from "../components/BackgroundWrapper";
 import { CameraView, Camera } from "expo-camera";
 import { useIsFocused } from "@react-navigation/native";
 import { addPictureToSpot } from "../lib/request";
