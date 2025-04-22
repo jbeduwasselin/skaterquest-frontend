@@ -6,12 +6,11 @@ import {
   TouchableOpacity,
   View,
   Modal,
-  Button,
   Image,
 } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { categories, difficultyLevels, tricksData } from "../data/trickList";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTrick } from "../reducers/tricks";
@@ -41,18 +40,22 @@ export default function TricksScreen() {
   const [settings, setSettings] = useState(initialSettings);
   const [showModal, setShowModal] = useState(false);
 
-  const filteredTricks = tricksData.filter((trick) => {
-    return (
-      !settings.excludedCategory.includes(trick.category) &&
-      !settings.excludedDificulty.includes(trick.difficulty)
-    );
-  });
+  const tricksValidated = useSelector((state) => state.tricks.value);
 
-  const validatedTricks = useSelector((state) => {
-    return filteredTricks.filter((trick) => {
-      return state.tricks.value.includes(trick.name);
+  const filteredTricks = useMemo(() => {
+    return tricksData.filter((trick) => {
+      return (
+        !settings.excludedCategory.includes(trick.category) &&
+        !settings.excludedDificulty.includes(trick.difficulty)
+      );
     });
-  });
+  }, [settings.excludedCategory, settings.excludedDificulty]);
+
+  const validatedTricks = useMemo(() => {
+    return filteredTricks.filter((trick) =>
+      tricksValidated.includes(trick.name)
+    );
+  }, [filteredTricks, tricksValidated]);
 
   const percentage = (validatedTricks.length / filteredTricks.length) * 100;
 
@@ -86,6 +89,7 @@ export default function TricksScreen() {
         label={`Tricks Validés: ${Math.round(percentage)}%`}
         progress={percentage / 100}
       />
+
       <View style={globalStyle.flexRow}>
         <View style={styles.filterSection}>
           <Text style={styles.filterSectionTitle}>Catégories</Text>
