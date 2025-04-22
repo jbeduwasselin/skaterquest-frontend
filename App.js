@@ -12,7 +12,6 @@ import GosPlayScreen from "./screens/GosPlayScreen";
 import GosVersusScreen from "./screens/GosVersusScreen";
 import GosVersusScreenBis from "./screens/GosVersusScreenBis";
 import MapScreen from "./screens/MapScreen";
-import FriendScreen from "./screens/FriendScreen";
 import CrewScreen from "./screens/CrewScreen";
 import VideoScreen from "./screens/VideoScreen";
 import TricksScreen from "./screens/TricksScreenZB";

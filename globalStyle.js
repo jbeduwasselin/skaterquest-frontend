@@ -8,6 +8,11 @@ const globalStyle = StyleSheet.create({
     fontSize: 24,
     fontWeight: 800,
   },
+  flewRow : {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  }
 });
 
 export default globalStyle;
