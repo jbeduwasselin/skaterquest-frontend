@@ -115,7 +115,7 @@ export default function LoginScreen({ navigation }) {
     </ModalContent>
   );
 
-  const signUpModalContent = (
+  const signUpModalContent = ( 
     <ModalContent
       visibleState={showSignUpModal}
       containerStyle={globalStyle.modalContainer}

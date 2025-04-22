@@ -4,7 +4,7 @@ import globalStyle, { COLOR_MAIN } from "../globalStyle";
 import { useEffect, useState } from "react";
 //Un button avec un icon
 export function IconButton({
-  iconName = "vaping-rooms",
+  iconName,
   size = 20,
   color = "black",
   containerStyle,
@@ -13,7 +13,11 @@ export function IconButton({
   Icon;
   return (
     <TouchableOpacity
-      style={{ ...styles.container, backgroundColor : "transparent", ...containerStyle }}
+      style={{
+        ...styles.container,
+        backgroundColor: "transparent",
+        ...containerStyle,
+      }}
       onPress={onPress}
       activeOpacity={0.6}
     >
@@ -41,7 +45,7 @@ export function TextButton({
 
 //Un bouton avec du text et une icone
 export function IconTextButton({
-  iconName = "user",
+  iconName,
   size = 20,
   color = "black",
   text = "",
@@ -82,7 +86,7 @@ export function IconTextButton({
 
 //Un button avec un icone et un état interne (on/off)
 export function StateIconButton({
-  iconName = "user",
+  iconName,
   size = 20,
   inactiveColor = "black",
   activeColor = "blue",
@@ -146,7 +150,9 @@ export function StateTextButton({
 
 const styles = StyleSheet.create({
   container: {
-    ...globalStyle.flexRow,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "center",
     backgroundColor: COLOR_MAIN,
     borderRadius: 10,
