@@ -1,7 +1,7 @@
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import globalStyle, { COLOR_MAIN } from "../globalStyle";
-
+import { useEffect, useState } from "react";
 //Un button avec un icon
 export function IconButton({
   iconName = "vaping-rooms",
@@ -138,7 +138,6 @@ export function StateTextButton({
       }}
       {...{
         text,
-        size,
         textStyle,
       }}
     />

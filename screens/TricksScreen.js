@@ -18,6 +18,7 @@ import ProgressBar from "../components/ProgressBar";
 import ConfettiCannon from "react-native-confetti-cannon";
 import IconButton from "../components/IconButton";
 import globalStyle from "../globalStyle";
+import { StateTextButton } from "../components/Buttons";
 
 const initialSettings = Object.freeze({
   excludedDificulty: [],
@@ -89,10 +90,14 @@ export default function TricksScreen() {
         label={`Tricks Validés: ${Math.round(percentage)}%`}
         progress={percentage / 100}
       />
-      <View style={{...globalStyle.flexRow , justifyContent:"center", flexWrap : "wrap"}}>
+      <View
+        style={{
+          ...globalStyle.flexRow,
+          justifyContent: "center",
+          flexWrap: "wrap",
+        }}
+      >
         <View style={styles.filterSection}>
-          <Text style={styles.filterSectionTitle}>Catégories</Text>
-          <View style={styles.settingsContainer}>
             {categories.map((category, id) => (
               <FilterButton
                 key={id}
@@ -101,12 +106,6 @@ export default function TricksScreen() {
                 onPress={() => toggleFilterCategory(category)}
               />
             ))}
-          </View>
-        </View>
-
-        <View style={styles.filterSection}>
-          <Text style={styles.filterSectionTitle}>Difficulté</Text>
-          <View style={styles.settingsContainer}>
             {difficultyLevels.map((difficulty, id) => (
               <FilterButton
                 key={id}
@@ -115,12 +114,6 @@ export default function TricksScreen() {
                 onPress={() => toggleFilterDifficulty(difficulty)}
               />
             ))}
-          </View>
-        </View>
-      </View>
-
-      <View style={styles.filterSection}>
-        <Text style={styles.filterSectionTitle}>Validé</Text>
         <FilterButton
           text="Validé"
           color="blue"
@@ -128,6 +121,7 @@ export default function TricksScreen() {
             setSettings({ ...settings, onlyValidated: !settings.onlyValidated })
           }
         />
+        </View>
       </View>
 
       <FlatList
@@ -175,25 +169,21 @@ export default function TricksScreen() {
   );
 }
 
-function FilterButton({ text, color, onPress }) {
-  const [active, setActive] = useState(false);
-  return (
-    <TouchableOpacity
-      activeOpacity={0.6}
-      style={{
-        ...styles.filterButton,
-        backgroundColor: color,
-        opacity: active ? 0.2 : 1,
-      }}
-      onPress={() => {
-        onPress(!active);
-        setActive(!active);
-      }}
-    >
-      <Text style={styles.filterButtonText}>{text}</Text>
-    </TouchableOpacity>
-  );
-}
+const FilterButton = ({ text, color, onPress }) => (
+  <StateTextButton
+    {...{ text, onPress }}
+    activeStyle={{
+      ...styles.filterButton,
+      backgroundColor: color,
+      opacity: 0.2,
+    }}
+    inactiveStyle={{
+      ...styles.filterButton,
+      backgroundColor: color,
+    }}
+    textStyle={styles.filterButtonText}
+  ></StateTextButton>
+);
 
 function TricksCard({ name, difficulty, description, hideUnvalidated }) {
   const [expanded, setExpanded] = useState(false);
@@ -237,6 +227,7 @@ const styles = StyleSheet.create({
     ...globalStyle.screenTitle,
   },
   filterSection: {
+    ...globalStyle.flexRow,
     marginVertical: 5,
     padding: 5,
     backgroundColor: "#f4f4f4",

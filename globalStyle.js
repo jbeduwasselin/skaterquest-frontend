@@ -1,10 +1,9 @@
 import { StyleSheet } from "react-native";
 
 export const COLOR_BACK = "#858585FF";
-export const COLOR_MODAL = "#49D2EA";
+export const COLOR_MODAL = "#292929CE";
 export const COLOR_MAIN = "#FF650C";
-export const DEFAULT_AVATAR = require("./assets/Trasher.png")
-
+export const DEFAULT_AVATAR = require("./assets/Trasher.png");
 
 const globalStyle = StyleSheet.create({
   container: {
@@ -17,6 +16,15 @@ const globalStyle = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+  },
+  modalContainer: {
+    borderRadius: 10,
+    padding: 20,
+    display: "flex",
+    justifyContent: "space-around",
+    alignItems: "center",
+    width: "90%",
+    backgroundColor: COLOR_MODAL,
   },
   screenTitle: {
     fontSize: 28,
@@ -38,10 +46,15 @@ const globalStyle = StyleSheet.create({
   subSubTitle: {
     fontSize: 16,
     fontWeight: "bold",
+    color: "white",
   },
   textInput: {
-    backgroundColor: "white",
-    borderRadius: 5,
+    borderBottomColor: "orange",
+    borderBottomWidth: 1,
+    color: "white",
+    placeholderTextColor: "white",
+    marginBottom: 5,
+    width : "90%",
   },
 });
 

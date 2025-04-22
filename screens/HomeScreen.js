@@ -7,7 +7,6 @@ import { useIsFocused } from "@react-navigation/native";
 import { getOwnUserInfo } from "../lib/request";
 import globalStyle from "../globalStyle";
 import { IconButton, IconTextButton } from "../components/Buttons";
-import ProgressBar from "../components/ProgressBar";
 
 // Import seulement le composant
 import ProgressBar from "../components/ProgressBar";
