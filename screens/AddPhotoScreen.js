@@ -44,7 +44,6 @@ export default function AddPhotoScreen({ route }) {
 
   // Fonction pour sauver en BDD les photos prises
   const savePhotos = () => {
-
     if (photosSpot.length > 0) {
       // console.log("Photos to send :", photosSpot);
       // console.log("spotData :", spotData);
@@ -52,7 +51,6 @@ export default function AddPhotoScreen({ route }) {
         addPictureToSpot(token, takenPhoto.uri, spotData._id);
       }
     }
-
   };
 
   return (
