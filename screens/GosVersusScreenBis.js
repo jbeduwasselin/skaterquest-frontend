@@ -18,6 +18,7 @@ export default function GosVersusScreenBis({ route, navigation }) {
   const [skater2Letters, setSkater2Letters] = useState("");
   const [selectedTrick, setSelectedTrick] = useState("Ollie");
   const [isGameOver, setIsGameOver] = useState(false);
+  const [winner, setWinner] = useState("");
 
   const handleTrickSuccess = (player) => {
     if (player === "skater1") {
@@ -48,7 +49,8 @@ export default function GosVersusScreenBis({ route, navigation }) {
       : word[skater2Letters.length];
   };
 
-  const endGame = (loser) => {
+  const endGame = (winnerName) => {
+    setWinner(winnerName);
     setIsGameOver(true);
   };
 
@@ -72,7 +74,7 @@ export default function GosVersusScreenBis({ route, navigation }) {
           </View>
 
           <View style={styles.versusIconContainer}>
-            <FontAwesome5 name="battle-net" size={60} color="#FF650C" />
+            <FontAwesome5 name="battle-net" size={45} color="#FF650C" />
           </View>
 
           <View style={styles.profile}>
@@ -227,11 +229,7 @@ export default function GosVersusScreenBis({ route, navigation }) {
                 style={styles.modalImage}
               />
               <Text style={styles.modalText}>Game over !</Text>
-              <Text style={styles.modalText}>
-                {skater1Score > skater2Score
-                  ? `${skater1Final} a gagné !`
-                  : `${skater2Final} a gagné !`}
-              </Text>
+              <Text style={styles.modalText}>{winner} a gagné !</Text>
               <IconButton
                 iconName="check-circle"
                 buttonText="Retour au menu"
@@ -256,18 +254,21 @@ const styles = StyleSheet.create({
   },
   profileContainer: {
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
     marginBottom: 8,
+    paddingHorizontal: 20,
   },
+
   profile: {
+    flex: 1,
     alignItems: "center",
-    marginHorizontal: 20,
   },
+
   name: {
     color: "#FFF",
-    fontSize: 25,
+    fontSize: 23,
     fontWeight: "bold",
     textTransform: "uppercase",
     marginBottom: 10,

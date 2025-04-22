@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#FF650C",
     textAlign: "center",
-    marginTop: 20,
+    marginTop: 40,
     marginBottom: 10,
     textShadowColor: "#FFF",
     textShadowOffset: { width: 1, height: 1 },

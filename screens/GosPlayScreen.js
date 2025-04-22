@@ -63,10 +63,7 @@ export default function GosPlayScreen({ navigation }) {
               </TouchableOpacity>
 
               {/* Bouton Retour pour fermer la modal */}
-              <TouchableOpacity
-                style={styles.backButton}
-                onPress={closeModal}
-              >
+              <TouchableOpacity style={styles.backButton} onPress={closeModal}>
                 <Text style={styles.backText}>Retour</Text>
               </TouchableOpacity>
             </View>
@@ -180,13 +177,15 @@ const styles = StyleSheet.create({
   },
   profileContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "center",
     width: "100%",
     marginBottom: 20,
     alignItems: "center",
   },
   profile: {
+    flex: 1,
     alignItems: "center",
+    maxWidth: 150,
   },
   name: {
     color: "#fff",
@@ -198,9 +197,9 @@ const styles = StyleSheet.create({
     textShadowRadius: 5,
   },
   versusIconContainer: {
-    justifyContent: "center",
+    width: 80,
     alignItems: "center",
-    marginHorizontal: 10,
+    justifyContent: "center",
   },
   versus: {
     fontSize: 36,
@@ -253,9 +252,8 @@ const styles = StyleSheet.create({
     marginTop: 50,
     backgroundColor: "#444",
   },
-  // Style pour le bouton retour (en gris)
   backButton: {
-    backgroundColor: "#666", // gris
+    backgroundColor: "#666",
     padding: 12,
     borderRadius: 10,
     marginTop: 15,
