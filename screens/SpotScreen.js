@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   StyleSheet,
   Text,
   Image,
   View,
-  Animated,
   Pressable,
   TouchableOpacity,
   TextInput,
+  ActivityIndicator,
+  Dimensions,
+  Animated,
 } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import { useSelector } from "react-redux";
@@ -25,6 +27,14 @@ import Icon from "react-native-vector-icons/Feather";
 import { useIsFocused } from "@react-navigation/native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
+// Variable width pour gérer le responsive (dimensions des photos et vidéos calculées à partir de celles de l'écran)
+const { width } = Dimensions.get("window");
+
+// Variables pour gérer l'affichage carrousel
+const SPACING = 16;
+const ITEM_SIZE = width * 0.72; // Largeur "pleine" de l’image centrée dans l'affichage carrousel
+const SIDE_EMPTY_SPACE = (width - ITEM_SIZE) / 2; // Espacement entre les images pour entre‑voir les images voisines à celle du milieu
+
 export default function SpotScreen({ navigation, route }) {
   const { token } = useSelector((state) => state.user.value);
   const [videoPlaying, setVideoPlaying] = useState(null);
@@ -34,6 +44,11 @@ export default function SpotScreen({ navigation, route }) {
   const [selectedVideoUri, setSelectedVideoUri] = useState(null); // Pour stocker l'URI de la vidéo séléctionnée
   const [trickInputs, setTrickInputs] = useState([""]); // Tricks entrés par l'utilisateurs pour les associer à la vidéo
   const [showTrickModal, setShowTrickModal] = useState(false); // État pour afficher/masquer la fenêtre modale permettant de saisir les tricks de la vidéo
+  const [uploading, setUploading] = useState(false); // Indicateur de progression du chargement de la vidéo (utile pour envoyer un feedback à l'utilisateur quand la vidéo met du temps à charger)
+
+  // Déclaration d'1 scrollX par gallerie à afficher. scrollX crée une valeur animée qui suit la position du scroll (X car horizontal)
+  const scrollXPhotos = useRef(new Animated.Value(0)).current; // Pour le carrousel des photos
+  const scrollXVideos = useRef(new Animated.Value(0)).current; // Pour le carrousel des vidéos
 
   // Hook qui détermine si l'écran est actif
   const isFocused = useIsFocused();
@@ -47,6 +62,8 @@ export default function SpotScreen({ navigation, route }) {
       getSpotInfo(token, spotData._id).then(({ result, data }) => {
         result && setSpotData(data);
       });
+
+    console.log("spotData :", spotData);
   }, [isFocused]);
 
   // Enregistrement de la vidéo et des tricks associés
@@ -60,15 +77,18 @@ export default function SpotScreen({ navigation, route }) {
       return;
     }
 
-    // Envoi de la vidéo
-    const { result } = await postVideo(
-      token,
-      selectedVideoUri,
-      trickList,
-      spotData._id
-    );
-
-    console.log("RESULT :", result); // pour test
+    // Chargement de la vidéo
+    setUploading(true); // Permet d'afficher l'ActivityIndicator dans le JSX pour rendre le chargement visuel
+    try {
+      const { result } = await postVideo(
+        token,
+        selectedVideoUri,
+        trickList,
+        spotData._id
+      );
+    } finally {
+      setUploading(false); // Disparition de l'ActivityIndicator quand la vidéo est chargée
+    }
 
     if (result) {
       // Mise à jour du spot et des états
@@ -133,14 +153,63 @@ export default function SpotScreen({ navigation, route }) {
 
   return (
     <BackgroundWrapper>
-      <Text style={styles.title}>{spotData.name}</Text>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>{spotData.name}</Text>
+        <Text style={styles.subtitle}>Spot de type {spotData.category}</Text>
+      </View>
 
       <Animated.FlatList
-        horizontal
-        pagingEnabled
         data={spotData.img}
-        renderItem={({ item }) => {
-          return <Image source={{ uri: item }} height={200} width={400} />;
+        horizontal
+        keyExtractor={(uri, i) => "img" + i}
+        showsHorizontalScrollIndicator={false}
+        snapToInterval={ITEM_SIZE}
+        decelerationRate="fast"
+        pagingEnabled={false}
+        contentContainerStyle={{ paddingHorizontal: SIDE_EMPTY_SPACE }}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { x: scrollXPhotos } } }],
+          { useNativeDriver: true }
+        )}
+        scrollEventThrottle={16}
+        renderItem={({ item, index }) => {
+          const inputRange = [
+            (index - 1) * ITEM_SIZE,
+            index * ITEM_SIZE,
+            (index + 1) * ITEM_SIZE,
+          ];
+      
+          const scale = scrollXPhotos.interpolate({
+            inputRange,
+            outputRange: [0.8, 1, 0.8],
+            extrapolate: "clamp",
+          });
+      
+          const opacity = scrollXPhotos.interpolate({
+            inputRange,
+            outputRange: [0.7, 1, 0.7],
+            extrapolate: "clamp",
+          });
+
+          // Avant :
+          // renderItem={({ item, index }) => {
+          //   return <Image source={{ uri: item }} height={200} width={400} />;
+          // }}
+      
+          return (
+            <Animated.View
+              style={[
+                styles.carouselItem,
+                { transform: [{ scale }], opacity },
+              ]}
+            >
+              <Image
+                source={{ uri: item }}
+                style={{ width: "100%", height: 250 }}
+                resizeMode="cover"
+              />
+            </Animated.View>
+          );
         }}
       />
 
@@ -214,6 +283,13 @@ export default function SpotScreen({ navigation, route }) {
               Poster la vidéo
             </Text>
           </TouchableOpacity>
+        </View>
+      )}
+
+      {uploading && (
+        <View>
+          <Text>Chargement de ta vidéo...</Text>
+          <ActivityIndicator size="large" color="orange" />
         </View>
       )}
 
@@ -292,9 +368,32 @@ function LikeButton({ onLike, isLiked }) {
 }
 
 const styles = StyleSheet.create({
+  titleContainer: {
+    alignItems: "center",
+    width: "85%",
+    fontWeight: "bold",
+    marginVertical: 10,
+    backgroundColor: "black",
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+  },
   title: {
-    fontSize: 32,
-    fontWeight: 800,
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "orange",
+  },
+  subtitle: {
+    fontSize: 18,
+    color: "orange",
+    marginTop: 6,
+  },
+  carouselItem: {
+    width: ITEM_SIZE * 0.7,
+    marginHorizontal: SPACING / 2,
+    borderRadius: 12,
+    overflow: "hidden",
+    backgroundColor: "#000",
   },
   videoItem: {
     display: "flex",
