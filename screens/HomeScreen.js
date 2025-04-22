@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import BackgroundWrapper from "../components/background";
 import IconButton from "../components/IconButton";
 import { useSelector } from "react-redux";
 import * as Animatable from "react-native-animatable";
+import { useIsFocused } from "@react-navigation/native";
+import { getOwnUserInfo } from "../lib/request";
 
 export default function HomeScreen({ navigation }) {
-  const avatar = useSelector((state) => state.user.value.avatar);
+  const isFocused = useIsFocused();
+  //Recup les info utilisateur
+  const { token } = useSelector((state) => state.user.value);
+  const [userData, setUserData] = useState(null);
+  useEffect(() => {
+    getOwnUserInfo(token).then(({ result, data }) => {
+      result && setUserData(data);
+    });
+  }, [isFocused]);
 
   return (
     <BackgroundWrapper>
@@ -33,7 +43,9 @@ export default function HomeScreen({ navigation }) {
         {/* Image de profil */}
         <Image
           source={
-            avatar ? { uri: avatar } : require("../assets/Thomas surf.jpg")
+            userData?.avatar
+              ? { uri: userData.avatar }
+              : require("../assets/Trasher.png")
           }
           style={styles.profileImage}
         />

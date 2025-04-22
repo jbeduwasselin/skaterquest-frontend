@@ -24,12 +24,11 @@ import globalStyle from "../globalStyle";
 import { TextInput } from "react-native-paper";
 
 export default function CrewScreen() {
-  const [userData, setUserData] = useState(null);
   const [updateWatcher, forceUpdate] = useReducer((p) => p + 1, 0);
-  const [searchResults, setSearchResult] = useState([]);
-  const { token } = useSelector((state) => state.user.value);
   const isFocused = useIsFocused();
-
+  //Recup les info utilisateur
+  const { token } = useSelector((state) => state.user.value);
+  const [userData, setUserData] = useState(null);
   useEffect(() => {
     getOwnUserInfo(token).then(({ result, data }) => {
       result && setUserData(data);
@@ -37,6 +36,7 @@ export default function CrewScreen() {
   }, [isFocused, updateWatcher]);
 
   const [newCrewName, setNewCrewName] = useState("");
+  const [searchResults, setSearchResult] = useState([]);
 
   async function handleCreateCrew() {
     const { result, reason } = await createCrew(token, newCrewName);
@@ -100,7 +100,10 @@ export default function CrewScreen() {
                 style={styles.userAvatar}
               />
               <Text>{item.username}</Text>
-              <IconButton iconName="group-add" onPress={()=>handleAddMember(item.uID)} />
+              <IconButton
+                iconName="group-add"
+                onPress={() => handleAddMember(item.uID)}
+              />
             </View>
           )}
         />
