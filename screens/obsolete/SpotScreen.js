@@ -15,7 +15,7 @@ import BackgroundWrapper from "../components/background";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getOwnUserInfo, getSpotInfo } from "../lib/request";
+import { getOwnUserInfo } from "../lib/request";
 import { useSelector } from "react-redux";
 
 // Tableau temporaire pour tester
