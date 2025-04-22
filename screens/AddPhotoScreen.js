@@ -52,7 +52,7 @@ export default function AddPhotoScreen({ navigation, route }) {
           spotData._id
         );
         console.log("photo URI :", takenPhoto.uri);
-        console.log("result :", result, "error :", error);
+        console.log("result :", result, ", error :", error);
       }
     }
     photosSpot.length > 0 && navigation.goBack();
