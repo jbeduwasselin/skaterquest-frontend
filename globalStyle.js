@@ -1,5 +1,4 @@
-import { StyleSheet } from "react-native";
-
+import { Dimensions, StyleSheet } from "react-native";
 export const COLOR_BACK = "#858585FF";
 export const COLOR_MODAL = "#292929CE";
 export const COLOR_MAIN = "#FF650C";
@@ -51,11 +50,23 @@ const globalStyle = StyleSheet.create({
   textInput: {
     borderBottomColor: "orange",
     borderBottomWidth: 1,
+    fontSize: 16,
+    fontWeight: "bold",
     color: "white",
     placeholderTextColor: "white",
-    marginBottom: 5,
-    width : "90%",
-    textAlign :"center"
+    marginBottom: 15,
+    width: "90%",
+    textAlign: "center",
+  },
+  errorModal: {
+    padding: 20,
+  },
+  errorText: {
+    ...globalStyle.subSubTitle,
+    margin: "2%",
+  },
+  errorButton: {
+    maxWidth: 50,
   },
 });
 

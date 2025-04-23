@@ -1,33 +1,36 @@
-import React, { useEffect, useState /*, useRef*/ } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  TextInput,
-} from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, Text, TextInput } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useDispatch, useSelector } from "react-redux";
-import { updateSpot } from "../reducers/spot";
+import { useSelector } from "react-redux";
 import { createSpot } from "../lib/request";
+import globalStyle from "../globalStyle";
+import { StateImageButton, TextButton } from "../components/Buttons";
+import MapView, { Marker } from "react-native-maps";
+import { Dimensions } from "react-native";
+import ModalContent from "../components/ModalContent";
 
-export default function AddSpotScreen({ navigation }) {
-  const dispatch = useDispatch();
-
+export default function AddSpotScreen({ navigation, route }) {
   // Récupération des infos depuis le store
-  const spotLat = useSelector((state) => state.spot.value.latitude);
-  const spotLon = useSelector((state) => state.spot.value.longitude);
   const { token } = useSelector((state) => state.user.value);
+  //Localisation du spot passées en paramètre de navigation
+  const { latitude, longitude } = route.params;
 
   const [spotName, setSpotName] = useState(""); // État pour enregistrer le nom donné au spot par l'utilisateur
-  const [spotCategory, setSpotCategory] = useState(""); // État pour enregistrer la catégorie du spot choisie par l'utilisateur
-
+  const [spotCategory, setSpotCategory] = useState(null); // État pour enregistrer la catégorie du spot choisie par l'utilisateur
+  const [coordinate, setCoordinate] = useState({ latitude, longitude }); //Etat pour les coordonnées du spot
+  const [errorModal, setErrorModal] = useState(null);
+  function toggleSpotCategory(value) {
+    spotCategory == value ? setSpotCategory(null) : setSpotCategory(value);
+  }
   // Fonction pour enregistrer le spot
   const saveSpot = async () => {
     // On vérifie que les infos sont complètes
-    if (!spotName || !spotCategory) {
+    if (!spotName) {
+      setErrorModal("Veuillez renseigner le nom du spot.");
+      return; // On interrompt la fonction s'il n'y a pas de nom et/ou de catégorie pour enregistrer le spot
+    }
+    if (!spotCategory) {
+      setErrorModal("Veuillez renseigner une categorie pour le spot.");
       // faudrait afficher un message d'erreur ou entourer en rouge le champ manquant
       return; // On interrompt la fonction s'il n'y a pas de nom et/ou de catégorie pour enregistrer le spot
     }
@@ -36,184 +39,127 @@ export default function AddSpotScreen({ navigation }) {
     const spotResponse = await createSpot(
       token,
       spotName,
-      spotLat,
-      spotLon,
+      coordinate.latitude,
+      coordinate.longitude,
       spotCategory
     );
-    console.log("spotResponse :", spotResponse);
-
-    // On enregistre les infos du spot dans le store // EDIT : utile ??
-    dispatch(updateSpot(spotResponse));
 
     // On redirige l'utilisateur vers l'écran du spot ajouté
     if (spotResponse.result === true) {
       navigation.navigate("SpotScreen", { spotData: spotResponse.data });
-    } else {
-      spotResponse.fallback &&
+    } else if (spotResponse.fallback) {
+      setErrorModal(
+        "Un autre spot existe déja à proximité, vous allez etre redirigé vers celui-ci."
+      );
+      setTimeout(() => {
+        setErrorModal(null);
         navigation.navigate("SpotScreen", { spotData: spotResponse.fallback });
+      }, 2_000);
     }
   };
-
   return (
     <BackgroundWrapper>
-      <View style={styles.container}>
-        <Text style={styles.mainTitle}>Ajout d'un nouveau spot</Text>
-
-        <TextInput
-          style={styles.inputContainer}
-          placeholder="Nomme ce spot ici !"
-          onChangeText={(value) => setSpotName(value)}
-          value={spotName}
+      <Text style={globalStyle.screenTitle}>Ajout d'un nouveau spot</Text>
+      <TextInput
+        style={globalStyle.textInput}
+        placeholderTextColor="white"
+        placeholder="Nomme ce spot ici !"
+        onChangeText={(value) => setSpotName(value)}
+        value={spotName}
+      />
+      <Text style={globalStyle.subTitle}>Sélectionne le type de spot :</Text>
+      <View style={styles.spotChoice}>
+        <StateImageButton
+          source={require("../assets/spotChoiceStreet.png")}
+          activeImageStyle={{ tintColor: "blue" }}
+          containerStyle={styles.spotCategory}
+          imageStyle={styles.image}
+          value={spotCategory == "street"}
+          onPress={() => toggleSpotCategory("street")}
+          text="Street"
         />
 
-        <View style={styles.spotChoiceContainer}>
-          <Text style={styles.title}>Sélectionne le type de spot :</Text>
-
-          <View style={styles.spotChoiceImagesContainer}>
-            <TouchableOpacity
-              style={styles.spotChoice}
-              onPress={() => setSpotCategory("street")}
-            >
-              <Image
-                source={require("../assets/spotChoiceStreet.png")}
-                style={styles.image}
-              />
-              <Text style={styles.text}>Street</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.spotChoice}
-              onPress={() => setSpotCategory("flat")}
-            >
-              <Image
-                source={require("../assets/spotChoiceFlat.png")}
-                style={styles.image}
-              />
-              <Text style={styles.text}>Flat</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.spotChoice}
-              onPress={() => setSpotCategory("park")}
-            >
-              <Image
-                source={require("../assets/spotChoicePark.png")}
-                style={styles.image}
-              />
-              <Text style={styles.text}>Park</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <StateImageButton
+          source={require("../assets/spotChoiceFlat.png")}
+          activeImageStyle={{ tintColor: "blue" }}
+          imageStyle={styles.image}
+          value={spotCategory == "flat"}
+          onPress={() => toggleSpotCategory("flat")}
+          containerStyle={styles.spotCategory}
+          text="Flat"
+        />
+        <StateImageButton
+          source={require("../assets/spotChoicePark.png")}
+          activeImageStyle={{ tintColor: "blue" }}
+          containerStyle={styles.spotCategory}
+          imageStyle={styles.image}
+          value={spotCategory == "park"}
+          onPress={() => toggleSpotCategory("park")}
+          text="Park"
+        />
       </View>
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          ...coordinate,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001,
+        }}
+        onLongPress={(event) => setCoordinate(event.nativeEvent.coordinate)}
+      >
+        <Marker
+          {...{ coordinate }}
+          draggable
+          onDragEnd={(event) => setCoordinate(event.nativeEvent.coordinate)}
+        ></Marker>
+      </MapView>
 
-      <View style={styles.bottomContainer}>
-        <TouchableOpacity
-          onPress={() => {
-            saveSpot();
-          }}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.validateButton}>Je valide ce spot !</Text>
-        </TouchableOpacity>
+      <Text style={globalStyle.subTitle}>
+        Coordonnées : {Math.round(coordinate.latitude * 1e4) / 1e4};{" "}
+        {Math.round(coordinate.longitude * 1e4) / 1e4}
+      </Text>
 
-        <TouchableOpacity
-          onPress={() => {
-            dispatch(updateSpot(null)); // On supprime les infos stockées dans l'état spot du store
-            navigation.navigate("TabNavigator", {
-              screen: "MapScreen",
-            }); // Cette structure sert à naviguer en tab navigation sans menu
-          }}
-          activeOpacity={0.8}
-        >
-          <MaterialIcons
-            style={styles.returnButton}
-            name="keyboard-return"
-            size={36}
-            color="orange"
-          />
-        </TouchableOpacity>
-      </View>
+      <TextButton text="Valider" onPress={saveSpot} />
+
+
+      {/* Modal pour l'affichage des erreur */}
+      <ModalContent
+        visibleState={errorModal}
+        containerStyle={globalStyle.errorModal}
+        closeHandler={() => setErrorModal(null)}
+      >
+        <Text style={globalStyle.errorText}>{errorModal}</Text>
+        <TextButton
+          onPress={() => setErrorModal(null)}
+          text="OK"
+          containerStyle={globalStyle.errorButton}
+        />
+      </ModalContent>
     </BackgroundWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    justifyContent: "center",
-    height: "93%",
-  },
-  mainTitle: {
-    color: "orange",
-    backgroundColor: "black",
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 10,
-    fontWeight: "bold",
-    fontSize: 30,
-    marginTop: 75,
-  },
-  inputContainer: {
-    width: "100%",
-    textAlign: "center",
-    backgroundColor: "orange",
-    marginVertical: 4,
-    color: "black",
-    fontWeight: "bold",
-    fontSize: 18,
-  },
-  spotChoiceContainer: {
-    alignItems: "center",
-    width: "90%",
-    backgroundColor: "white",
-    borderRadius: 10,
-    marginBottom: 6,
-  },
-  spotChoiceImagesContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-  },
-  title: {
-    color: "orange",
-    fontSize: 24,
-    padding: 10,
-  },
   spotChoice: {
-    alignItems: "center",
-    padding: 5,
-    marginLeft: 6,
-    marginRight: 6,
+    ...globalStyle.flexRow,
+    justifyContent: "space-evenly",
+    width: "95%",
   },
-  text: {
-    color: "black",
-    fontSize: 16,
+  spotCategory: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: "transparent",
   },
   image: {
     width: 80,
     height: 80,
     resizeMode: "contain",
   },
-  bottomContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  map: {
+    width: Dimensions.get("window").width * 0.95,
+    height: Dimensions.get("window").height * 0.4,
+    margin: 5,
   },
-  validateButton: {
-    color: "orange",
-    backgroundColor: "black",
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 10,
-    borderColor: "orange",
-    borderWidth: 2,
-    fontWeight: "bold",
-    fontSize: 20,
-    marginLeft: 20,
-  },
-  returnButton: {
-    padding: 8,
-    marginRight: 10,
-  },
+
 });
