@@ -9,7 +9,7 @@ import {
   useAnimatedValue,
   View,
 } from "react-native";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useBackHandler } from "@react-native-community/hooks";
 
 export default function ModalContent({
@@ -17,7 +17,7 @@ export default function ModalContent({
   closeHandler,
   children,
   containerStyle,
-   fadeInDuration = 500,
+  fadeInDuration = 500,
   fadeOutDuration = 500,
 }) {
   //visibleState = State du composant parent qui détermine la visibilité
@@ -43,9 +43,7 @@ export default function ModalContent({
   };
 
   //Hook d'effet qui met à jours l'état lors d'un rerender du parent
-  //useMemo plutot que useEffect => ne rerender que lorsque visibleState change
-  //utile si composants enfants lourd
-  useMemo(() => {
+  useEffect(() => {
     visibleState ? fadeIn() : fadeOut();
     visibleState
       ? setVisible(visibleState)
@@ -72,7 +70,7 @@ export default function ModalContent({
           ...styles.container,
           ...containerStyle,
           transform: [{ scale: fadeAnim }],
-          opacity: fadeAnim ,
+          opacity: fadeAnim,
         }}
       >
         {children}
