@@ -8,6 +8,9 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  TextInput,
+  Modal,
+  Pressable,
 } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import * as ImagePicker from "expo-image-picker";
@@ -17,18 +20,22 @@ import { changeUserAvatar, getOwnUserInfo } from "../lib/request";
 import { useIsFocused } from "@react-navigation/native";
 
 export default function SettingsScreen({ navigation }) {
-  //Recup les info utilisateur
-
   const [updateWatcher, forceUpdate] = useReducer((p) => p + 1, 0);
   const isFocused = useIsFocused();
-
   const { token } = useSelector((state) => state.user.value);
   const [userData, setUserData] = useState(null);
+
   useEffect(() => {
     getOwnUserInfo(token).then(({ result, data }) => {
-      result && setUserData(data);
+      if (result) {
+        console.log("USER DATA REÇUE :", data); // 👈 Log ici
+        setUserData(data);
+      }
     });
   }, [isFocused, updateWatcher]);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [newSkaterTag, setNewSkaterTag] = useState("");
 
   const requestPermission = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -69,17 +76,68 @@ export default function SettingsScreen({ navigation }) {
     ]);
   };
 
+  const updateSkaterTag = async () => {
+    if (!newSkaterTag.trim()) {
+      Alert.alert("Erreur", "SkaterTag ne peut pas être vide");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://192.168.1.60:3000/user/skaterTag`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify({
+          newSkaterTag,
+        }),
+      });
+
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await response.text();
+        console.error("Réponse inattendue:", text);
+        Alert.alert("Erreur serveur", "Réponse non JSON");
+        return;
+      }
+
+      const result = await response.json();
+      if (result.result) {
+        setModalVisible(false);
+        forceUpdate();
+        Alert.alert("Succès", "Ton SkaterTag a été mis à jour !");
+      } else {
+        Alert.alert("Erreur", result.reason || "Échec de la mise à jour");
+      }
+    } catch (error) {
+      console.error("Erreur API SkaterTag:", error);
+      Alert.alert("Erreur", "Impossible de changer le SkaterTag");
+    }
+  };
+
   return (
     <BackgroundWrapper>
       <View style={styles.container}>
         <TouchableOpacity onPress={handleImagePress}>
           <Image
-            source={
-              userData?.avatar ? { uri: userData.avatar } : DEFAULT_AVATAR
-            }
+            source={userData?.avatar ? { uri: userData.avatar } : DEFAULT_AVATAR}
             style={styles.profileImage}
           />
         </TouchableOpacity>
+
+        {/* Affichage du SkaterTag ou du nom d'utilisateur */}
+        {userData?.skaterTag ? (
+          <View style={styles.skaterTagContainer}>
+            <Text style={styles.skaterTag}>@{userData.skaterTag}</Text>
+          </View>
+        ) : (
+          <View style={styles.skaterTagContainer}>
+            <Text style={styles.skaterTag}>
+              @{userData?.username || "Skater anonyme"}
+            </Text>
+          </View>
+        )}
 
         <Text style={globalStyle.screenTitle}>Reglages</Text>
 
@@ -88,7 +146,7 @@ export default function SettingsScreen({ navigation }) {
             iconName="edit"
             text="Changer SkaterTag"
             iconLeft
-            onPress={() => console.log("Changer SkaterTag")}
+            onPress={() => setModalVisible(true)}
           />
           <IconTextButton
             iconName="settings"
@@ -102,6 +160,41 @@ export default function SettingsScreen({ navigation }) {
           />
         </View>
       </View>
+
+      {/* Modal de changement de SkaterTag */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Nouveau SkaterTag</Text>
+            <TextInput
+              style={[styles.input, { marginVertical: 15 }]}
+              placeholder="Entre ton nouveau pseudo"
+              placeholderTextColor="#aaa"
+              value={newSkaterTag}
+              onChangeText={setNewSkaterTag}
+            />
+            <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+              <TouchableOpacity
+                style={[styles.closeButton, { backgroundColor: "#6c757d" }]}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.closeButtonText}>Annuler</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.closeButton, { backgroundColor: "#dc3545" }]}
+                onPress={updateSkaterTag}
+              >
+                <Text style={styles.closeButtonText}>Valider</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </BackgroundWrapper>
   );
 }
@@ -113,24 +206,72 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 60,
   },
-  title: {
-    fontSize: 24,
+  profileImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    marginBottom: 10,
+    borderWidth: 3,
+    borderColor: "#fff",
+  },
+  skaterTagContainer: {
+    backgroundColor: "#2b2b2b",
+    borderRadius: 25,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  skaterTag: {
+    fontSize: 20,
     fontWeight: "bold",
     color: "#fff",
-    marginTop: 10,
-  },
-  profileImage: {
-    width: 250,
-    height: 250,
-    borderRadius: 125,
-    marginBottom: 20,
-    borderWidth: 2,
-    borderColor: "#fff",
+    textAlign: "center",
   },
   buttonContainer: {
     width: "100%",
     marginTop: 20,
-    gap: 100,
+    alignItems: "center",
+    gap: 40
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
     alignItems: "center",
   },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    width: "80%",
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  input: {
+    width: "100%",
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    fontSize: 16,
+  },
+  closeButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
 });
+
