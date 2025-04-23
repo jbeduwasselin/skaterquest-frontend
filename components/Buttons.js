@@ -2,6 +2,7 @@ import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import globalStyle, { COLOR_MAIN } from "../globalStyle";
 import { useEffect, useState } from "react";
+import { Image } from "react-native";
 //Un button avec un icon
 export function IconButton({
   iconName,
@@ -147,6 +148,40 @@ export function StateTextButton({
     />
   );
 }
+
+//Un Bouton avec une image et un étéat interne (on/off)
+export function StateImageButton({
+  source,
+  value,
+  onPress,
+  imageStyle,
+  activeImageStyle,
+  containerStyle,
+  textStyle,
+  activeTextStyle,
+  text
+}) {
+  const [isActive, setIsActive] = useState(false);
+  useEffect(() => {
+    setIsActive(value);
+  }, [value]);
+  return (
+    <TouchableOpacity
+      onPress={() => {
+        onPress(!isActive);
+        setIsActive(!isActive);
+      }}
+      style={{...styles.container , ...containerStyle}}
+    >
+      <Image
+        {...{ source }}
+        style={{ ...imageStyle, ...(isActive && activeImageStyle) }}
+      ></Image>
+      <Text style={{...styles.text , ...textStyle,  ...(isActive && activeTextStyle)}}>{text}</Text>
+    </TouchableOpacity>
+  );
+}
+
 
 const styles = StyleSheet.create({
   container: {

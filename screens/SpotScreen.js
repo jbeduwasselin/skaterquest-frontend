@@ -62,8 +62,6 @@ export default function SpotScreen({ navigation, route }) {
       getSpotInfo(token, spotData._id).then(({ result, data }) => {
         result && setSpotData(data);
       });
-
-    //console.log("spotData :", spotData);
   }, [isFocused]);
 
   // Enregistrement de la vidéo et des tricks associés
@@ -298,7 +296,7 @@ export default function SpotScreen({ navigation, route }) {
 
 function VideoCard({ videoData, onPress }) {
   const { token, uID } = useSelector((state) => state.user.value);
-  const [thumbnail, setThumbnails] = useState(null);
+  const [thumbnail, setThumbnail] = useState(null);
 
   // Formate la date
   function formatDate(creationDate) {
@@ -311,7 +309,7 @@ function VideoCard({ videoData, onPress }) {
   // Au montage crée le thumbnail pour la vidéo
   useEffect(() => {
     (async function getThumbnail() {
-      VideoThumbnails.getThumbnailAsync(videoData.url).then(setThumbnails);
+      VideoThumbnails.getThumbnailAsync(videoData.url).then(setThumbnail);
     })();
   }, []);
 

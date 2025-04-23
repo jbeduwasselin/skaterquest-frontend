@@ -11,11 +11,20 @@ import BackgroundWrapper from "../components/BackgroundWrapper";
 import IconButton from "../components/IconButton";
 import Icon from "react-native-vector-icons/Feather";
 
-// import AsyncStorage from "@react-native-async-storage/async-storage"; //Décommente pour activer la sauvegarde
+// Redux
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../reducers/user";
+
+// import AsyncStorage from "@react-native-async-storage/async-storage"; // Décommente pour activer la sauvegarde
 
 export default function AppSettingsScreen({ navigation }) {
+  const dispatch = useDispatch(); // Hook Redux pour dispatcher des actions
+  const user = useSelector((state) => state.user.value); // Récupère les infos de l'utilisateur
+
   const [isPrivacyModalVisible, setPrivacyModalVisible] = useState(false);
   const [isHelpModalVisible, setHelpModalVisible] = useState(false); // Modal Aides
+  const [isLogoutConfirmVisible, setLogoutConfirmVisible] = useState(false); // Modal Déconnexion
+  const [isDeleteConfirmVisible, setDeleteConfirmVisible] = useState(false); // Modal Désinscription
 
   const [marketingEnabled, setMarketingEnabled] = useState(false);
   const [profileVisibility, setProfileVisibility] = useState(true);
@@ -26,15 +35,62 @@ export default function AppSettingsScreen({ navigation }) {
   };
 
   const handlePrivacySettingsPress = () => {
-    setPrivacyModalVisible(true);
+    setPrivacyModalVisible(true); // Affiche la modal de confidentialité
   };
 
   const handleLogout = () => {
-    console.log("Déconnexion Pressed");
+    setLogoutConfirmVisible(true); // Affiche la confirmation avant déconnexion
+  };
+
+  const confirmLogout = () => {
+    dispatch(logout()); // Action Redux de déconnexion
+    setLogoutConfirmVisible(false);
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Login" }], // Redirige vers LoginScreen après déconnexion
+    });
   };
 
   const handleUnsubscribe = () => {
-    console.log("Désinscription Pressed");
+    setDeleteConfirmVisible(true); // Affiche la confirmation avant suppression de compte
+  };
+
+  const confirmUnsubscribe = async () => {
+    try {
+      const response = await fetch(
+        `http://192.168.1.60:3000/user/delete/${user.uID}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: user.token,
+          },
+        }
+      );
+
+      const text = await response.text(); // Récupère la réponse sous forme de texte
+      console.log("Réponse brute:", text); // Affiche la réponse brute dans la console
+
+      // Vérifie si la réponse est bien du JSON
+      try {
+        const data = JSON.parse(text); // Parse la réponse en JSON
+        if (data.result) {
+          dispatch(logout());
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Login" }],
+          });
+        } else {
+          alert("Erreur lors de la suppression : " + data.reason);
+        }
+      } catch (jsonError) {
+        console.error("Erreur de parsing JSON", jsonError);
+        alert("La réponse du serveur n'est pas valide.");
+      }
+    } catch (error) {
+      console.error("Suppression échouée", error);
+      alert("Erreur réseau ou serveur.");
+    }
   };
 
   // Décommenter pour activer la sauvegarde
@@ -194,6 +250,73 @@ export default function AppSettingsScreen({ navigation }) {
               >
                 <Text style={styles.closeButtonText}>Fermer</Text>
               </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Modal de confirmation Déconnexion */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={isLogoutConfirmVisible}
+          onRequestClose={() => setLogoutConfirmVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Confirmation</Text>
+              <Text style={{ textAlign: "center", marginBottom: 20 }}>
+                Es-tu sûr de vouloir te déconnecter ?
+              </Text>
+              <View
+                style={{ flexDirection: "row", justifyContent: "space-around" }}
+              >
+                <TouchableOpacity
+                  style={[styles.closeButton, { backgroundColor: "#6c757d" }]}
+                  onPress={() => setLogoutConfirmVisible(false)}
+                >
+                  <Text style={styles.closeButtonText}>Annuler</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.closeButton, { backgroundColor: "#dc3545" }]}
+                  onPress={confirmLogout}
+                >
+                  <Text style={styles.closeButtonText}>Se déconnecter</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Modal de confirmation Désinscription */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={isDeleteConfirmVisible}
+          onRequestClose={() => setDeleteConfirmVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Désinscription</Text>
+              <Text style={{ textAlign: "center", marginBottom: 20 }}>
+                Es-tu sûr de vouloir supprimer ton compte ? Cette action est
+                irréversible.
+              </Text>
+              <View
+                style={{ flexDirection: "row", justifyContent: "space-around" }}
+              >
+                <TouchableOpacity
+                  style={[styles.closeButton, { backgroundColor: "#6c757d" }]}
+                  onPress={() => setDeleteConfirmVisible(false)}
+                >
+                  <Text style={styles.closeButtonText}>Annuler</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.closeButton, { backgroundColor: "#dc3545" }]}
+                  onPress={confirmUnsubscribe}
+                >
+                  <Text style={styles.closeButtonText}>Supprimer</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </Modal>
