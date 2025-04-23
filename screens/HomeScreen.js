@@ -21,10 +21,10 @@ export default function HomeScreen({ navigation }) {
       result && setUserData(data);
     });
   }, [isFocused]);
+
   return (
     <BackgroundWrapper>
       {/* Icône des paramètres en haut à gauche */}
-
       <View style={styles.headerContainer}>
         <IconButton
           iconName="settings"
@@ -53,6 +53,15 @@ export default function HomeScreen({ navigation }) {
         }
         style={styles.profileImage}
       />
+
+      {/* Affichage du SkaterTag */}
+      {userData?.skaterTag ? (
+        <Text style={styles.skaterTag}>@{userData.skaterTag}</Text>
+      ) : (
+        <Text style={styles.skaterTag}>
+          @{userData?.username || "Skater anonyme"}
+        </Text>
+      )}
 
       {/* Barre de progression */}
       <View style={styles.progressContainer}>
@@ -109,9 +118,6 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    width: "100%",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
   },
   settingsIcon: {
     marginLeft: 20,
@@ -124,6 +130,17 @@ const styles = StyleSheet.create({
     borderColor: "#fff",
     zIndex: 0,
   },
+  skaterTag: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#fff",
+    backgroundColor: "#1e1e1e",
+    paddingHorizontal: 15,
+    paddingVertical: 6,
+    borderRadius: 20,
+    overflow: "hidden",
+    marginTop: 10, // Espacement avec l'avatar
+  },
   progressContainer: {
     marginTop: 20,
     width: "90%",
@@ -131,7 +148,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
   buttonContainer: {
     width: "100%",
     gap: 30,
