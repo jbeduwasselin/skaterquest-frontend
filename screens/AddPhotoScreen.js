@@ -20,17 +20,26 @@ export default function AddPhotoScreen({ navigation, route }) {
   const isFocused = useIsFocused(); // La méthode useIsFocused() permet de ne pas afficher la caméra si l'écran n'est pas focus
   const [hasPermission, setHasPermission] = useState(false);
   const cameraRef = useRef(null); // Référence du composant CameraView afin de pouvoir prendre une photo
+  const [cameraRatio, setCameraRatio] = useState("4:3"); // Cet état servira à définir un ratio (4:3) pour les dimensions des photos (utile pour contrôler l'affichage des photos dans SpotScreen)
 
   const [photosSpot, setPhotosSpot] = useState([]); // État pour enregistrer les photos du spot prises par l'utilisateur
 
   const { token } = useSelector((state) => state.user.value);
   const { spotData } = route.params;
 
-  // Hook d'effet pour vérifier la permission de la caméra
+  // Hook d'effet pour vérifier la permission de la caméra et si le ratio 4:3 est supporté
   useEffect(() => {
     (async () => {
+      // Vérification de la permission
       const result = await Camera.requestCameraPermissionsAsync();
       setHasPermission(result && result?.status === "granted");
+
+      // Vérification que l'appareil supporte le format 4:3 (certains téléphones ne le supportent pas, ce qui ferait crash l'appli sans cette sécurité)
+      const ratios = await cameraRef.current?.getSupportedRatiosAsync(); // Cette variable va ainsi contenir tous les ratios supportés par l'appareil photo du téléphone
+      if (!ratios.includes("4:3") && ratios.length > 0) {
+        // Si cette liste des ratios supportés ne contient pas le format 4:3 ET contient au moins 1 (autre) ratio alors on change l'état cameraRatio
+        setCameraRatio(ratios[0]); // ratios[0] correspond ainsi au 1er élément de ratios, c'est à dire le 1er ratio valide pour le téléphone
+      }
     })();
   }, []);
 
@@ -75,6 +84,7 @@ export default function AddPhotoScreen({ navigation, route }) {
             <CameraView
               style={styles.camera}
               ref={(ref) => (cameraRef.current = ref)}
+              ratio={cameraRatio} // Donne le ratio 4:3 préparé plus tôt
             ></CameraView>
           )}
 
@@ -160,7 +170,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   camera: {
-    width: (width - 110) * 1.33, // Format 3:4
+    width: (width - 110) * 1.33, // Pour que la caméra ait le même format 4:3 (ratio de 1.33) que les photos
     height: width - 110,
     borderRadius: 10,
     overflow: "hidden",

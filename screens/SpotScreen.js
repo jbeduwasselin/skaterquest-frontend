@@ -158,20 +158,21 @@ export default function SpotScreen({ navigation, route }) {
         <Text style={styles.subtitle}>Spot de type {spotData.category}</Text>
       </View>
 
-      <Animated.FlatList
-        data={spotData.img}
-        horizontal
-        keyExtractor={(uri, i) => "img" + i}
-        showsHorizontalScrollIndicator={false}
-        snapToInterval={ITEM_SIZE}
-        decelerationRate="fast"
-        pagingEnabled={false}
-        contentContainerStyle={{ paddingHorizontal: SIDE_EMPTY_SPACE }}
+      <Animated.FlatList // FlatList sert pour l'affichage des images en défilement et Animated pour la dynamisation
+        data={spotData.img} // Mettre ici les images (photos ou vidéos) voulues
+        keyExtractor={(uri, i) => "img" + i} // Pour identifier quelle image est au centre ou non et gérer son affichage en fonction
+        horizontal  // Scroll horizontal (par défaut FlatList est en scroll vertical)
+        showsHorizontalScrollIndicator={false} // Cache la barre de scroll horizontale
+        snapToInterval={ITEM_SIZE} // Fluidifie le défilement en snappant automatiquement chaque image quand on scrolle
+        decelerationRate="fast" // Rend le scroll plus "snappy" (rapide) à s’arrêter
+        pagingEnabled={false} // Désactive le défilement "page par page" (qui est plus adapté quand les images prennent toute la largeur de l'écran)
+        contentContainerStyle={{ paddingHorizontal: SIDE_EMPTY_SPACE }} // Gère l'espacement entre les images
         onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollXPhotos } } }],
-          { useNativeDriver: true }
+          [{ nativeEvent: { contentOffset: { x: scrollXPhotos } } }], // Lie le scroll horizontal à scrollX pour pouvoir animer en fonction de la position
+          { useNativeDriver: true } // Rend l’animation exécutable directement par le moteur natif du téléphone (donc + fluide, + rapide et ne bloque pas le reste de l’UI)
         )}
-        scrollEventThrottle={16}
+        scrollEventThrottle={16} // Fluidifie le sroll (gère la fréquence de déclenchement du onScroll ci-dessus, + la valeur est basse + le scroll est fluide mais réduit les perfs)
+        // Fonction renderItem() pour afficher les éléments (items) de la FlatList
         renderItem={({ item, index }) => {
           const inputRange = [
             (index - 1) * ITEM_SIZE,
