@@ -1,18 +1,17 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Modal,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, Modal } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
-import IconButton from "../components/IconButton";
+import { IconTextButton } from "../components/Buttons";
 import ConfettiCannon from "react-native-confetti-cannon";
+import { tricksData } from "../data/trickList";
+import ModalContent from "../components/ModalContent";
+import globalStyle from "../globalStyle";
 
+function randomOf(list) {
+  return list[Math.floor(Math.random() * list.length)];
+}
 export default function GosVersusScreen({ route, navigation }) {
   const { skater1, skater2, gameMode } = route.params;
 
@@ -35,11 +34,11 @@ export default function GosVersusScreen({ route, navigation }) {
   const handleTrickFailure = (player) => {
     const letter = getNextLetter(player);
 
-    if (player === "skater1") {
+    if (player === "skater1" && skater1Letters.length < 5) {
       const updated = skater1Letters + letter;
       setSkater1Letters(updated);
       if (updated.length === 5) endGame("skater1");
-    } else {
+    } else if (skater2Letters.length < 5) {
       const updated = skater2Letters + letter;
       setSkater2Letters(updated);
       if (updated.length === 5) endGame("skater2");
@@ -63,60 +62,9 @@ export default function GosVersusScreen({ route, navigation }) {
   };
 
   const nextTrick = () => {
-    const tricks = [
-      "Ollie",
-      "No Comply",
-      "Revert",
-      "Caveman",
-      "Acid Drop",
-      "Body Varial",
-      "Footplant",
-      "Firecracker",
-      "Pivot",
-      "Boneless",
-      "Shuvit",
-      "Pop Shuvit",
-      "Manual",
-      "Nose Manual",
-      "Kickflip",
-      "Heelflip",
-      "Frontside 180",
-      "Backside 180",
-      "Railstand",
-      "Boned Ollie",
-      "Nollie",
-      "Fakie Ollie",
-      "Switch Ollie",
-      "Wallride",
-      "Wallie",
-      "Powerslide",
-      "Slappy",
-      "Varial Kickflip",
-      "360 Flip",
-      "Hardflip",
-      "Impossible",
-      "Frontside Flip",
-      "Backside Flip",
-      "Bigspin",
-      "Casper Flip",
-      "Darkslide",
-      "Primo Slide",
-      "Tiger Claw",
-      "Underflip",
-      "Hospital Flip",
-      "Double Kickflip",
-      "Triple Kickflip",
-      "Laser Flip",
-      "Gazelle Flip",
-      "Blunt Slide",
-    ];
-    setCurrentTrick(tricks[Math.floor(Math.random() * tricks.length)]);
+    return randomOf(tricksData).name;
   };
 
-  const handleCloseModal = () => {
-    setIsGameOver(false);
-    navigation.goBack();
-  };
 
   return (
     <BackgroundWrapper>
@@ -166,11 +114,11 @@ export default function GosVersusScreen({ route, navigation }) {
           style={[styles.trickContainer, styles.trickCard]}
         >
           <Text style={styles.trickText}>
-            Trick en cours: {currentTrick || "Push sur Next Trick"}
+            Partie en cours: {currentTrick || "Push sur Next Trick"}
           </Text>
-          <IconButton
-            iconName="refresh-cw"
-            buttonText="Next Trick"
+          <IconTextButton
+            iconName="refresh"
+            text="Next Trick"
             onPress={nextTrick}
             style={styles.nextTrickButton}
           />
@@ -184,30 +132,30 @@ export default function GosVersusScreen({ route, navigation }) {
         >
           <View style={styles.buttonsContainer}>
             <View style={styles.playerButtons}>
-              <IconButton
+              <IconTextButton
                 iconName="check-circle"
-                buttonText="Trick Validé"
+                text="Trick Validé"
                 onPress={() => handleTrickSuccess("skater1")}
                 style={[styles.actionButton, styles.smallButton]}
               />
-              <IconButton
-                iconName="x-circle"
-                buttonText="Aïe !"
+              <IconTextButton
+                iconName="unpublished"
+                text="Aïe !"
                 onPress={() => handleTrickFailure("skater1")}
                 style={[styles.actionButton, styles.smallButton]}
               />
             </View>
 
             <View style={styles.playerButtons}>
-              <IconButton
+              <IconTextButton
                 iconName="check-circle"
-                buttonText="Trick Validé"
+                text="Trick Validé"
                 onPress={() => handleTrickSuccess("skater2")}
                 style={[styles.actionButton, styles.smallButton]}
               />
-              <IconButton
-                iconName="x-circle"
-                buttonText="Aïe !"
+              <IconTextButton
+                iconName="unpublished"
+                text="Aïe !"
                 onPress={() => handleTrickFailure("skater2")}
                 style={[styles.actionButton, styles.smallButton]}
               />
@@ -215,51 +163,37 @@ export default function GosVersusScreen({ route, navigation }) {
           </View>
         </Animatable.View>
 
-        <IconButton
-          iconName="arrow-left"
-          buttonText="Retour accueil"
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        />
-
         {/* Modal Game Over */}
-        <Modal
+        <ModalContent
           animationType="fade"
           transparent={true}
-          visible={isGameOver}
-          onRequestClose={handleCloseModal}
+          visibleState={isGameOver}
+          closeHandler={()=>setIsGameOver(false)}
+          containerStyle={globalStyle.modalContainer}
         >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              {/* Confettis */}
-              <ConfettiCannon
-                count={80}
-                origin={{ x: 150, y: 0 }}
-                fadeOut={true}
-              />
+          {/* Confettis */}
+          <ConfettiCannon count={80} origin={{ x: 150, y: 0 }} fadeOut={true} />
 
-              {/* Trophée animé */}
-              <Animatable.Image
-                animation="bounceIn"
-                duration={1500}
-                easing="ease-out"
-                source={require("../assets/trophy.png")}
-                style={styles.modalImage}
-              />
+          {/* Trophée animé */}
+          <Animatable.Image
+            animation="bounceIn"
+            duration={1500}
+            easing="ease-out"
+            source={require("../assets/trophy.png")}
+            style={styles.modalImage}
+          />
 
-              <Text style={styles.modalText}>Game over !</Text>
-              <Text style={styles.modalText}>
-                {winner ? `${winner} a gagné !` : "Fin de partie"}
-              </Text>
-              <IconButton
-                iconName="check-circle"
-                buttonText="Retour au menu"
-                onPress={handleCloseModal}
-                style={styles.modalButton}
-              />
-            </View>
-          </View>
-        </Modal>
+          <Text style={globalStyle.screenTitle}>Game over !</Text>
+          <Text style={globalStyle.subSubTitle}>
+            {winner ? `${winner} a gagné !` : "Fin de partie"}
+          </Text>
+          <IconTextButton
+            iconName="settings-backup-restore"
+            text="Retour au menu"
+            onPress={() => navigation.navigate("GoS")}
+            containerStyle={{ marginVertical: 20 }}
+          />
+        </ModalContent>
       </View>
     </BackgroundWrapper>
   );
@@ -432,20 +366,8 @@ const styles = StyleSheet.create({
     width: 300,
     alignItems: "center",
   },
-  modalText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 10,
-  },
   modalImage: {
-    width: 100,
-    height: 100,
-    marginBottom: 10,
-  },
-  modalButton: {
-    marginTop: 20,
-    width: 180,
-    height: 40,
+    width: 200,
+    height: 200,
   },
 });

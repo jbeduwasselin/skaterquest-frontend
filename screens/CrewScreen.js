@@ -16,6 +16,7 @@ import {
   getOwnUserInfo,
   leaveCrew,
   promoteToCrewAdmin,
+  removeFromCrewAdmin,
   removeUserFromCrew,
   searchUser,
 } from "../lib/request";
@@ -122,7 +123,7 @@ export default function CrewScreen() {
                   iconName="group-add"
                   onPress={() => handleAddMember(item.uID)}
                   color="white"
-                  size={30}
+                  size={25}
                 />
               </View>
             )}
@@ -182,7 +183,7 @@ function MemberCard({ memberData, isAdmin, isUser, isUserAdmin, forceUpdate }) {
   async function handleAdmin(isAdmin) {
     const { result } = isAdmin
       ? await promoteToCrewAdmin(token, memberData.uID)
-      : await demoteFromCrewAdmin(token, memberData.uID);
+      : await removeFromCrewAdmin(token, memberData.uID);
   }
 
   async function handleRemoveMember() {
@@ -245,11 +246,11 @@ const styles = StyleSheet.create({
     marginVertical: "2%",
   },
   userAvatar: {
-    height: 100,
-    width: 100,
+    height: 50,
+    width: 50,
   },
   controlContainer: {
-    justifyContent: "space-evenly",
+    justifyContent: "space-between",
     ...globalStyle.flexRow,
   },
   createButton: {

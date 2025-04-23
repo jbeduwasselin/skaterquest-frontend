@@ -1,8 +1,10 @@
 import { Dimensions, StyleSheet } from "react-native";
 export const COLOR_BACK = "#858585FF";
 export const COLOR_GREY = "#535353FF";
-export const COLOR_MODAL = "#292929CE";
+export const COLOR_MODAL = "#292929E5";
 export const COLOR_MAIN = "#FF650C";
+export const COLOR_CANCEL = "#dc3545";
+
 export const DEFAULT_AVATAR = require("./assets/Trasher.png");
 export const DEFAULT_THUMBNAIL = require("./assets/Trasher.png");
 
@@ -25,6 +27,7 @@ const globalStyle = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     width: "90%",
+    maxWidth: "90%",
     backgroundColor: COLOR_MODAL,
   },
   screenTitle: {

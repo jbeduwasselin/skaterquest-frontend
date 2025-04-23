@@ -61,7 +61,6 @@ export default function GosVersusScreenBis({ route, navigation }) {
 
   return (
     <BackgroundWrapper>
-      <View style={styles.container}>
         {/* Affichage des joueurs */}
         <Animatable.View
           animation="fadeInLeft"
@@ -239,7 +238,6 @@ export default function GosVersusScreenBis({ route, navigation }) {
             </View>
           </View>
         </Modal>
-      </View>
     </BackgroundWrapper>
   );
 }

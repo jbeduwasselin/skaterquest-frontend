@@ -1,15 +1,10 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Modal,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
-import IconButton from "../components/IconButton";
+import { View, Text, StyleSheet, TextInput } from "react-native";
 import * as Animatable from "react-native-animatable";
 import BackgroundWrapper from "../components/BackgroundWrapper";
+import ModalContent from "../components/ModalContent";
+import globalStyle, { COLOR_BACK } from "../globalStyle";
+import { IconTextButton, TextButton } from "../components/Buttons";
 
 export default function GosPlayScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(true);
@@ -23,131 +18,124 @@ export default function GosPlayScreen({ navigation }) {
     }
   };
 
-  // Fonction pour fermer la modal
-  const closeModal = () => {
-    setModalVisible(false);
-  };
-
   return (
-    <BackgroundWrapper>
-      <View style={styles.container}>
-        {/* MODAL DE CONFIGURATION */}
-        <Modal animationType="slide" transparent={true} visible={modalVisible}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Entrez les SkaterTags !</Text>
+    <BackgroundWrapper flexJustify="space-between">
+      {/* MODAL DE CONFIGURATION */}
+      <ModalContent
+        visibleState={modalVisible}
+        closeHandler={() => setModalVisible(false)}
+        containerStyle={globalStyle.modalContainer}
+      >
+        <Text style={styles.modalTitle}>Entrez les SkaterTags !</Text>
 
-              <TextInput
-                placeholder="SkaterTag Joueur 1"
-                placeholderTextColor="#aaa"
-                style={styles.input}
-                onChangeText={setSkater1}
-                value={skater1}
-                maxLength={8}
-              />
-              <TextInput
-                placeholder="SkaterTag Joueur 2"
-                placeholderTextColor="#aaa"
-                style={styles.input}
-                onChangeText={setSkater2}
-                value={skater2}
-                maxLength={8}
-              />
+        <TextInput
+          placeholder="SkaterTag Joueur 1"
+          placeholderTextColor="white"
+          style={globalStyle.textInput}
+          onChangeText={setSkater1}
+          value={skater1}
+          maxLength={8}
+        />
+        <TextInput
+          placeholder="SkaterTag Joueur 2"
+          placeholderTextColor="white"
+          style={globalStyle.textInput}
+          onChangeText={setSkater2}
+          value={skater2}
+          maxLength={8}
+        />
+        <View style={globalStyle.flexRow}>
+          <TextButton
+            text="Retour"
+            onPress={() => {
+              skater1 && skater2
+                ? setModalVisible(false)
+                : navigation.navigate("Home");
+            }}
+            containerStyle={{ backgroundColor: COLOR_BACK }}
+          />
+          <TextButton text="Valider" onPress={startGame} />
+        </View>
+      </ModalContent>
 
-              <TouchableOpacity
-                style={styles.validateButton}
-                onPress={startGame}
-              >
-                <Text style={styles.validateText}>Valider</Text>
-              </TouchableOpacity>
+      {/* TITRE */}
+      <Animatable.View
+        animation="fadeInDown"
+        duration={1200}
+        style={styles.gameTitleContainer}
+      >
+        <Text style={styles.gameTitle}>GAME OF SKATE</Text>
+      </Animatable.View>
 
-              {/* Bouton Retour pour fermer la modal */}
-              <TouchableOpacity style={styles.backButton} onPress={closeModal}>
-                <Text style={styles.backText}>Retour</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-
-        {/* TITRE */}
+      {/* INFOS SKATERS */}
+      <View style={styles.profileContainer}>
         <Animatable.View
-          animation="fadeInDown"
-          duration={1200}
-          style={styles.gameTitleContainer}
+          animation="fadeInLeft"
+          duration={1000}
+          style={styles.profile}
         >
-          <Text style={styles.gameTitle}>GAME OF SKATE</Text>
+          <Text style={styles.name}>{skater1 || "Joueur 1"}</Text>
         </Animatable.View>
 
-        {/* INFOS SKATERS */}
-        <View style={styles.profileContainer}>
-          <Animatable.View
-            animation="fadeInLeft"
-            duration={1000}
-            style={styles.profile}
-          >
-            <Text style={styles.name}>{skater1 || "Joueur 1"}</Text>
-          </Animatable.View>
-
-          <Animatable.View
-            animation="zoomIn"
-            duration={800}
-            style={styles.versusIconContainer}
-          >
-            <Text style={styles.versus}>VS</Text>
-          </Animatable.View>
-
-          <Animatable.View
-            animation="fadeInRight"
-            duration={1000}
-            style={styles.profile}
-          >
-            <Text style={styles.name}>{skater2 || "Joueur 2"}</Text>
-          </Animatable.View>
-        </View>
-
-        {/* BOUTONS POUR DÉMARRER LE JEU */}
         <Animatable.View
           animation="zoomIn"
-          duration={1200}
-          style={styles.buttonContainer}
+          duration={800}
+          style={styles.versusIconContainer}
         >
-          {/* Bouton "Tricks aléatoires" */}
-          <IconButton
-            iconName="shuffle"
-            buttonText="Tricks aléatoires"
-            onPress={() =>
-              navigation.navigate("GosVersusScreen", {
-                skater1,
-                skater2,
-                gameMode: "Random",
-              })
-            }
-            style={styles.gameButton}
-          />
-
-          {/* Bouton "Choix des tricks" */}
-          <IconButton
-            iconName="list"
-            buttonText="Choix des tricks"
-            onPress={() =>
-              navigation.navigate("GosVersusScreenBis", {
-                skater1,
-                skater2,
-                gameMode: "Choix",
-              })
-            }
-            style={styles.gameButton}
-          />
+          <Text style={styles.versus}>VS</Text>
         </Animatable.View>
 
-        {/* Nouveau bouton "Joueurs" */}
-        <IconButton
+        <Animatable.View
+          animation="fadeInRight"
+          duration={1000}
+          style={styles.profile}
+        >
+          <Text style={styles.name}>{skater2 || "Joueur 2"}</Text>
+        </Animatable.View>
+      </View>
+
+      {/* BOUTONS POUR DÉMARRER LE JEU */}
+      <Animatable.View
+        animation="zoomIn"
+        duration={1200}
+        style={styles.buttonContainer}
+      >
+        {/* Bouton "Tricks aléatoires" */}
+        <IconTextButton
+          iconName="shuffle"
+          text="Tricks aléatoires"
+          onPress={() =>
+            navigation.navigate("GosVersusScreen", {
+              skater1,
+              skater2,
+              gameMode: "Random",
+            })
+          }
+          style={styles.gameButton}
+        />
+
+        {/* Bouton "Choix des tricks" */}
+        <IconTextButton
+          iconName="list"
+          text="Choix des tricks"
+          onPress={() =>
+            navigation.navigate("GosVersusScreenBis", {
+              skater1,
+              skater2,
+              gameMode: "Choix",
+            })
+          }
+          style={styles.gameButton}
+        />
+
+        {/* Bouton "Joueurs" */}
+        <IconTextButton
           iconName="repeat"
-          buttonText="Joueurs"
+          text="Joueurs"
           onPress={() => setModalVisible(true)}
           style={styles.reconfigButton}
         />
-      </View>
+      </Animatable.View>
     </BackgroundWrapper>
   );
 }
@@ -206,7 +194,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   buttonContainer: {
-    marginTop: 30,
+    marginBottom: 50,
   },
   gameButton: {
     marginBottom: 20,

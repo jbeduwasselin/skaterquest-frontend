@@ -7,7 +7,6 @@ import {
   SafeAreaView,
   StyleSheet,
   useAnimatedValue,
-  View,
 } from "react-native";
 import { useEffect, useState } from "react";
 import { useBackHandler } from "@react-native-community/hooks";
