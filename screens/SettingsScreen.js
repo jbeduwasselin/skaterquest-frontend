@@ -59,9 +59,7 @@ export default function SettingsScreen({ navigation }) {
 
       if (!pickerResult.canceled && pickerResult.assets?.length > 0) {
         const uri = pickerResult.assets[0].uri;
-        console.log(uri);
         const { result } = await changeUserAvatar(token, uri);
-        console.log(result);
         result && forceUpdate();
       }
     } catch (error) {
