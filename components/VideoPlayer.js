@@ -1,11 +1,11 @@
 import { useVideoPlayer, VideoView } from "expo-video";
+import { useEffect, useRef } from "react";
 import { Dimensions, StyleSheet } from "react-native";
 
 export default function VideoPlayer({ source }) {
   const player = useVideoPlayer(source, (player) => {
     player.play();
   });
-
   return (
     <VideoView
       style={styles.video}
@@ -21,5 +21,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     width: Dimensions.get("screen").width,
     height: Dimensions.get("screen").height,
+    paddingHorizontal: "5%",
+    paddingVertical: "10%",
   },
 });

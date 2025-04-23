@@ -1,5 +1,6 @@
 import { Dimensions, StyleSheet } from "react-native";
 export const COLOR_BACK = "#858585FF";
+export const COLOR_GREY = "#535353FF";
 export const COLOR_MODAL = "#292929CE";
 export const COLOR_MAIN = "#FF650C";
 export const DEFAULT_AVATAR = require("./assets/Trasher.png");

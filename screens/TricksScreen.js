@@ -17,7 +17,7 @@ import { toggleTrick } from "../reducers/tricks";
 import ProgressBar from "../components/ProgressBar";
 import ConfettiCannon from "react-native-confetti-cannon";
 import IconButton from "../components/IconButton";
-import globalStyle from "../globalStyle";
+import globalStyle, { COLOR_GREY } from "../globalStyle";
 import { StateTextButton } from "../components/Buttons";
 
 const initialSettings = Object.freeze({
@@ -98,29 +98,32 @@ export default function TricksScreen() {
         }}
       >
         <View style={styles.filterSection}>
+          {difficultyLevels.map((difficulty, id) => (
+              <FilterButton
+              key={id}
+              text={difficulty}
+              color={getDifficultyColor(difficulty)}
+              onPress={() => toggleFilterDifficulty(difficulty)}
+              />
+            ))}
+          <FilterButton
+            text="Validé"
+            color="blue"
+            onPress={() =>
+                setSettings({
+                    ...settings,
+                    onlyValidated: !settings.onlyValidated,
+                })
+            }
+            />
             {categories.map((category, id) => (
               <FilterButton
                 key={id}
                 text={category}
-                color="gray"
+                color={COLOR_GREY}
                 onPress={() => toggleFilterCategory(category)}
               />
             ))}
-            {difficultyLevels.map((difficulty, id) => (
-              <FilterButton
-                key={id}
-                text={difficulty}
-                color={getDifficultyColor(difficulty)}
-                onPress={() => toggleFilterDifficulty(difficulty)}
-              />
-            ))}
-        <FilterButton
-          text="Validé"
-          color="blue"
-          onPress={() =>
-            setSettings({ ...settings, onlyValidated: !settings.onlyValidated })
-          }
-        />
         </View>
       </View>
 
@@ -228,25 +231,19 @@ const styles = StyleSheet.create({
   },
   filterSection: {
     ...globalStyle.flexRow,
-    marginVertical: 5,
+    flexWrap: "wrap",
+    justifyContent: "center",
     padding: 5,
-    backgroundColor: "#f4f4f4",
+    borderColor: "black",
+    borderWidth: 2,
     borderRadius: 10,
     marginHorizontal: "5%",
-  },
-  filterSectionTitle: {
-    ...globalStyle.subSubTitle,
-    marginBottom: 5,
-  },
-  settingsContainer: {
-    ...globalStyle.flexRow,
-    flexWrap: "wrap",
-    justifyContent: "space-evenly",
   },
   filterButton: {
     padding: 8,
     borderRadius: 5,
-    margin: 3,
+    marginHorizontal: 10,
+    marginVertical: 2,
   },
   filterButtonText: {
     fontSize: 14,
@@ -260,6 +257,7 @@ const styles = StyleSheet.create({
     marginHorizontal: "5%",
     marginVertical: "2%",
     borderColor: "black",
+    padding : 5 ,
     borderWidth: 2,
     borderRadius: 5,
   },
@@ -269,6 +267,7 @@ const styles = StyleSheet.create({
   },
   tricksName: {
     ...globalStyle.subTitle,
+    marginLeft : 20,
   },
   subContainer: { ...globalStyle.flexRow },
   tricksDescription: {
