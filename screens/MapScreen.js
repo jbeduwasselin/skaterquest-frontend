@@ -106,41 +106,39 @@ export default function MapScreen({ navigation }) {
   }
 
   return (
-    <BackgroundWrapper>
-      <View style={styles.container}>
-        <Text style={globalStyle.screenTitle}>
-          Ride sur les meilleurs spots !
-        </Text>
+    <BackgroundWrapper flexJustify="space-evenly">
+      <Text style={globalStyle.screenTitle}>
+        Ride sur les meilleurs spots !
+      </Text>
 
-        <MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: userLocation.latitude,
-            longitude: userLocation.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-          showsUserLocation={true}
-          showsMyLocationButton={true}
-          onLongPress={(event) =>
-            navigation.navigate("AddSpotScreen", event.nativeEvent.coordinate)
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: userLocation.latitude,
+          longitude: userLocation.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+        showsUserLocation={true}
+        showsMyLocationButton={true}
+        onLongPress={(event) =>
+          navigation.navigate("AddSpotScreen", event.nativeEvent.coordinate)
+        }
+        onRegionChange={(region) => {
+          if (lightHaversine(region, mapLocation) > 1000) {
+            setMapLocation(region);
           }
-          onRegionChange={(region) => {
-            if (lightHaversine(region, mapLocation) > 1000) {
-              setMapLocation(region);
-            }
-          }}
-        >
-          {marker}
-        </MapView>
+        }}
+      >
+        {marker}
+      </MapView>
 
-        <IconTextButton
-          iconName="add-location"
-          size={50}
-          text="Ajouter un spot."
-          onPress={addSpot}
-        />
-      </View>
+      <IconTextButton
+        iconName="add-location"
+        size={50}
+        text="Ajouter un spot."
+        onPress={addSpot}
+      />
 
       {/* Modal pour l'affichage des erreur */}
       <ModalContent
