@@ -19,16 +19,19 @@ import {
   removeUserFromCrew,
   searchUser,
 } from "../lib/request";
-import globalStyle, { COLOR_MAIN } from "../globalStyle";
+import globalStyle, { COLOR_MAIN, DEFAULT_AVATAR } from "../globalStyle";
 import {
   IconButton,
   IconTextButton,
   StateIconButton,
 } from "../components/Buttons";
+import ModalContent from "../components/ModalContent";
 
 export default function CrewScreen() {
+  //Rerender dans on mount et manuel
   const [updateWatcher, forceUpdate] = useReducer((p) => p + 1, 0);
   const isFocused = useIsFocused();
+
   //Recup les info utilisateur
   const { token } = useSelector((state) => state.user.value);
   const [userData, setUserData] = useState(null);
@@ -40,6 +43,7 @@ export default function CrewScreen() {
 
   const [newCrewName, setNewCrewName] = useState("");
   const [searchResults, setSearchResult] = useState([]);
+  const [searchVisible, setSearchVisible] = useState(false);
 
   async function handleCreateCrew() {
     const { result, reason } = await createCrew(token, newCrewName);
@@ -67,9 +71,10 @@ export default function CrewScreen() {
     const isUserAdmin = userData.crew.admins.includes(userData.uID);
     return (
       <BackgroundWrapper>
-        <Text style={globalStyle.screenTitle}>{userData.crew.name}</Text>
+        <Text style={styles.title}>{userData.crew.name}</Text>
         <FlatList
           data={userData.crew.members}
+          contentContainerStyle={styles.flatListContainer}
           renderItem={({ item }) => {
             return (
               <MemberCard
@@ -81,35 +86,56 @@ export default function CrewScreen() {
               />
             );
           }}
-          contentContainerStyle={styles.memberContainer}
         />
-        <TextInput
-          style={globalStyle.textInput}
-          placeholderTextColor="white"
-          placeholder="Nouveau membre"
-          onChangeText={handleSearchResult}
-        />
-        <FlatList
-          data={searchResults}
-          renderItem={({ item }) => (
-            <View style={styles.memberCard}>
-              <Image
-                source={
-                  item.avatar
-                    ? { uri: item.avatar }
-                    : require("../assets/Trasher.png")
-                }
-                height={50}
-                width={50}
-                style={styles.userAvatar}
-              />
-              <Text>{item.username}</Text>
-              <IconButton
-                iconName="group-add"
-                onPress={() => handleAddMember(item.uID)}
-              />
-            </View>
-          )}
+        <ModalContent
+          visibleState={searchVisible}
+          closeHandler={() => setSearchVisible(false)}
+          containerStyle={globalStyle.modalContainer}
+        >
+          <IconButton
+            iconName="cancel"
+            size={25}
+            color="white"
+            value={false}
+            onPress={() => setSearchVisible(false)}
+            containerStyle={{alignSelf : "flex-end"}}
+          />
+          <TextInput
+            style={globalStyle.textInput}
+            placeholderTextColor="white"
+            placeholder="Nouveau membre"
+            onChangeText={handleSearchResult}
+          />
+          <FlatList
+            data={searchResults}
+            style={styles.flatListContainer}
+            renderItem={({ item }) => (
+              <View style={styles.memberCard}>
+                <Image
+                  source={item.avatar ? { uri: item.avatar } : DEFAULT_AVATAR}
+                  height={40}
+                  width={50}
+                  style={styles.userAvatar}
+                />
+                <Text style={globalStyle.subSubTitle}>{item.username}</Text>
+                <IconButton
+                  iconName="group-add"
+                  onPress={() => handleAddMember(item.uID)}
+                  color="white"
+                  size={30}
+                />
+              </View>
+            )}
+          />
+        </ModalContent>
+
+        <IconTextButton
+          iconName="group-add"
+          text="Ajouter un membre"
+          size={30}
+          value={false}
+          onPress={setSearchVisible}
+          containerStyle={styles.searchButton}
         />
       </BackgroundWrapper>
     );
@@ -168,11 +194,7 @@ function MemberCard({ memberData, isAdmin, isUser, isUserAdmin, forceUpdate }) {
   return (
     <View style={styles.memberCard}>
       <Image
-        source={
-          memberData.avatar
-            ? { uri: memberData.avatar }
-            : require("../assets/Trasher.png")
-        }
+        source={memberData.avatar ? { uri: memberData.avatar } : DEFAULT_AVATAR}
         height={50}
         width={50}
         style={styles.userAvatar}
@@ -185,12 +207,21 @@ function MemberCard({ memberData, isAdmin, isUser, isUserAdmin, forceUpdate }) {
               iconName="admin-panel-settings"
               value={isAdmin}
               onPress={handleAdmin}
+              size={30}
             />
-            <IconButton iconName="cancel" onPress={handleRemoveMember} />
+            <IconButton
+              iconName="cancel"
+              onPress={handleRemoveMember}
+              size={25}
+            />
           </>
         )}
         {isUser && (
-          <IconButton iconName="door-back" onPress={handleLeaveCrew} />
+          <IconButton
+            iconName="door-back"
+            onPress={handleLeaveCrew}
+            size={30}
+          />
         )}
       </View>
     </View>
@@ -200,21 +231,24 @@ function MemberCard({ memberData, isAdmin, isUser, isUserAdmin, forceUpdate }) {
 const styles = StyleSheet.create({
   title: {
     ...globalStyle.screenTitle,
+    lineHeight: 40,
+    margin: 0,
   },
-  memberContainer: {
+  flatListContainer: {
     width: "80%",
+    margin: "2%",
   },
   memberCard: {
     ...globalStyle.flexRow,
-    width : "100%",
+    width: "100%",
     justifyContent: "space-between",
+    marginVertical: "2%",
   },
   userAvatar: {
     height: 100,
     width: 100,
   },
   controlContainer: {
-    width: "20%",
     justifyContent: "space-evenly",
     ...globalStyle.flexRow,
   },

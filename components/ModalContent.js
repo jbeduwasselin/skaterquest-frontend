@@ -96,7 +96,9 @@ const styles = StyleSheet.create({
   container: {
     padding: "1%",
     backgroundColor: "#202020A0",
-    minWidth: Dimensions.get("window").width * 0.8,
-    minHeight: Dimensions.get("window").height * 0.8,
+    minWidth: "80%",
+    minHeight: "80%",
+    // minWidth: Dimensions.get("window").width * 0.8,
+    // minHeight: Dimensions.get("window").height * 0.8,
   },
 });
