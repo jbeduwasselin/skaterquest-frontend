@@ -55,6 +55,7 @@ const globalStyle = StyleSheet.create({
     placeholderTextColor: "white",
     marginBottom: 5,
     width : "90%",
+    textAlign :"center"
   },
 });
 

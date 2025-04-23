@@ -86,7 +86,7 @@ export default function LoginScreen({ navigation }) {
         containerStyle={styles.closeButton}
       />
       <Text style={globalStyle.screenTitle}>Connexion</Text>
-      <KeyboardAvoidingView style={{ width: "100%" }}>
+      <KeyboardAvoidingView style={{ width: "100%", alignItems : "center"  }}>
         <TextInput
           style={styles.inputs}
           placeholder="Ton adresse mail"
@@ -129,7 +129,7 @@ export default function LoginScreen({ navigation }) {
         containerStyle={styles.closeButton}
       />
       <Text style={globalStyle.screenTitle}>Inscription</Text>
-      <KeyboardAvoidingView style={{ width: "100%" }}>
+      <KeyboardAvoidingView style={{ width: "100%" , alignItems : "center"  }}>
         <TextInput
           style={styles.inputs}
           placeholder="Ton SkateurTag"
