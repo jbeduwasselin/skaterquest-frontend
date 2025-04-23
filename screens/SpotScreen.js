@@ -31,7 +31,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 const { width } = Dimensions.get("window");
 
 // Variables pour gérer l'affichage carrousel
-const SPACING = 16;
+const SPACING = 4;
 const ITEM_SIZE = width * 0.72; // Largeur "pleine" de l’image centrée dans l'affichage carrousel
 const SIDE_EMPTY_SPACE = (width - ITEM_SIZE) / 2; // Espacement entre les images pour entre‑voir les images voisines à celle du milieu
 
@@ -63,7 +63,7 @@ export default function SpotScreen({ navigation, route }) {
         result && setSpotData(data);
       });
 
-    console.log("spotData :", spotData);
+    //console.log("spotData :", spotData);
   }, [isFocused]);
 
   // Enregistrement de la vidéo et des tricks associés
@@ -161,7 +161,7 @@ export default function SpotScreen({ navigation, route }) {
       <Animated.FlatList // FlatList sert pour l'affichage des images en défilement et Animated pour la dynamisation
         data={spotData.img} // Mettre ici les images (photos ou vidéos) voulues
         keyExtractor={(uri, i) => "img" + i} // Pour identifier quelle image est au centre ou non et gérer son affichage en fonction
-        horizontal  // Scroll horizontal (par défaut FlatList est en scroll vertical)
+        horizontal // Scroll horizontal (par défaut FlatList est en scroll vertical)
         showsHorizontalScrollIndicator={false} // Cache la barre de scroll horizontale
         snapToInterval={ITEM_SIZE} // Fluidifie le défilement en snappant automatiquement chaque image quand on scrolle
         decelerationRate="fast" // Rend le scroll plus "snappy" (rapide) à s’arrêter
@@ -179,36 +179,27 @@ export default function SpotScreen({ navigation, route }) {
             index * ITEM_SIZE,
             (index + 1) * ITEM_SIZE,
           ];
-      
           const scale = scrollXPhotos.interpolate({
             inputRange,
-            outputRange: [0.8, 1, 0.8],
+            outputRange: [0.8, 1, 0.8], // Règle la taille respective de l'image de gauche, du milieu et de droite
             extrapolate: "clamp",
           });
-      
           const opacity = scrollXPhotos.interpolate({
             inputRange,
-            outputRange: [0.7, 1, 0.7],
+            outputRange: [0.6, 1, 0.6], // Règle l'opacité respective de l'image de gauche, du milieu et de droite
             extrapolate: "clamp",
           });
-
-          // Avant :
-          // renderItem={({ item, index }) => {
-          //   return <Image source={{ uri: item }} height={200} width={400} />;
-          // }}
-      
           return (
             <Animated.View
-              style={[
-                styles.carouselItem,
-                { transform: [{ scale }], opacity },
-              ]}
+              style={[styles.carouselItem, { transform: [{ scale }], opacity }]}
             >
-              <Image
-                source={{ uri: item }}
-                style={{ width: "100%", height: 250 }}
-                resizeMode="cover"
-              />
+              <View style={styles.photoWrapper}>
+                <Image
+                  source={{ uri: item }}
+                  style={styles.photo}
+                  resizeMode="cover" // Remplit proprement l'espace vertical
+                />
+              </View>
             </Animated.View>
           );
         }}
@@ -390,11 +381,21 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   carouselItem: {
-    width: ITEM_SIZE * 0.7,
+    width: ITEM_SIZE,
     marginHorizontal: SPACING / 2,
     borderRadius: 12,
     overflow: "hidden",
     backgroundColor: "#000",
+  },
+  photoWrapper: {
+    width: "100%",
+    aspectRatio: 3 / 4, // portrait
+    backgroundColor: "#222", // au cas où l'image charge lentement
+  },
+  photo: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 8,
   },
   videoItem: {
     display: "flex",
