@@ -9,7 +9,15 @@ export default function BackgroundWrapper({ children , flexJustify , flexAlign }
       style={globalStyle.container}
       resizeMode="cover"
     >
-      <SafeAreaView style={{...globalStyle.container, justifyContent : flexJustify ?? "flex-start", alignItems : flexAlign ?? "center" }}>{children}</SafeAreaView>
+      <SafeAreaView
+        style={{
+          ...globalStyle.container,
+          justifyContent: flexJustify ?? "flex-start",
+          alignItems: flexAlign ?? "center",
+        }}
+      >
+        {children}
+      </SafeAreaView>
     </ImageBackground>
   );
 }
