@@ -3,6 +3,7 @@ export const COLOR_BACK = "#858585FF";
 export const COLOR_MODAL = "#292929CE";
 export const COLOR_MAIN = "#FF650C";
 export const DEFAULT_AVATAR = require("./assets/Trasher.png");
+export const DEFAULT_THUMBNAIL = require("./assets/Trasher.png");
 
 const globalStyle = StyleSheet.create({
   container: {
@@ -62,7 +63,9 @@ const globalStyle = StyleSheet.create({
     padding: 20,
   },
   errorText: {
-    ...globalStyle.subSubTitle,
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white",
     margin: "2%",
   },
   errorButton: {

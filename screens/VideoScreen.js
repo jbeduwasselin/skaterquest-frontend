@@ -10,9 +10,12 @@ import {
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import Icon from "react-native-vector-icons/Feather";
 import { useSelector } from "react-redux";
-import { getOwnUserInfo } from "../lib/request";
+import { deleteVideo, getOwnUserInfo } from "../lib/request";
 import VideoPlayer from "../components/VideoPlayer";
 import { useBackHandler } from "@react-native-community/hooks";
+import globalStyle, { DEFAULT_THUMBNAIL } from "../globalStyle";
+import * as VideoThumbnails from "expo-video-thumbnails";
+import { IconButton } from "../components/Buttons";
 
 /*
 Ce screen est un bon exemple de comment on peut gérer le video player.
@@ -46,6 +49,7 @@ Ce screen est un bon exemple de comment on peut gérer le video player.
 
 export default function VideoScreen({ navigation }) {
   const [userData, setUserData] = useState(null);
+  const [updateWatcher, forceUpdate] = useState((p) => p + 1, 0);
   const [videoPlaying, setVideoPlaying] = useState(null);
   const { token } = useSelector((state) => state.user.value);
 
@@ -53,7 +57,7 @@ export default function VideoScreen({ navigation }) {
     getOwnUserInfo(token).then(({ result, data }) => {
       result && setUserData(data);
     });
-  }, []);
+  }, [updateWatcher]);
 
   useBackHandler(() => {
     if (videoPlaying) {
@@ -63,49 +67,65 @@ export default function VideoScreen({ navigation }) {
     return false;
   });
 
+  async function deleteUserVideo(videoID) {
+    const {result} = await deleteVideo(token, videoID);
+    result && forceUpdate();
+  }
+
+  if (videoPlaying) {
+    return (
+      <BackgroundWrapper>
+        <VideoPlayer
+          source={videoPlaying}
+          onClose={() => setVideoPlaying(null)}
+        />
+      </BackgroundWrapper>
+    );
+  }
   return (
     <BackgroundWrapper>
-      <View style={styles.container}>
-        {videoPlaying ? (
-          <VideoPlayer
-            source={videoPlaying}
-            onClose={() => setVideoPlaying(null)}
-          />
-        ) : (
-          <>
-            <Text style={styles.title}>Mes vidéos</Text>
-            <FlatList
-              data={userData?.videos}
-              renderItem={({ item }) =>
-                item && (
-                  <VideoCard
-                    videoData={item}
-                    onPress={() => {
-                      setVideoPlaying(item.url);
-                    }}
-                  />
-                )
-              }
-              keyExtractor={(item) => item._id}
-              contentContainerStyle={styles.list}
+      <Text style={globalStyle.screenTitle}>Mes vidéos</Text>
+      <FlatList
+        data={userData?.videos}
+        renderItem={({ item }) =>
+          item && (
+            <VideoCard
+              videoData={item}
+              onPress={() => {
+                setVideoPlaying(item.url);
+              }}
+              handleDelete={() => deleteUserVideo(item._id)}
             />
-          </>
-        )}
-      </View>
+          )
+        }
+        keyExtractor={(item) => item._id}
+        contentContainerStyle={styles.list}
+      />
     </BackgroundWrapper>
   );
 }
 
-function VideoCard({ videoData, onPress }) {
-  function formatDate(creationDate) {
-    const date = new Date(creationDate);
-    return ` ${new Intl.DateTimeFormat("fr-FR", { weekday: "long" }).format(date)} ${date.getUTCDate()}/${date.getUTCMonth()}/${date.getFullYear()}`;
-  }
+function formatDate(creationDate) {
+  const date = new Date(creationDate);
+  return ` ${new Intl.DateTimeFormat("fr-FR", { weekday: "long" }).format(date)} ${date.getUTCDate()}/${date.getUTCMonth()}/${date.getFullYear()}`;
+}
+
+function VideoCard({ videoData, onPress, handleDelete }) {
+  const [thumbnail, setThumbnail] = useState(null);
+
+  useEffect(() => {
+    (async function getThumbnail() {
+      VideoThumbnails.getThumbnailAsync(videoData.url).then(setThumbnail);
+    })();
+  }, []);
 
   return (
-    <TouchableOpacity style={styles.videoItem} onPress={onPress}>
+    <TouchableOpacity style={styles.videoCard} onPress={onPress}>
       <View style={styles.thumbnailWrapper}>
-        <Image source={videoData.thumbnail} style={styles.thumbnail} />
+        <Image
+          source={thumbnail ? { uri: thumbnail.uri } : DEFAULT_THUMBNAIL}
+          style={styles.thumbnail}
+        />
         <View style={styles.playIconContainer}>
           <Icon name="play-circle" size={36} color="#fff" />
         </View>
@@ -118,6 +138,7 @@ function VideoCard({ videoData, onPress }) {
           🕒 {formatDate(videoData.creationDate)}
         </Text>
       </View>
+      <IconButton iconName="delete" size={30} onPress={handleDelete} />
     </TouchableOpacity>
   );
 }
@@ -137,13 +158,16 @@ const styles = StyleSheet.create({
   },
   list: {
     gap: 15,
+    width: "100%",
   },
-  videoItem: {
+  videoCard: {
+    display: "flex",
+    minWidth: "90%",
     flexDirection: "row",
     backgroundColor: "#2228",
     padding: 10,
     borderRadius: 8,
-    alignItems: "flex-start",
+    alignItems: "center",
   },
   thumbnailWrapper: {
     position: "relative",
