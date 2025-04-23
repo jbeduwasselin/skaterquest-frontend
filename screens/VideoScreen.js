@@ -68,7 +68,7 @@ export default function VideoScreen({ navigation }) {
   });
 
   async function deleteUserVideo(videoID) {
-    const {result} = await deleteVideo(token, videoID);
+    const { result } = await deleteVideo(token, videoID);
     result && forceUpdate();
   }
 
@@ -111,7 +111,7 @@ function formatDate(creationDate) {
 }
 
 function VideoCard({ videoData, onPress, handleDelete }) {
-  const [thumbnail, setThumbnail] = useState(null);
+  const [thumbnail, setThumbnail] = useState({ uri: DEFAULT_THUMBNAIL });
 
   useEffect(() => {
     (async function getThumbnail() {

@@ -99,7 +99,7 @@ export default function CrewScreen() {
             color="white"
             value={false}
             onPress={() => setSearchVisible(false)}
-            containerStyle={{alignSelf : "flex-end"}}
+            containerStyle={{ alignSelf: "flex-end" }}
           />
           <TextInput
             style={globalStyle.textInput}
@@ -113,10 +113,10 @@ export default function CrewScreen() {
             renderItem={({ item }) => (
               <View style={styles.memberCard}>
                 <Image
-                  source={item.avatar ? { uri: item.avatar } : DEFAULT_AVATAR}
+                  source={{ uri: item.avatar ?? DEFAULT_AVATAR }}
                   height={40}
-                  width={50}
-                  style={styles.userAvatar}
+                  width={40}
+                  style={globalStyle.avatar}
                 />
                 <Text style={globalStyle.subSubTitle}>{item.username}</Text>
                 <IconButton
@@ -195,10 +195,10 @@ function MemberCard({ memberData, isAdmin, isUser, isUserAdmin, forceUpdate }) {
   return (
     <View style={styles.memberCard}>
       <Image
-        source={memberData.avatar ? { uri: memberData.avatar } : DEFAULT_AVATAR}
+        source={{ uri: memberData.avatar ?? DEFAULT_AVATAR }}
         height={50}
         width={50}
-        style={styles.userAvatar}
+        style={globalStyle.avatar}
       />
       <Text style={globalStyle.subTitle}>{memberData.username}</Text>
       <View style={styles.controlContainer}>
@@ -244,10 +244,6 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "space-between",
     marginVertical: "2%",
-  },
-  userAvatar: {
-    height: 50,
-    width: 50,
   },
   controlContainer: {
     justifyContent: "space-between",

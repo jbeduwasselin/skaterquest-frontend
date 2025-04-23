@@ -5,8 +5,10 @@ export const COLOR_MODAL = "#292929E5";
 export const COLOR_MAIN = "#FF650C";
 export const COLOR_CANCEL = "#dc3545";
 
-export const DEFAULT_AVATAR = require("./assets/Trasher.png");
-export const DEFAULT_THUMBNAIL = require("./assets/Trasher.png");
+export const DEFAULT_AVATAR =
+  "https://res.cloudinary.com/dl5e9wcse/image/upload/v1745437126/lfnxpwagw27derwlvc0f.png";
+export const DEFAULT_THUMBNAIL =
+  "https://res.cloudinary.com/dl5e9wcse/image/upload/v1745437126/lfnxpwagw27derwlvc0f.png";
 
 const globalStyle = StyleSheet.create({
   container: {
@@ -30,6 +32,12 @@ const globalStyle = StyleSheet.create({
     maxWidth: "90%",
     backgroundColor: COLOR_MODAL,
   },
+  avatar: {
+    borderRadius: 1000,
+    borderWidth: 2,
+    borderColor: "#fff",
+    margin: 5,
+  },
   screenTitle: {
     fontSize: 28,
     fontWeight: "bold",
@@ -42,6 +50,17 @@ const globalStyle = StyleSheet.create({
     textShadowRadius: 2,
     letterSpacing: 1,
     textTransform: "uppercase",
+  },
+  skaterTag: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#fff",
+    backgroundColor: "#1e1e1e",
+    paddingHorizontal: 15,
+    paddingVertical: 6,
+    borderRadius: 20,
+    overflow: "hidden",
+    marginTop: 10, // Espacement avec l'avatar
   },
   subTitle: {
     fontWeight: 800,

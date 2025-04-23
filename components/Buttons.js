@@ -1,6 +1,6 @@
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import globalStyle, { COLOR_MAIN } from "../globalStyle";
+import  { COLOR_MAIN } from "../globalStyle";
 import { useEffect, useState } from "react";
 import { Image } from "react-native";
 //Un button avec un icon
@@ -193,6 +193,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 12,
     margin: 5,
+    paddingHorizontal: 20,
   },
   text: {
     fontSize: 18,

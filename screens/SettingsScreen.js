@@ -9,18 +9,17 @@ import {
   Image,
   Alert,
   TextInput,
-  Modal,
-  Pressable,
 } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import * as ImagePicker from "expo-image-picker";
-import { IconTextButton } from "../components/Buttons";
-import globalStyle, { DEFAULT_AVATAR } from "../globalStyle";
+import { IconTextButton, TextButton } from "../components/Buttons";
+import globalStyle, { COLOR_CANCEL, DEFAULT_AVATAR } from "../globalStyle";
 import { changeUserAvatar, getOwnUserInfo } from "../lib/request";
 import { useIsFocused } from "@react-navigation/native";
+import ModalContent from "../components/ModalContent";
 
 export default function SettingsScreen({ navigation }) {
-  const [updateWatcher, forceUpdate] = useReducer((p) => p + 1, 0);
+  //   const [updateWatcher, forceUpdate] = useReducer((p) => p + 1, 0);
   const isFocused = useIsFocused();
   const { token } = useSelector((state) => state.user.value);
   const [userData, setUserData] = useState(null);
@@ -32,7 +31,7 @@ export default function SettingsScreen({ navigation }) {
         setUserData(data);
       }
     });
-  }, [isFocused, updateWatcher]);
+  }, [isFocused]);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [newSkaterTag, setNewSkaterTag] = useState("");
@@ -116,160 +115,79 @@ export default function SettingsScreen({ navigation }) {
 
   return (
     <BackgroundWrapper>
-      <View style={styles.container}>
-        <TouchableOpacity onPress={handleImagePress}>
-          <Image
-            source={userData?.avatar ? { uri: userData.avatar } : DEFAULT_AVATAR}
-            style={styles.profileImage}
-          />
-        </TouchableOpacity>
+      <TouchableOpacity onPress={handleImagePress} activeOpacity={0.6}>
+        <Image
+          source={{ uri: userData?.avatar ?? DEFAULT_AVATAR }}
+          width={200}
+          height={200}
+          style={globalStyle.avatar}
+        />
+      </TouchableOpacity>
 
-        {/* Affichage du SkaterTag ou du nom d'utilisateur */}
-        {userData?.skaterTag ? (
-          <View style={styles.skaterTagContainer}>
-            <Text style={styles.skaterTag}>@{userData.skaterTag}</Text>
-          </View>
-        ) : (
-          <View style={styles.skaterTagContainer}>
-            <Text style={styles.skaterTag}>
-              @{userData?.username || "Skater anonyme"}
-            </Text>
-          </View>
-        )}
+      <Text style={globalStyle.skaterTag}>
+        {userData?.skaterTag ?? "@" + userData?.username ?? ""}
+      </Text>
 
-        <Text style={globalStyle.screenTitle}>Reglages</Text>
+      <Text style={globalStyle.screenTitle}>Reglages</Text>
 
-        <View style={styles.buttonContainer}>
-          <IconTextButton
-            iconName="edit"
-            text="Changer SkaterTag"
-            iconLeft
-            onPress={() => setModalVisible(true)}
-          />
-          <IconTextButton
-            iconName="settings"
-            text="Autres options qu'on oublie"
-            onPress={() => console.log("Autres options")}
-          />
-          <IconTextButton
-            iconName="emoji-people"
-            text="Equipes"
-            onPress={() => console.log("Equipes")}
-          />
-        </View>
+      <View style={styles.buttonContainer}>
+        <IconTextButton
+          iconName="edit"
+          text="Changer SkaterTag"
+          iconLeft
+          onPress={() => setModalVisible(true)}
+        />
+        <IconTextButton
+          iconName="settings"
+          text="Option 2"
+          onPress={() => console.log("Autres options")}
+        />
+        <IconTextButton
+          iconName="settings"
+          text="Option 3"
+          onPress={() => console.log("Autres options")}
+        />
+        <IconTextButton
+          iconName="settings"
+          text="Option 3"
+          onPress={() => console.log("Autres options")}
+        />
       </View>
 
       {/* Modal de changement de SkaterTag */}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
+      <ModalContent
+        visibleState={modalVisible}
+        closeHandler={() => setModalVisible(false)}
+        style={globalStyle.modalContainer}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Nouveau SkaterTag</Text>
-            <TextInput
-              style={[styles.input, { marginVertical: 15 }]}
-              placeholder="Entre ton nouveau pseudo"
-              placeholderTextColor="#aaa"
-              value={newSkaterTag}
-              onChangeText={setNewSkaterTag}
-            />
-            <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-              <TouchableOpacity
-                style={[styles.closeButton, { backgroundColor: "#6c757d" }]}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={styles.closeButtonText}>Annuler</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.closeButton, { backgroundColor: "#dc3545" }]}
-                onPress={updateSkaterTag}
-              >
-                <Text style={styles.closeButtonText}>Valider</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+        <Text style={styles.modalTitle}>Nouveau SkaterTag</Text>
+        <TextInput
+          style={globalStyle.textInput}
+          placeholder="Entre ton nouveau pseudo"
+          placeholderTextColor="white"
+          value={newSkaterTag}
+          onChangeText={setNewSkaterTag}
+        />
+        <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+          <TextButton
+            text="Annuler"
+            containerStyle={{ backgroundColor: COLOR_CANCEL }}
+            onPress={() => setModalVisible(false)}
+          />
+          <TextButton text="Valider" onPress={updateSkaterTag} />
         </View>
-      </Modal>
+      </ModalContent>
     </BackgroundWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    padding: 20,
-    paddingTop: 60,
-  },
-  profileImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    marginBottom: 10,
-    borderWidth: 3,
-    borderColor: "#fff",
-  },
-  skaterTagContainer: {
-    backgroundColor: "#2b2b2b",
-    borderRadius: 25,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    marginBottom: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  skaterTag: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#fff",
-    textAlign: "center",
-  },
   buttonContainer: {
-    width: "100%",
-    marginTop: 20,
-    alignItems: "center",
-    gap: 40
-  },
-  modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
-    width: "80%",
-    alignItems: "center",
+    justifyContent: "space-evenly",
   },
   modalTitle: {
+    ...globalStyle.subSubTitle,
     fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  input: {
-    width: "100%",
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    fontSize: 16,
-  },
-  closeButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  closeButtonText: {
-    color: "white",
-    fontWeight: "bold",
   },
 });
-

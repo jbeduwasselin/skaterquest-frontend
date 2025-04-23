@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import * as Animatable from "react-native-animatable";
 import { useIsFocused } from "@react-navigation/native";
 import { getOwnUserInfo } from "../lib/request";
-import globalStyle from "../globalStyle";
+import globalStyle, { DEFAULT_AVATAR } from "../globalStyle";
 import { IconButton, IconTextButton } from "../components/Buttons";
 
 // Import seulement le composant
@@ -46,23 +46,16 @@ export default function HomeScreen({ navigation }) {
 
       {/* Image de profil */}
       <Image
-        source={
-          userData?.avatar
-            ? { uri: userData.avatar }
-            : require("../assets/Trasher.png")
-        }
-        style={styles.profileImage}
+        source={{ uri: userData?.avatar ?? DEFAULT_AVATAR }}
+        height={120}
+        width={120}
+        style={globalStyle.avatar}
       />
 
       {/* Affichage du SkaterTag */}
-      {userData?.skaterTag ? (
-        <Text style={styles.skaterTag}>@{userData.skaterTag}</Text>
-      ) : (
-        <Text style={styles.skaterTag}>
-          @{userData?.username || "Skater anonyme"}
-        </Text>
-      )}
-
+      <Text style={globalStyle.skaterTag}>
+        {userData?.skaterTag ?? "@" + userData?.username ?? ""}
+      </Text>
       {/* Barre de progression */}
       <View style={styles.progressContainer}>
         <ProgressBar />
@@ -107,39 +100,11 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
   headerContainer: {
     ...globalStyle.flexRow,
     width: "100%",
     justifyContent: "space-between",
     alignItems: "flex-start",
-  },
-  settingsIcon: {
-    marginLeft: 20,
-  },
-  profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 2,
-    borderColor: "#fff",
-    zIndex: 0,
-  },
-  skaterTag: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#fff",
-    backgroundColor: "#1e1e1e",
-    paddingHorizontal: 15,
-    paddingVertical: 6,
-    borderRadius: 20,
-    overflow: "hidden",
-    marginTop: 10, // Espacement avec l'avatar
   },
   progressContainer: {
     marginTop: 20,
@@ -149,13 +114,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonContainer: {
-    width: "100%",
-    gap: 30,
-    marginTop: 40,
+    flex: 1,
+    justifyContent: "space-evenly",
   },
   row: {
-    flexDirection: "row",
-    alignItems: "center",
+    ...globalStyle.flexRow,
     justifyContent: "center",
     gap: 10,
   },
@@ -163,8 +126,5 @@ const styles = StyleSheet.create({
     width: 130,
     height: 130,
     borderRadius: 10,
-  },
-  iconButton: {
-    width: 160,
   },
 });
