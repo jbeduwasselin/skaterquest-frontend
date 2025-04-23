@@ -63,7 +63,6 @@ export default function SpotScreen({ navigation, route }) {
         result && setSpotData(data);
       });
 
-    console.log("spotData :", spotData);
   }, [isFocused]);
 
   // Enregistrement de la vidéo et des tricks associés
