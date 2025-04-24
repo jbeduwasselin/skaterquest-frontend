@@ -19,7 +19,7 @@ export default function GosPlayScreen({ navigation }) {
   };
 
   return (
-    <BackgroundWrapper flexJustify="space-between">
+    <BackgroundWrapper flexJustify="center">
       {/* MODAL DE CONFIGURATION */}
       <ModalContent
         visibleState={modalVisible}
@@ -105,7 +105,7 @@ export default function GosPlayScreen({ navigation }) {
           iconName="shuffle"
           text="Tricks aléatoires"
           onPress={() =>
-            navigation.navigate("GosVersusScreen", {
+            navigation.navigate("GosVersusScreenRandom", {
               skater1,
               skater2,
               gameMode: "Random",
@@ -119,7 +119,7 @@ export default function GosPlayScreen({ navigation }) {
           iconName="list"
           text="Choix des tricks"
           onPress={() =>
-            navigation.navigate("GosVersusScreenBis", {
+            navigation.navigate("GosVersusScreenChoices", {
               skater1,
               skater2,
               gameMode: "Choix",

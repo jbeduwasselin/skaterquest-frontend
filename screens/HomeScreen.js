@@ -23,9 +23,9 @@ export default function HomeScreen({ navigation }) {
   }, [isFocused]);
 
   return (
-    <BackgroundWrapper>
+    <BackgroundWrapper flexJustify="center">
       {/* Icône des paramètres en haut à gauche */}
-      <View style={styles.headerContainer}>
+      <View style={[styles.headerContainer, { marginTop: 40 }]}>
         <Button
           iconName="settings"
           color="white"
