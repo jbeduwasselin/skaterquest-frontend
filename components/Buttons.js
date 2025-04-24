@@ -82,10 +82,11 @@ export function StateButton({
       iconName={isActive ? (activeIconName ?? iconName) : iconName}
       color={isActive ? (activeColor ?? color) : color}
       text={isActive ? (activeText ?? text) : text}
-      textStyle={isActive ? (activeTextStyle ?? textStyle) : textStyle}
-      containerStyle={
-        isActive ? (activeContainerStyle ?? containerStyle) : containerStyle
-      }
+      textStyle={ {...textStyle , ...(isActive && activeTextStyle ) }}
+      containerStyle={{
+        ...containerStyle,
+        ...(isActive && activeContainerStyle),
+      }}
       {...{
         size,
         gap,

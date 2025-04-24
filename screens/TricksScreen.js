@@ -176,8 +176,6 @@ const FilterButton = ({ text, color, onPress, reverse = false }) => (
   <StateButton
     {...{ text, onPress }}
     activeContainerStyle={{
-      ...styles.filterButton,
-      backgroundColor: color,
       opacity: reverse ? 1 : 0.2,
     }}
     containerStyle={{
