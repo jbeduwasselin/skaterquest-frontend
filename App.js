@@ -9,8 +9,8 @@ import Icon from "react-native-vector-icons/Feather";
 import LoginScreen from "./screens/LoginScreen";
 import HomeScreen from "./screens/HomeScreen";
 import GosPlayScreen from "./screens/GosPlayScreen";
-import GosVersusScreen from "./screens/GosVersusScreen";
-import GosVersusScreenBis from "./screens/GosVersusScreenBis";
+import GosVersusScreenRandom from "./screens/GosVersusScreenRandom";
+import GosVersusScreenChoices from "./screens/GosVersusScreenChoices";
 import MapScreen from "./screens/MapScreen";
 import CrewScreen from "./screens/CrewScreen";
 import VideoScreen from "./screens/VideoScreen";
@@ -131,10 +131,10 @@ export default function App() {
           <Stack.Screen name="AddSpotScreen" component={AddSpotScreen} />
           <Stack.Screen name="SpotScreen" component={SpotScreen} />
           <Stack.Screen name="AddPhotoScreen" component={AddPhotoScreen} />
-          <Stack.Screen name="GosVersusScreen" component={GosVersusScreen} />
+          <Stack.Screen name="GosVersusScreenRandom" component={GosVersusScreenRandom} />
           <Stack.Screen
-            name="GosVersusScreenBis"
-            component={GosVersusScreenBis}
+            name="GosVersusScreenChoices"
+            component={GosVersusScreenChoices}
           />
         </Stack.Navigator>
       </NavigationContainer>
