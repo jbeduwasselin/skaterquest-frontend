@@ -48,10 +48,6 @@ export default function SpotScreen({ navigation, route }) {
   const [showTrickModal, setShowTrickModal] = useState(false); // État pour afficher/masquer la fenêtre modale permettant de saisir les tricks de la vidéo
   const [uploading, setUploading] = useState(false); // Indicateur de progression du chargement de la vidéo (utile pour envoyer un feedback à l'utilisateur quand la vidéo met du temps à charger)
 
-  // Déclaration d'1 scrollX par gallerie à afficher. scrollX crée une valeur animée qui suit la position du scroll (X car horizontal)
-  const scrollXPhotos = useRef(new Animated.Value(0)).current; // Pour le carrousel des photos
-  const scrollXVideos = useRef(new Animated.Value(0)).current; // Pour le carrousel des vidéos
-
   // Hook qui détermine si l'écran est actif
   const isFocused = useIsFocused();
   useEffect(() => {
@@ -144,13 +140,20 @@ export default function SpotScreen({ navigation, route }) {
       quality: 1,
     });
 
-    // Interruption si l'utilisateur annule
-    if (result.canceled) return;
+    if (result.canceled) return; // Interruption si l'utilisateur annule
 
     const videoUri = result.assets[0].uri;
     console.log("Vidéo sélectionnée :", videoUri);
     setSelectedVideoUri(videoUri);
     setShowTrickModal(true); // Ouverture de la fenêtre modale pour saisir les tricks liés à la vidéo
+  };
+
+  // Fonction que l'on met en prop à VideoCard pour qu’il informe SpotScreen quand il y a un changement de vote afin de l'actualiser
+  const handleVoteUpdate = (videoId, updatedVotes) => {
+    const updatedVideos = spotData.videos.map((video) =>
+      video._id === videoId ? { ...video, votes: updatedVotes } : video
+    );
+    setSpotData({ ...spotData, videos: updatedVideos });
   };
 
   return (
@@ -192,6 +195,7 @@ export default function SpotScreen({ navigation, route }) {
               onPress={() => {
                 setVideoPlaying(item.url);
               }}
+              onVoteUpdate={handleVoteUpdate} // Prop servant à actualier le composant lors d'un changement de vote
             />
           );
         }}
@@ -240,9 +244,22 @@ export default function SpotScreen({ navigation, route }) {
   );
 }
 
-function VideoCard({ videoData, onPress }) {
+function VideoCard({ videoData, onVoteUpdate }) {
   const { token, uID } = useSelector((state) => state.user.value);
   const [thumbnail, setThumbnail] = useState(null);
+
+  const [votes, setVotes] = useState(videoData.votes);
+  /* Explication de cet état : on pourrait s'en passer et directement afficher le nombre de votes enregistré en BDD, mais
+  en faisant ça ce nombre ne s'actualiserait pas en ajoutant ou retirant un vote (ou il faudrait refaire un fetch vers le
+  backend à chaque fois). On utilise donc cet état qui commence (initialisation du useState) par récupérer ce nombre de
+  votes, puis agit comme un compteur local qui permet ainsi de re-render SpotScreen lorsqu'il est modifié */
+
+  // Au montage crée le thumbnail pour la vidéo
+  useEffect(() => {
+    (async function getThumbnail() {
+      VideoThumbnails.getThumbnailAsync(videoData.url).then(setThumbnail);
+    })();
+  }, []);
 
   // Formate la date
   function formatDate(creationDate) {
@@ -252,15 +269,42 @@ function VideoCard({ videoData, onPress }) {
     )} ${date.getUTCDate()}/${date.getUTCMonth()}/${date.getFullYear()}`;
   }
 
-  // Au montage crée le thumbnail pour la vidéo
-  useEffect(() => {
-    (async function getThumbnail() {
-      VideoThumbnails.getThumbnailAsync(videoData.url).then(setThumbnail);
-    })();
-  }, []);
+  const hasVoted = votes.some((vote) => vote.uID === uID); // Vérifie si l'utilisateur a déjà voté
+
+   // Met à jour les votes localement et envoie au backend
+   const handleVote = async (like) => {
+    let newVotes = [...votes]; // Copie des votes
+
+    // Mise à jour des votes localement (interface immédiate)
+    if (like) {
+      if (!hasVoted) {
+        newVotes.push({ uID });
+      }
+    } else {
+      if (hasVoted) {
+        newVotes = newVotes.filter((vote) => vote.uID !== uID);
+      }
+    }
+
+    // Mise à jour de l'interface
+    setVotes(newVotes);
+    onVoteUpdate(videoData._id, newVotes); // Informe le parent pour l'actualisation
+
+    try {
+      // Envoie de la mise à jour des votes au backend après l'actualisation de l'interface
+      if (like) {
+        await upvoteVideo(token, videoData._id); // Envoie du vote au backend
+      } else {
+        await unvoteVideo(token, videoData._id); // Envoie du retrait de vote au backend
+      }
+    } catch (error) {
+      // Gestion des erreurs
+      console.error('Erreur lors de la mise à jour du vote en base de données', error);
+    }
+  };
 
   return (
-    <Pressable style={styles.videoItem} onPress={onPress}>
+    <Pressable style={styles.videoItem}>
       <View>
         <Image
           source={{ uri: thumbnail?.uri ?? DEFAULT_THUMBNAIL }}
@@ -282,23 +326,78 @@ function VideoCard({ videoData, onPress }) {
             {videoData.author.username} - 🕒{" "}
             {formatDate(videoData.creationDate)}
           </Text>
+
           <StateButton
-            value={videoData.votes.some((vote) => vote.uID == uID)}
+            value={hasVoted} // L'état du bouton dépend de si l'utilisateur a voté
             iconName="thumb-up"
             activeColor="blue"
             containerStyle={{ backgroundColor: "transparent" }}
-            onPress={async (like) => {
-              like
-                ? await upvoteVideo(token, videoData._id)
-                : await unvoteVideo(token, videoData._id);
-            }}
+            onPress={() => handleVote(!hasVoted)} // Inverse l'état du vote
           />
-          <Text style={styles.infoText}> {videoData.votes.length} votes</Text>
+          
+          <Text style={styles.infoText}>
+            {votes.length} vote{votes.length > 1 && "s"}
+          </Text>
         </View>
       </View>
     </Pressable>
   );
 }
+
+
+
+
+
+  // return (
+  //   <Pressable style={styles.videoItem}>
+  //     <View>
+  //       <Image
+  //         source={{ uri: thumbnail?.uri ?? DEFAULT_THUMBNAIL }}
+  //         height={180}
+  //         width={360}
+  //         resizeMode="fill"
+  //       />
+  //     </View>
+  //     <View
+  //       style={{
+  //         ...globalStyle.flexRow,
+  //         justifyContent: "space-evenly",
+  //         backgroundColor: COLOR_BACK,
+  //         width: 360,
+  //       }}
+  //     >
+  //       <View style={{ ...globalStyle.flexRow, justifyContent: "center" }}>
+  //         <Text>
+  //           {videoData.author.username} - 🕒{" "}
+  //           {formatDate(videoData.creationDate)}
+  //         </Text>
+  //         <StateButton
+  //           value={votes.some((vote) => vote.uID == uID)}
+  //           iconName="thumb-up"
+  //           activeColor="blue"
+  //           containerStyle={{ backgroundColor: "transparent" }}
+  //           onPress={async (like) => {
+  //             let newVotes = [...votes]; // Copie des votes pour les avoir localement (pour l'affichage dynamique du composant)
+  //             if (like) {
+  //               await upvoteVideo(token, videoData._id); // Envoi de l'ajout du vote vers le back-end pour l'enregistrer en BDD
+  //               newVotes.push({ uID }); // Ajout du vote localement
+  //             } else {
+  //               await unvoteVideo(token, videoData._id); // Envoi du retrait du vote vers le back-end pour l'enregistrer en BDD
+  //               newVotes = newVotes.filter((vote) => vote.uID !== uID); // Retrait du vote localement
+  //             }
+  //             // setVotes(newVotes); // Met à jour le compteur local
+  //             onVoteUpdate(videoData._id, newVotes); // Notifie le parent (inferse data flow) pour actualiser SpotScreen
+  //           }}
+  //         />
+  //         <Text style={styles.infoText}>
+  //           {" "}
+  //           {votes.length} vote{votes.length > 1 && "s"}
+  //         </Text>
+  //       </View>
+  //     </View>
+  //   </Pressable>
+  // );
+// }
 
 const styles = StyleSheet.create({
   container: {
