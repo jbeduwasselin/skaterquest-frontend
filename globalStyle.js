@@ -84,15 +84,15 @@ const globalStyle = StyleSheet.create({
   },
   errorModal: {
     padding: 20,
+    display : "flex",
+    justifyContent : "center",
+    alignItems : "center"
   },
   errorText: {
     fontSize: 16,
     fontWeight: "bold",
     color: "white",
     margin: "2%",
-  },
-  errorButton: {
-    maxWidth: 50,
   },
 });
 

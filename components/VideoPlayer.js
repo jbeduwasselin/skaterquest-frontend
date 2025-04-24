@@ -19,8 +19,8 @@ const styles = StyleSheet.create({
   video: {
     flex: 1,
     backgroundColor: "black",
-    width: Dimensions.get("screen").width,
-    height: Dimensions.get("screen").height,
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
     paddingHorizontal: "5%",
     paddingVertical: "10%",
   },
