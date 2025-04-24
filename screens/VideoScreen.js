@@ -17,6 +17,7 @@ import globalStyle, { DEFAULT_THUMBNAIL } from "../globalStyle";
 import * as VideoThumbnails from "expo-video-thumbnails";
 import { Button } from "../components/Buttons";
 import { useConfirmationModal } from "../components/ConfirmModal";
+import { formatDate } from "../lib/utils";
 
 /*
 Ce screen est un bon exemple de comment on peut gérer le video player.
@@ -143,11 +144,6 @@ export default function VideoScreen({ navigation }) {
       <ConfirmModal />
     </BackgroundWrapper>
   );
-}
-
-function formatDate(creationDate) {
-  const date = new Date(creationDate);
-  return ` ${new Intl.DateTimeFormat("fr-FR", { weekday: "long" }).format(date)} ${date.getUTCDate()}/${date.getUTCMonth()}/${date.getFullYear()}`;
 }
 
 const styles = StyleSheet.create({

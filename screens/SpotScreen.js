@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useReducer } from "react";
 import {
   StyleSheet,
   Text,
@@ -27,19 +27,20 @@ import { Button, StateButton } from "../components/Buttons";
 import globalStyle, {
   COLOR_BACK,
   DEFAULT_THUMBNAIL,
-  COLOR_PLACEHOLDER
+  COLOR_PLACEHOLDER,
 } from "../globalStyle";
 import ModalContent from "../components/ModalContent";
 import { ItemCarrousel } from "../components/ItemCarrousel";
+import { formatDate } from "../lib/utils";
 
 // Variables pour gérer l'affichage
 const { width } = Dimensions.get("window"); // Pour l'affichage responsive
 const ITEM_SIZE = width * 0.5; // Largeur des images dans le carrousel
-const SIDE_EMPTY_SPACE = (width - ITEM_SIZE) / 2; // Espacement entre les images du carrousel pour entre‑voir les images voisines à celle du milieu
 
 export default function SpotScreen({ navigation, route }) {
   const { token } = useSelector((state) => state.user.value);
   const [videoPlaying, setVideoPlaying] = useState(null);
+  const [updateWatcher, forceUpdate] = useReducer((p) => p + 1, 0);
   const [spotData, setSpotData] = useState(route.params.spotData);
 
   // États liés à la publication d'une nouvelle vidéo
@@ -47,10 +48,6 @@ export default function SpotScreen({ navigation, route }) {
   const [trickInputs, setTrickInputs] = useState([""]); // Tricks entrés par l'utilisateurs pour les associer à la vidéo
   const [showTrickModal, setShowTrickModal] = useState(false); // État pour afficher/masquer la fenêtre modale permettant de saisir les tricks de la vidéo
   const [uploading, setUploading] = useState(false); // Indicateur de progression du chargement de la vidéo (utile pour envoyer un feedback à l'utilisateur quand la vidéo met du temps à charger)
-
-  // Déclaration d'1 scrollX par gallerie à afficher. scrollX crée une valeur animée qui suit la position du scroll (X car horizontal)
-  const scrollXPhotos = useRef(new Animated.Value(0)).current; // Pour le carrousel des photos
-  const scrollXVideos = useRef(new Animated.Value(0)).current; // Pour le carrousel des vidéos
 
   // Hook qui détermine si l'écran est actif
   const isFocused = useIsFocused();
@@ -64,7 +61,7 @@ export default function SpotScreen({ navigation, route }) {
       getSpotInfo(token, spotData._id).then(({ result, data }) => {
         result && setSpotData(data);
       });
-  }, [isFocused]);
+  }, [isFocused, updateWatcher]);
 
   // Enregistrement de la vidéo et des tricks associés
   const handleSubmitVideo = async () => {
@@ -118,16 +115,6 @@ export default function SpotScreen({ navigation, route }) {
     return false;
   });
 
-  // Lecteur vidéo
-  if (videoPlaying) {
-    return (
-      <VideoPlayer
-        source={videoPlaying}
-        onClose={() => setVideoPlaying(null)}
-      />
-    );
-  }
-
   // Fonction pour charger une vidéo depuis la galerie du téléphone
   const uploadVideoFromGallery = async () => {
     // Demande de permission d'accès à la galerie (fonction requestMediaLibraryPermissionsAsync() de ImagePicker)
@@ -152,6 +139,69 @@ export default function SpotScreen({ navigation, route }) {
     setSelectedVideoUri(videoUri);
     setShowTrickModal(true); // Ouverture de la fenêtre modale pour saisir les tricks liés à la vidéo
   };
+
+  function VideoCard({ videoData, onPress }) {
+    const { token, uID } = useSelector((state) => state.user.value);
+    const [thumbnail, setThumbnail] = useState(null);
+
+    // Au montage crée le thumbnail pour la vidéo
+    useEffect(() => {
+      (async function getThumbnail() {
+        VideoThumbnails.getThumbnailAsync(videoData.url).then(setThumbnail);
+      })();
+    }, []);
+
+    return (
+      <Pressable style={styles.videoItem} onPress={onPress}>
+        <View>
+          <Image
+            source={{ uri: thumbnail?.uri ?? DEFAULT_THUMBNAIL }}
+            height={180}
+            width={360}
+            resizeMode="fill"
+          />
+        </View>
+        <View
+          style={{
+            ...globalStyle.flexRow,
+            justifyContent: "space-evenly",
+            backgroundColor: COLOR_BACK,
+            width: 360,
+          }}
+        >
+          <View style={{ ...globalStyle.flexRow, justifyContent: "center" }}>
+            <Text>
+              {videoData.author.username} - 🕒{" "}
+              {formatDate(videoData.creationDate)}
+            </Text>
+            <StateButton
+              value={videoData.votes.some((vote) => vote.uID == uID)}
+              iconName="thumb-up"
+              activeColor="blue"
+              containerStyle={{ backgroundColor: "transparent" }}
+              onPress={async (like) => {
+                like
+                  ? await upvoteVideo(token, videoData._id)
+                  : await unvoteVideo(token, videoData._id);
+                forceUpdate();
+              }}
+            />
+            <Text style={styles.infoText}> {videoData.votes.length} votes</Text>
+          </View>
+        </View>
+      </Pressable>
+    );
+  }
+
+  // Lecteur vidéo
+  if (videoPlaying) {
+    return (
+      <VideoPlayer
+        source={videoPlaying}
+        onClose={() => setVideoPlaying(null)}
+      />
+    );
+  }
 
   return (
     <BackgroundWrapper flexJustify="space-around">
@@ -237,66 +287,6 @@ export default function SpotScreen({ navigation, route }) {
         </View>
       )}
     </BackgroundWrapper>
-  );
-}
-
-function VideoCard({ videoData, onPress }) {
-  const { token, uID } = useSelector((state) => state.user.value);
-  const [thumbnail, setThumbnail] = useState(null);
-
-  // Formate la date
-  function formatDate(creationDate) {
-    const date = new Date(creationDate);
-    return ` ${new Intl.DateTimeFormat("fr-FR", { weekday: "long" }).format(
-      date
-    )} ${date.getUTCDate()}/${date.getUTCMonth()}/${date.getFullYear()}`;
-  }
-
-  // Au montage crée le thumbnail pour la vidéo
-  useEffect(() => {
-    (async function getThumbnail() {
-      VideoThumbnails.getThumbnailAsync(videoData.url).then(setThumbnail);
-    })();
-  }, []);
-
-  return (
-    <Pressable style={styles.videoItem} onPress={onPress}>
-      <View>
-        <Image
-          source={{ uri: thumbnail?.uri ?? DEFAULT_THUMBNAIL }}
-          height={180}
-          width={360}
-          resizeMode="fill"
-        />
-      </View>
-      <View
-        style={{
-          ...globalStyle.flexRow,
-          justifyContent: "space-evenly",
-          backgroundColor: COLOR_BACK,
-          width: 360,
-        }}
-      >
-        <View style={{ ...globalStyle.flexRow, justifyContent: "center" }}>
-          <Text>
-            {videoData.author.username} - 🕒{" "}
-            {formatDate(videoData.creationDate)}
-          </Text>
-          <StateButton
-            value={videoData.votes.some((vote) => vote.uID == uID)}
-            iconName="thumb-up"
-            activeColor="blue"
-            containerStyle={{ backgroundColor: "transparent" }}
-            onPress={async (like) => {
-              like
-                ? await upvoteVideo(token, videoData._id)
-                : await unvoteVideo(token, videoData._id);
-            }}
-          />
-          <Text style={styles.infoText}> {videoData.votes.length} votes</Text>
-        </View>
-      </View>
-    </Pressable>
   );
 }
 
