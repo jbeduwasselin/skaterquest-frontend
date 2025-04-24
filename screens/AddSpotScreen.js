@@ -129,6 +129,9 @@ export default function AddSpotScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
+  textInput: {
+    placeholderTextColor: "gray", // ça marche pas
+  },
   spotChoice: {
     ...globalStyle.flexRow,
     justifyContent: "space-evenly",
