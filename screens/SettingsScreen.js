@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { updateAvatar } from "../reducers/user";
+import { useSelector } from "react-redux";
 import {
   View,
   Text,
@@ -9,6 +8,7 @@ import {
   Image,
   Alert,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import * as ImagePicker from "expo-image-picker";
@@ -23,6 +23,7 @@ export default function SettingsScreen({ navigation }) {
   const isFocused = useIsFocused();
   const { token } = useSelector((state) => state.user.value);
   const [userData, setUserData] = useState(null);
+  const [isUploading, setIsUploading] = useState(false); // Pour activer l'indicateur visuel du chargement de l'avatar lors d'un changement
 
   useEffect(() => {
     getOwnUserInfo(token).then(({ result, data }) => {
@@ -55,11 +56,18 @@ export default function SettingsScreen({ navigation }) {
         aspect: [1, 1],
         quality: 1,
       });
-
       if (!pickerResult.canceled && pickerResult.assets?.length > 0) {
         const uri = pickerResult.assets[0].uri;
+        setIsUploading(true); // Affichage de l'indicateur de chargement
         const { result } = await changeUserAvatar(token, uri);
-        result && forceUpdate();
+        setIsUploading(false); // Masquage de l'indicateur de chargement
+        // Affichage d'un écran de confirmation pour l'utilisateur (car l'éditeur de launchImageLibraryAsync n'est pas très clair à ce niveau)
+        if (result) {
+          forceUpdate();
+          Alert.alert("Succès", "Ton avatar a été mis à jour !");
+        } else {
+          Alert.alert("Erreur", "Impossible de mettre à jour l'avatar :(");
+        }
       }
     } catch (error) {
       console.error("Erreur lors de la sélection de l'image:", error);
@@ -116,12 +124,20 @@ export default function SettingsScreen({ navigation }) {
   return (
     <BackgroundWrapper>
       <TouchableOpacity onPress={handleImagePress} activeOpacity={0.6}>
-        <Image
-          source={{ uri: userData?.avatar ?? DEFAULT_AVATAR }}
-          width={200}
-          height={200}
-          style={globalStyle.avatar}
-        />
+        {isUploading ? (
+          <ActivityIndicator
+            size="large"
+            color="#fff"
+            style={globalStyle.avatar}
+          />
+        ) : (
+          <Image
+            source={{ uri: userData?.avatar ?? DEFAULT_AVATAR }}
+            width={200}
+            height={200}
+            style={globalStyle.avatar}
+          />
+        )}
       </TouchableOpacity>
 
       <Text style={globalStyle.skaterTag}>
@@ -144,16 +160,16 @@ export default function SettingsScreen({ navigation }) {
           activeText="Mode clair"
           //   onPress={() => console.log("Autres options")}
         />
-        <Button
+        {/* <Button
           iconName="settings"
-          text="Option 3"
+          text="Option 2"
           onPress={() => console.log("Autres options")}
         />
         <Button
           iconName="settings"
           text="Option 3"
           onPress={() => console.log("Autres options")}
-        />
+        /> */}
       </View>
 
       {/* Modal de changement de SkaterTag */}
