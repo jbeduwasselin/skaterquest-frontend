@@ -187,8 +187,8 @@ export default function SpotScreen({ navigation, route }) {
             >
               <Image
                 source={{ uri: item }}
-                height={200}
-                width={400}
+                width={200}
+                height={300}
                   style={styles.photo}
                 resizeMode="cover" // Remplit proprement l'espace vertical
               />

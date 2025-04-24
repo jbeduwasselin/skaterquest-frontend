@@ -74,7 +74,7 @@ export default function MapScreen({ navigation }) {
       <BackgroundWrapper flexJustify="center">
         <ActivityIndicator color="black" size={50} />
         <Text style={globalStyle.subTitle}>Chargement de la carte...</Text>
-        <Text>Veuillez activer la localisation. </Text>
+        <Text>Si la carte ne charge pas, vérifie que tu as bien activé la localisation !</Text>
       </BackgroundWrapper>
     );
   }
