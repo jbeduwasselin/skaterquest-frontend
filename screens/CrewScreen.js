@@ -6,6 +6,7 @@ import {
   FlatList,
   Image,
   TextInput,
+  KeyboardAvoidingView,
 } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import { useSelector } from "react-redux";
@@ -101,12 +102,14 @@ export default function CrewScreen() {
               backgroundColor: "transparent",
             }}
           />
-          <TextInput
-            style={globalStyle.textInput}
-            placeholderTextColor="white"
-            placeholder="Nouveau membre"
-            onChangeText={handleSearchResult}
-          />
+          <KeyboardAvoidingView>
+            <TextInput
+              style={globalStyle.textInput}
+              placeholderTextColor="white"
+              placeholder="Nouveau membre"
+              onChangeText={handleSearchResult}
+            />
+          </KeyboardAvoidingView>
           <FlatList
             data={searchResults}
             style={styles.flatListContainer}
