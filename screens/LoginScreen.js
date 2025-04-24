@@ -14,8 +14,8 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import { signInRequest, signUpRequest } from "../lib/request";
-import { IconButton, IconTextButton, TextButton } from "../components/Buttons";
-import globalStyle, { COLOR_BACK } from "../globalStyle";
+import { Button } from "../components/Buttons";
+import globalStyle, { COLOR_BACK, COLOR_MAIN } from "../globalStyle";
 import ModalContent from "../components/ModalContent";
 
 const { width, height } = Dimensions.get("window");
@@ -79,7 +79,7 @@ export default function LoginScreen({ navigation }) {
       containerStyle={globalStyle.modalContainer}
       closeHandler={() => setShowSignInModal(false)}
     >
-      <IconButton
+      <Button
         onPress={emptyStates}
         iconName="cancel"
         color="white"
@@ -87,10 +87,7 @@ export default function LoginScreen({ navigation }) {
         containerStyle={styles.closeButton}
       />
       <Text style={globalStyle.screenTitle}>Connexion</Text>
-      <KeyboardAvoidingView
-        style={styles.formContainer}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
+      <KeyboardAvoidingView style={{ width: "100%", alignItems: "center" }}>
         <TextInput
           style={styles.inputs}
           placeholder="Ton adresse mail"
@@ -107,7 +104,7 @@ export default function LoginScreen({ navigation }) {
           value={signInPassword}
         />
       </KeyboardAvoidingView>
-      <TextButton
+      <Button
         onPress={handleSignIn}
         text="Se connecter"
         textStyle={styles.buttonText}
@@ -123,7 +120,7 @@ export default function LoginScreen({ navigation }) {
       containerStyle={globalStyle.modalContainer}
       closeHandler={() => setShowSignUpModal(false)}
     >
-      <IconButton
+      <Button
         onPress={emptyStates}
         iconName="cancel"
         color="white"
@@ -131,10 +128,7 @@ export default function LoginScreen({ navigation }) {
         containerStyle={styles.closeButton}
       />
       <Text style={globalStyle.screenTitle}>Inscription</Text>
-      <KeyboardAvoidingView
-        style={styles.formContainer}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
+      <KeyboardAvoidingView style={{ width: "100%", alignItems: "center" }}>
         <TextInput
           style={styles.inputs}
           placeholder="Ton SkateurTag"
@@ -158,7 +152,7 @@ export default function LoginScreen({ navigation }) {
           value={signUpPassword}
         />
       </KeyboardAvoidingView>
-      <TextButton
+      <Button
         onPress={handleSignUp}
         text="Valider l'inscription"
         containerStyle={styles.button}
@@ -227,8 +221,13 @@ export default function LoginScreen({ navigation }) {
       </Text>
       <Text style={globalStyle.screenTitle}>T'es chaud patate ? 🛹💪</Text>
       <View style={styles.tutoButtons}>
-        <TextButton
-          onPress={() => navigation.navigate("TabNavigator")}
+        <Button
+          onPress={() => {
+            setShowTuto1(false);
+            setShowTuto2(false);
+            setShowTuto3(false);
+            navigation.navigate("TabNavigator");
+          }}
           containerStyle={styles.button}
           text="C'est parti ! 🤙🛹"
         />
@@ -242,39 +241,33 @@ export default function LoginScreen({ navigation }) {
       style={styles.background}
       resizeMode="cover"
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-      >
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.overlay}>
-            <Image
-              source={require("../assets/LOGO TEMPORAIRE.png")}
-              style={styles.logo}
-            />
-            <IconTextButton
-              iconName="login"
-              text="Connexion"
-              size={30}
-              onPress={() => {
-                setShowSignUpModal(false);
-                setShowSignInModal(true);
-              }}
-              containerStyle={styles.button}
-            />
-            <IconTextButton
-              iconName="person-add"
-              text="T'es nouveau ? Créer un compte ici !"
-              size={30}
-              onPress={() => {
-                setShowSignInModal(false);
-                setShowSignUpModal(true);
-              }}
-              containerStyle={styles.button}
-            />
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+      <View style={styles.overlay}>
+        <Image
+          source={require("../assets/LOGO TEMPORAIRE.png")}
+          style={styles.logo}
+        />
+        <Button
+          iconName="login"
+          text="Connexion"
+          size={30}
+          onPress={() => {
+            setShowSignUpModal(false);
+            setShowSignInModal(true);
+          }}
+          containerStyle={styles.button}
+        />
+
+        <Button
+          iconName="person-add"
+          text="T'es nouveau ? Créer un compte ici !"
+          size={30}
+          containerStyle={styles.button}
+          onPress={() => {
+            setShowSignInModal(false);
+            setShowSignUpModal(true);
+          }}
+        />
+      </View>
 
       {signUpModalContent}
       {signInModalContent}
@@ -286,11 +279,11 @@ export default function LoginScreen({ navigation }) {
 }
 
 const NextButton = ({ onPress }) => (
-  <TextButton text="Suivant" containerStyle={styles.button} onPress={onPress} />
+  <Button text="Suivant" containerStyle={styles.button} onPress={onPress} />
 );
 
 const SkipButton = ({ onPress }) => (
-  <TextButton
+  <Button
     text="Passer"
     containerStyle={{ ...styles.button, backgroundColor: COLOR_BACK }}
     onPress={onPress}
@@ -304,6 +297,27 @@ const styles = StyleSheet.create({
   formContainer: {
     width: "100%",
     alignItems: "center",
+    padding: 5,
+    margin: 10,
+    marginTop: -300,
+    width: "60%",
+    height: "70%",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    borderRadius: 2,
+  },
+  signInContainer: {
+    alignItems: "center",
+    padding: 5,
+    margin: 10,
+    marginTop: -300,
+    width: "60%",
+    height: "70%",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    borderRadius: 2,
+  },
+  closeButton: {
+    alignSelf: "flex-end",
+    backgroundColor: "transparent",
   },
   inputs: {
     ...globalStyle.textInput,

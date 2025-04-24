@@ -99,31 +99,32 @@ export default function TricksScreen() {
       >
         <View style={styles.filterSection}>
           {difficultyLevels.map((difficulty, id) => (
-              <FilterButton
+            <FilterButton
               key={id}
               text={difficulty}
               color={getDifficultyColor(difficulty)}
               onPress={() => toggleFilterDifficulty(difficulty)}
-              />
-            ))}
+            />
+          ))}
           <FilterButton
             text="Validé"
             color="blue"
+            reverse={true}
             onPress={() =>
-                setSettings({
-                    ...settings,
-                    onlyValidated: !settings.onlyValidated,
-                })
+              setSettings({
+                ...settings,
+                onlyValidated: !settings.onlyValidated,
+              })
             }
+          />
+          {categories.map((category, id) => (
+            <FilterButton
+              key={id}
+              text={category}
+              color={COLOR_GREY}
+              onPress={() => toggleFilterCategory(category)}
             />
-            {categories.map((category, id) => (
-              <FilterButton
-                key={id}
-                text={category}
-                color={COLOR_GREY}
-                onPress={() => toggleFilterCategory(category)}
-              />
-            ))}
+          ))}
         </View>
       </View>
 
@@ -172,20 +173,21 @@ export default function TricksScreen() {
   );
 }
 
-const FilterButton = ({ text, color, onPress }) => (
+const FilterButton = ({ text, color, onPress, reverse = false }) => (
   <StateTextButton
     {...{ text, onPress }}
     activeStyle={{
       ...styles.filterButton,
       backgroundColor: color,
-      opacity: 0.2,
+      opacity: reverse ? 1 : 0.2,
     }}
     inactiveStyle={{
       ...styles.filterButton,
       backgroundColor: color,
+      opacity: reverse ? 0.2 : 1,
     }}
     textStyle={styles.filterButtonText}
-  ></StateTextButton>
+  />
 );
 
 function TricksCard({ name, difficulty, description, hideUnvalidated }) {
@@ -257,7 +259,7 @@ const styles = StyleSheet.create({
     marginHorizontal: "5%",
     marginVertical: "2%",
     borderColor: "black",
-    padding : 5 ,
+    padding: 5,
     borderWidth: 2,
     borderRadius: 5,
   },
@@ -267,7 +269,7 @@ const styles = StyleSheet.create({
   },
   tricksName: {
     ...globalStyle.subTitle,
-    marginLeft : 20,
+    marginLeft: 20,
   },
   subContainer: { ...globalStyle.flexRow },
   tricksDescription: {

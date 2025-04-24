@@ -3,9 +3,11 @@ import { View, Text, StyleSheet, Modal } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
-import IconButton from "../components/IconButton";
 import ConfettiCannon from "react-native-confetti-cannon";
 import { Picker } from "@react-native-picker/picker";
+import { Button } from "../components/Buttons";
+import ModalContent from "../components/ModalContent";
+import globalStyle from "../globalStyle";
 
 export default function GosVersusScreenBis({ route, navigation }) {
   const { skater1 = "Joueur 1", skater2 = "Joueur 2", gameMode } = route.params;
@@ -31,17 +33,16 @@ export default function GosVersusScreenBis({ route, navigation }) {
   const handleTrickFailure = (player) => {
     const letter = getNextLetter(player);
 
-    if (player === "skater1") {
+    if (player === "skater1" && skater1Letters.length < 5) {
       const updated = skater1Letters + letter;
       setSkater1Letters(updated);
-      if (updated.length === 5) endGame(skater2Final);
-    } else {
+      if (updated.length === 5) endGame("skater1");
+    } else if (skater2Letters.length < 5) {
       const updated = skater2Letters + letter;
       setSkater2Letters(updated);
-      if (updated.length === 5) endGame(skater1Final);
+      if (updated.length === 5) endGame("skater2");
     }
   };
-
   const getNextLetter = (player) => {
     const word = "SKATE";
     return player === "skater1"
@@ -60,184 +61,168 @@ export default function GosVersusScreenBis({ route, navigation }) {
   };
 
   return (
-    <BackgroundWrapper>
-        {/* Affichage des joueurs */}
-        <Animatable.View
-          animation="fadeInLeft"
-          duration={1000}
-          style={styles.profileContainer}
+    <BackgroundWrapper flexJustify="space evenly">
+      {/* Affichage des joueurs */}
+      <Animatable.View
+        animation="fadeInLeft"
+        duration={1000}
+        style={styles.profileContainer}
+      >
+        <View style={styles.profile}>
+          <Text style={styles.name}>{skater1Final}</Text>
+          <Text style={styles.letters}>{skater1Letters}</Text>
+        </View>
+
+        <View style={styles.versusIconContainer}>
+          <FontAwesome5 name="battle-net" size={45} color="#FF650C" />
+        </View>
+
+        <View style={styles.profile}>
+          <Text style={styles.name}>{skater2Final}</Text>
+          <Text style={styles.letters}>{skater2Letters}</Text>
+        </View>
+      </Animatable.View>
+
+      {/* Score */}
+      <Animatable.View
+        animation="fadeInDown"
+        duration={1000}
+        style={styles.scoreContainer}
+      >
+        <Text style={styles.scoreText}>Score</Text>
+        <View style={styles.scoreBoard}>
+          <Text style={styles.score}>
+            {skater1Final}: {skater1Score}
+          </Text>
+          <Text style={styles.score}>
+            {skater2Final}: {skater2Score}
+          </Text>
+        </View>
+      </Animatable.View>
+
+      {/* Picker encapsulé */}
+      <Animatable.View
+        animation="zoomIn"
+        duration={1000}
+        style={[styles.trickContainer, styles.trickCard]}
+      >
+        <Text style={styles.trickText}>Choisis ton Trick :</Text>
+        <Picker
+          selectedValue={selectedTrick}
+          onValueChange={(itemValue) => setSelectedTrick(itemValue)}
+          style={styles.picker}
+          dropdownIconColor="#FFF"
         >
-          <View style={styles.profile}>
-            <Text style={styles.name}>{skater1Final}</Text>
-            <Text style={styles.letters}>{skater1Letters}</Text>
+          <Picker.Item label="Ollie" value="Ollie" />
+          <Picker.Item label="No Comply" value="No Comply" />
+          <Picker.Item label="Revert" value="Revert" />
+          <Picker.Item label="Caveman" value="Caveman" />
+          <Picker.Item label="Acid Drop" value="Acid Drop" />
+          <Picker.Item label="Body Varial" value="Body Varial" />
+          <Picker.Item label="Footplant" value="Footplant" />
+          <Picker.Item label="Firecracker" value="Firecracker" />
+          <Picker.Item label="Pivot" value="Pivot" />
+          <Picker.Item label="Boneless" value="Boneless" />
+          <Picker.Item label="Shuvit" value="Shuvit" />
+          <Picker.Item label="Pop Shuvit" value="Pop Shuvit" />
+          <Picker.Item label="Manual" value="Manual" />
+          <Picker.Item label="Nose Manual" value="Nose Manual" />
+          <Picker.Item label="Kickflip" value="Kickflip" />
+          <Picker.Item label="Heelflip" value="Heelflip" />
+          <Picker.Item label="Frontside 180" value="Frontside 180" />
+          <Picker.Item label="Backside 180" value="Backside 180" />
+          <Picker.Item label="Railstand" value="Railstand" />
+          <Picker.Item label="Boned Ollie" value="Boned Ollie" />
+          <Picker.Item label="Nollie" value="Nollie" />
+          <Picker.Item label="Fakie Ollie" value="Fakie Ollie" />
+          <Picker.Item label="Switch Ollie" value="Switch Ollie" />
+          <Picker.Item label="Wallride" value="Wallride" />
+          <Picker.Item label="Wallie" value="Wallie" />
+          <Picker.Item label="Powerslide" value="Powerslide" />
+          <Picker.Item label="Slappy" value="Slappy" />
+          <Picker.Item label="Varial Kickflip" value="Varial Kickflip" />
+          <Picker.Item label="360 Flip" value="360 Flip" />
+          <Picker.Item label="Hardflip" value="Hardflip" />
+          <Picker.Item label="Impossible" value="Impossible" />
+          <Picker.Item label="Frontside Flip" value="Frontside Flip" />
+          <Picker.Item label="Backside Flip" value="Backside Flip" />
+          <Picker.Item label="Bigspin" value="Bigspin" />
+          <Picker.Item label="Casper Flip" value="Casper Flip" />
+          <Picker.Item label="Darkslide" value="Darkslide" />
+          <Picker.Item label="Primo Slide" value="Primo Slide" />
+          <Picker.Item label="Tiger Claw" value="Tiger Claw" />
+          <Picker.Item label="Underflip" value="Underflip" />
+          <Picker.Item label="Hospital Flip" value="Hospital Flip" />
+          <Picker.Item label="Double Kickflip" value="Double Kickflip" />
+          <Picker.Item label="Triple Kickflip" value="Triple Kickflip" />
+          <Picker.Item label="Laser Flip" value="Laser Flip" />
+          <Picker.Item label="Gazelle Flip" value="Gazelle Flip" />
+          <Picker.Item label="Blunt Slide" value="Blunt Slide" />
+        </Picker>
+      </Animatable.View>
+
+      {/* Actions */}
+      <Animatable.View
+        animation="fadeInUp"
+        duration={1000}
+        style={styles.actionsContainer}
+      >
+        <View style={styles.buttonsContainer}>
+          <View style={styles.playerButtons}>
+            <Button
+              iconName="check-circle"
+              text="Trick Validé"
+              onPress={() => handleTrickSuccess("skater1")}
+              style={[styles.actionButton, styles.smallButton]}
+            />
+            <Button
+              iconName="unpublished"
+              text="Ouille !"
+              onPress={() => handleTrickFailure("skater1")}
+              style={[styles.actionButton, styles.smallButton]}
+            />
           </View>
 
-          <View style={styles.versusIconContainer}>
-            <FontAwesome5 name="battle-net" size={45} color="#FF650C" />
+          <View style={styles.playerButtons}>
+            <Button
+              iconName="check-circle"
+              text="Trick Validé"
+              onPress={() => handleTrickSuccess("skater2")}
+              style={[styles.actionButton, styles.smallButton]}
+            />
+            <Button
+              iconName="unpublished"
+              text="Ouille !"
+              onPress={() => handleTrickFailure("skater2")}
+              style={[styles.actionButton, styles.smallButton]}
+            />
           </View>
+        </View>
+      </Animatable.View>
 
-          <View style={styles.profile}>
-            <Text style={styles.name}>{skater2Final}</Text>
-            <Text style={styles.letters}>{skater2Letters}</Text>
-          </View>
-        </Animatable.View>
-
-        {/* Score */}
-        <Animatable.View
-          animation="fadeInDown"
-          duration={1000}
-          style={styles.scoreContainer}
-        >
-          <Text style={styles.scoreText}>Score</Text>
-          <View style={styles.scoreBoard}>
-            <Text style={styles.score}>
-              {skater1Final}: {skater1Score}
-            </Text>
-            <Text style={styles.score}>
-              {skater2Final}: {skater2Score}
-            </Text>
-          </View>
-        </Animatable.View>
-
-        {/* Picker encapsulé */}
-        <Animatable.View
-          animation="zoomIn"
-          duration={1000}
-          style={[styles.trickContainer, styles.trickCard]}
-        >
-          <Text style={styles.trickText}>Choisis ton Trick :</Text>
-          <Picker
-            selectedValue={selectedTrick}
-            onValueChange={(itemValue) => setSelectedTrick(itemValue)}
-            style={styles.picker}
-            dropdownIconColor="#FFF"
-          >
-            <Picker.Item label="Ollie" value="Ollie" />
-            <Picker.Item label="No Comply" value="No Comply" />
-            <Picker.Item label="Revert" value="Revert" />
-            <Picker.Item label="Caveman" value="Caveman" />
-            <Picker.Item label="Acid Drop" value="Acid Drop" />
-            <Picker.Item label="Body Varial" value="Body Varial" />
-            <Picker.Item label="Footplant" value="Footplant" />
-            <Picker.Item label="Firecracker" value="Firecracker" />
-            <Picker.Item label="Pivot" value="Pivot" />
-            <Picker.Item label="Boneless" value="Boneless" />
-            <Picker.Item label="Shuvit" value="Shuvit" />
-            <Picker.Item label="Pop Shuvit" value="Pop Shuvit" />
-            <Picker.Item label="Manual" value="Manual" />
-            <Picker.Item label="Nose Manual" value="Nose Manual" />
-            <Picker.Item label="Kickflip" value="Kickflip" />
-            <Picker.Item label="Heelflip" value="Heelflip" />
-            <Picker.Item label="Frontside 180" value="Frontside 180" />
-            <Picker.Item label="Backside 180" value="Backside 180" />
-            <Picker.Item label="Railstand" value="Railstand" />
-            <Picker.Item label="Boned Ollie" value="Boned Ollie" />
-            <Picker.Item label="Nollie" value="Nollie" />
-            <Picker.Item label="Fakie Ollie" value="Fakie Ollie" />
-            <Picker.Item label="Switch Ollie" value="Switch Ollie" />
-            <Picker.Item label="Wallride" value="Wallride" />
-            <Picker.Item label="Wallie" value="Wallie" />
-            <Picker.Item label="Powerslide" value="Powerslide" />
-            <Picker.Item label="Slappy" value="Slappy" />
-            <Picker.Item label="Varial Kickflip" value="Varial Kickflip" />
-            <Picker.Item label="360 Flip" value="360 Flip" />
-            <Picker.Item label="Hardflip" value="Hardflip" />
-            <Picker.Item label="Impossible" value="Impossible" />
-            <Picker.Item label="Frontside Flip" value="Frontside Flip" />
-            <Picker.Item label="Backside Flip" value="Backside Flip" />
-            <Picker.Item label="Bigspin" value="Bigspin" />
-            <Picker.Item label="Casper Flip" value="Casper Flip" />
-            <Picker.Item label="Darkslide" value="Darkslide" />
-            <Picker.Item label="Primo Slide" value="Primo Slide" />
-            <Picker.Item label="Tiger Claw" value="Tiger Claw" />
-            <Picker.Item label="Underflip" value="Underflip" />
-            <Picker.Item label="Hospital Flip" value="Hospital Flip" />
-            <Picker.Item label="Double Kickflip" value="Double Kickflip" />
-            <Picker.Item label="Triple Kickflip" value="Triple Kickflip" />
-            <Picker.Item label="Laser Flip" value="Laser Flip" />
-            <Picker.Item label="Gazelle Flip" value="Gazelle Flip" />
-            <Picker.Item label="Blunt Slide" value="Blunt Slide" />
-          </Picker>
-        </Animatable.View>
-
-        {/* Actions */}
-        <Animatable.View
-          animation="fadeInUp"
-          duration={1000}
-          style={styles.actionsContainer}
-        >
-          <View style={styles.buttonsContainer}>
-            <View style={styles.playerButtons}>
-              <IconButton
-                iconName="check-circle"
-                buttonText="Trick Validé"
-                onPress={() => handleTrickSuccess("skater1")}
-                style={[styles.actionButton, styles.smallButton]}
-              />
-              <IconButton
-                iconName="x-circle"
-                buttonText="Ouille !"
-                onPress={() => handleTrickFailure("skater1")}
-                style={[styles.actionButton, styles.smallButton]}
-              />
-            </View>
-
-            <View style={styles.playerButtons}>
-              <IconButton
-                iconName="check-circle"
-                buttonText="Trick Validé"
-                onPress={() => handleTrickSuccess("skater2")}
-                style={[styles.actionButton, styles.smallButton]}
-              />
-              <IconButton
-                iconName="x-circle"
-                buttonText="Ouille !"
-                onPress={() => handleTrickFailure("skater2")}
-                style={[styles.actionButton, styles.smallButton]}
-              />
-            </View>
-          </View>
-        </Animatable.View>
-
-        <IconButton
-          iconName="arrow-left"
-          buttonText="Retour accueil"
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
+      {/* Modal Game Over */}
+      <ModalContent
+        visibleState={isGameOver}
+        closeHandler={() => setIsGameOver(false)}
+        containerStyle={globalStyle.modalContainer}
+      >
+        <ConfettiCannon count={80} origin={{ x: 150, y: 0 }} fadeOut={true} />
+        <Animatable.Image
+          animation="bounceIn"
+          duration={1500}
+          easing="ease-out"
+          source={require("../assets/trophy.png")}
+          style={styles.modalImage}
         />
-
-        {/* Modal Game Over */}
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={isGameOver}
-          onRequestClose={handleCloseModal}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <ConfettiCannon
-                count={80}
-                origin={{ x: 150, y: 0 }}
-                fadeOut={true}
-              />
-              <Animatable.Image
-                animation="bounceIn"
-                duration={1500}
-                easing="ease-out"
-                source={require("../assets/trophy.png")}
-                style={styles.modalImage}
-              />
-              <Text style={styles.modalText}>Game over !</Text>
-              <Text style={styles.modalText}>{winner} a gagné !</Text>
-              <IconButton
-                iconName="check-circle"
-                buttonText="Retour au menu"
-                onPress={handleCloseModal}
-                style={styles.modalButton}
-              />
-            </View>
-          </View>
-        </Modal>
+        <Text style={globalStyle.screenTitle}>Game over !</Text>
+        <Text style={globalStyle.subSubTitle}>{winner} a gagné !</Text>
+        <Button
+          iconName="settings-backup-restore"
+          text="Retour au menu"
+          onPress={handleCloseModal}
+          style={styles.modalButton}
+        />
+      </ModalContent>
     </BackgroundWrapper>
   );
 }
@@ -399,33 +384,8 @@ const styles = StyleSheet.create({
   backButton: {
     marginTop: 12,
   },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
-    width: 300,
-    alignItems: "center",
-  },
-  modalText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 10,
-  },
   modalImage: {
-    width: 100,
-    height: 100,
-    marginBottom: 10,
-  },
-  modalButton: {
-    marginTop: 20,
-    width: 180,
-    height: 40,
+    width: 200,
+    height: 200,
   },
 });

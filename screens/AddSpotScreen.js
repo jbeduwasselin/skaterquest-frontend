@@ -4,7 +4,7 @@ import BackgroundWrapper from "../components/BackgroundWrapper";
 import { useSelector } from "react-redux";
 import { createSpot } from "../lib/request";
 import globalStyle from "../globalStyle";
-import { StateImageButton, TextButton } from "../components/Buttons";
+import { Button, StateImageButton } from "../components/Buttons";
 import MapView, { Marker } from "react-native-maps";
 import { Dimensions } from "react-native";
 import ModalContent from "../components/ModalContent";
@@ -119,8 +119,7 @@ export default function AddSpotScreen({ navigation, route }) {
         {Math.round(coordinate.longitude * 1e4) / 1e4}
       </Text>
 
-      <TextButton text="Valider" onPress={saveSpot} />
-
+      <Button text="Valider" onPress={saveSpot} />
 
       {/* Modal pour l'affichage des erreur */}
       <ModalContent
@@ -129,10 +128,9 @@ export default function AddSpotScreen({ navigation, route }) {
         closeHandler={() => setErrorModal(null)}
       >
         <Text style={globalStyle.errorText}>{errorModal}</Text>
-        <TextButton
+        <Button
           onPress={() => setErrorModal(null)}
           text="OK"
-          containerStyle={globalStyle.errorButton}
         />
       </ModalContent>
     </BackgroundWrapper>
@@ -161,5 +159,4 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").height * 0.4,
     margin: 5,
   },
-
 });

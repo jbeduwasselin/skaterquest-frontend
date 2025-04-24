@@ -15,7 +15,7 @@ import VideoPlayer from "../components/VideoPlayer";
 import { useBackHandler } from "@react-native-community/hooks";
 import globalStyle, { DEFAULT_THUMBNAIL } from "../globalStyle";
 import * as VideoThumbnails from "expo-video-thumbnails";
-import { IconButton } from "../components/Buttons";
+import { Button } from "../components/Buttons";
 
 /*
 Ce screen est un bon exemple de comment on peut gérer le video player.
@@ -138,7 +138,12 @@ function VideoCard({ videoData, onPress, handleDelete }) {
           🕒 {formatDate(videoData.creationDate)}
         </Text>
       </View>
-      <IconButton iconName="delete" size={30} onPress={handleDelete} />
+      <Button
+        iconName="delete"
+        size={30}
+        onPress={handleDelete}
+        containerStyle={{ backgroundColor: "transparent" }}
+      />
     </TouchableOpacity>
   );
 }

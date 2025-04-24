@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
-  View,
   Text,
-  TouchableOpacity,
   StyleSheet,
   Dimensions,
-  RefreshControl,
   ActivityIndicator,
 } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
@@ -15,32 +12,9 @@ import { useSelector } from "react-redux";
 import { getNearestSpot } from "../lib/request";
 import { useIsFocused } from "@react-navigation/native";
 import globalStyle from "../globalStyle";
-import { IconTextButton, TextButton } from "../components/Buttons";
+import { Button } from "../components/Buttons";
 import ModalContent from "../components/ModalContent";
-
-//Cette implementation de la formule d'haversine approxime
-//les fonctions atan2 et sin pour des petites distances
-function lightHaversine(
-  { latitude: lat1, longitude: lon1 },
-  { latitude: lat2, longitude: lon2 }
-) {
-  const R = 6371e3; // Earth radius in meters
-  const φ1 = (lat1 * Math.PI) / 180;
-  const φ2 = (lat2 * Math.PI) / 180;
-  const Δφ = φ2 - φ1;
-  const Δλ = ((lon2 - lon1) * Math.PI) / 180;
-  // Mean latitude for cosine term
-  const φm = (φ1 + φ2) / 2;
-  // Taylor series expansion terms
-  const x = Δλ * Math.cos(φm);
-  const y = Δφ;
-  const d = Math.sqrt(x * x + y * y);
-  // Third-order correction terms
-  const k1 = (3 * x * x * y - y * y * y) / (6 * R * R);
-  const k2 = (3 * y * y * x - x * x * x) / (6 * R * R);
-
-  return R * d * (1 + (k1 + k2));
-}
+import { lightHaversine } from "../lib/utils";
 
 export default function MapScreen({ navigation }) {
   const isFocused = useIsFocused();
@@ -133,7 +107,7 @@ export default function MapScreen({ navigation }) {
         {marker}
       </MapView>
 
-      <IconTextButton
+      <Button
         iconName="add-location"
         size={50}
         text="Ajouter un spot."
@@ -147,7 +121,7 @@ export default function MapScreen({ navigation }) {
         closeHandler={() => setErrorModal(null)}
       >
         <Text style={globalStyle.errorText}>{errorModal}</Text>
-        <TextButton
+        <Button
           onPress={() => setErrorModal(null)}
           text="OK"
           containerStyle={globalStyle.errorButton}
