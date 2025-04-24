@@ -26,7 +26,6 @@ import { useIsFocused } from "@react-navigation/native";
 import { Button, StateButton } from "../components/Buttons";
 import globalStyle, {
   COLOR_BACK,
-  DEFAULT_AVATAR,
   DEFAULT_THUMBNAIL,
   COLOR_PLACEHOLDER
 } from "../globalStyle";

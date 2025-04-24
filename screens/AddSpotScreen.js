@@ -8,6 +8,7 @@ import { Button, StateImageButton } from "../components/Buttons";
 import MapView, { Marker } from "react-native-maps";
 import { Dimensions } from "react-native";
 import ModalContent from "../components/ModalContent";
+import { useErrorModal } from "../components/ErrorModal";
 
 export default function AddSpotScreen({ navigation, route }) {
   // Récupération des infos depuis le store
@@ -18,7 +19,7 @@ export default function AddSpotScreen({ navigation, route }) {
   const [spotName, setSpotName] = useState(""); // État pour enregistrer le nom donné au spot par l'utilisateur
   const [spotCategory, setSpotCategory] = useState(null); // État pour enregistrer la catégorie du spot choisie par l'utilisateur
   const [coordinate, setCoordinate] = useState({ latitude, longitude }); //Etat pour les coordonnées du spot
-  const [errorModal, setErrorModal] = useState(null);
+  const [setErrorModal, ErrorModal] = useErrorModal();
   function toggleSpotCategory(value) {
     spotCategory == value ? setSpotCategory(null) : setSpotCategory(value);
   }
@@ -122,19 +123,7 @@ export default function AddSpotScreen({ navigation, route }) {
       <Button text="Valider" onPress={saveSpot} />
 
       {/* Modal pour l'affichage des erreur */}
-      <ModalContent
-        visibleState={errorModal}
-        containerStyle={globalStyle.errorModal}
-        closeHandler={() => setErrorModal(null)}
-      >
-        <Text style={globalStyle.errorText}>{errorModal}</Text>
-        <Button
-          onPress={() => setErrorModal(null)}
-          text="OK"
-          containerStyle={globalStyle.errorButton}
-          textStyle={globalStyle.errorButtonText}
-        />
-      </ModalContent>
+      <ErrorModal />
     </BackgroundWrapper>
   );
 }

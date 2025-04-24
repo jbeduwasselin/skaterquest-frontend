@@ -24,7 +24,7 @@ import {
 import globalStyle, { COLOR_MAIN, DEFAULT_AVATAR, COLOR_PLACEHOLDER } from "../globalStyle";
 import { Button, StateButton } from "../components/Buttons";
 import ModalContent from "../components/ModalContent";
-import { IconButton } from "react-native-paper";
+import { useConfirmationModal } from "../components/ConfirmModal";
 
 export default function CrewScreen() {
   //Rerender dans on mount et manuel
@@ -44,6 +44,7 @@ export default function CrewScreen() {
   const [searchResults, setSearchResult] = useState([]);
   const [searchVisible, setSearchVisible] = useState(false);
 
+  const [setConfirm, ConfirmModal] = useConfirmationModal();
   async function handleCreateCrew() {
     const { result, reason } = await createCrew(token, newCrewName);
     console.log(result, reason);
@@ -63,6 +64,85 @@ export default function CrewScreen() {
   async function handleAddMember(userID) {
     const { result } = await addUserToCrew(token, userID);
     result && forceUpdate();
+  }
+
+  async function handleLeaveCrew() {
+    setConfirm({
+      text: `Quiter le crew ${userData.crew.name} ?`,
+      handle: async () => {
+        const { result } = await leaveCrew(token);
+        result && forceUpdate();
+      },
+    });
+  }
+
+  async function handleAdmin(isAdmin, memberData) {
+    setConfirm({
+      text: `${isAdmin ? "Promouvoir" : "Rétrograder"} ${memberData.username} du role administrateurs`,
+      handle: async () => {
+        const { result } = isAdmin
+          ? await promoteToCrewAdmin(token, memberData.uID)
+          : await removeFromCrewAdmin(token, memberData.uID);
+      },
+    });
+  }
+
+  async function handleRemoveMember(memberData) {
+    setConfirm({
+      text: `Retirer ${memberData.username} du crew ?`,
+      handle: async () => {
+        const { result } = await removeUserFromCrew(token, memberData.uID);
+        result && forceUpdate();
+      },
+    });
+  }
+
+  function MemberCard({ memberData, isAdmin, isUser, isUserAdmin }) {
+    return (
+      <View style={styles.memberCard}>
+        <Image
+          source={{ uri: memberData.avatar ?? DEFAULT_AVATAR }}
+          height={50}
+          width={50}
+          style={globalStyle.avatar}
+        />
+        <Text style={globalStyle.subTitle}>{memberData.username}</Text>
+        <View style={styles.controlContainer}>
+          {isUserAdmin && !isUser && (
+            <>
+              <StateButton
+                iconName="admin-panel-settings"
+                activeColor="blue"
+                value={isAdmin}
+                onPress={(isAdmin) => handleAdmin(isAdmin, memberData)}
+                size={30}
+                containerStyle={{
+                  backgroundColor: "transparent",
+                }}
+              />
+              <Button
+                iconName="cancel"
+                onPress={() => handleRemoveMember(memberData)}
+                size={25}
+                containerStyle={{
+                  backgroundColor: "transparent",
+                }}
+              />
+            </>
+          )}
+          {isUser && (
+            <Button
+              iconName="door-back"
+              onPress={handleLeaveCrew}
+              size={30}
+              containerStyle={{
+                backgroundColor: "transparent",
+              }}
+            />
+          )}
+        </View>
+      </View>
+    );
   }
 
   //Listes des utilisateurs et ajout
@@ -146,6 +226,8 @@ export default function CrewScreen() {
             containerStyle={styles.searchButton}
           />
         )}
+        {/* Modal de confirmation */}
+        <ConfirmModal />
       </BackgroundWrapper>
     );
   }
@@ -176,74 +258,6 @@ export default function CrewScreen() {
         onPress={handleCreateCrew}
       />
     </BackgroundWrapper>
-  );
-}
-
-function MemberCard({ memberData, isAdmin, isUser, isUserAdmin, forceUpdate }) {
-  const { token } = useSelector((state) => state.user.value);
-
-  async function handleLeaveCrew() {
-    const { result } = await leaveCrew(token);
-    console.log(result);
-    result && forceUpdate();
-  }
-
-  async function handleAdmin(isAdmin) {
-    const { result } = isAdmin
-      ? await promoteToCrewAdmin(token, memberData.uID)
-      : await removeFromCrewAdmin(token, memberData.uID);
-  }
-
-  async function handleRemoveMember() {
-    const { result } = await removeUserFromCrew(token, memberData.uID);
-    console.log(result);
-    result && forceUpdate();
-  }
-
-  return (
-    <View style={styles.memberCard}>
-      <Image
-        source={{ uri: memberData.avatar ?? DEFAULT_AVATAR }}
-        height={50}
-        width={50}
-        style={globalStyle.avatar}
-      />
-      <Text style={globalStyle.subTitle}>{memberData.username}</Text>
-      <View style={styles.controlContainer}>
-        {isUserAdmin && !isUser && (
-          <>
-            <StateButton
-              iconName="admin-panel-settings"
-              activeColor="blue"
-              value={isAdmin}
-              onPress={handleAdmin}
-              size={30}
-              containerStyle={{
-                backgroundColor: "transparent",
-              }}
-            />
-            <Button
-              iconName="cancel"
-              onPress={handleRemoveMember}
-              size={25}
-              containerStyle={{
-                backgroundColor: "transparent",
-              }}
-            />
-          </>
-        )}
-        {isUser && (
-          <Button
-            iconName="door-back"
-            onPress={handleLeaveCrew}
-            size={30}
-            containerStyle={{
-              backgroundColor: "transparent",
-            }}
-          />
-        )}
-      </View>
-    </View>
   );
 }
 
