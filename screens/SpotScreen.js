@@ -30,7 +30,7 @@ import globalStyle, {
   DEFAULT_THUMBNAIL,
 } from "../globalStyle";
 import ModalContent from "../components/ModalContent";
-import { ItemCaroussel } from "../components/ItemCaroussel";
+import { ItemCarrousel } from "../components/ItemCarrousel";
 
 // Variables pour gérer l'affichage
 const { width } = Dimensions.get("window"); // Pour l'affichage responsive
@@ -159,7 +159,7 @@ export default function SpotScreen({ navigation, route }) {
         Spot de type {spotData.category}
       </Text>
 
-      <ItemCaroussel
+      <ItemCarrousel
         data={spotData.img}
         renderItem={({ item }) => (
           <Image
@@ -180,7 +180,7 @@ export default function SpotScreen({ navigation, route }) {
         text="Ajouter une photo"
       />
 
-      <ItemCaroussel
+      <ItemCarrousel
         data={spotData.videos}
         contentContainerStyle={{ borderWidth: 5, borderColor: "red" }}
         renderItem={({ item }) => {
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
     color: "orange",
     marginTop: 6,
   },
-  carouselItem: {
+  carrouselItem: {
     marginHorizontal: 2,
     borderRadius: 12,
     overflow: "hidden",

@@ -5,7 +5,7 @@ import {
   useAnimatedValue,
 } from "react-native";
 
-export function ItemCaroussel({
+export function ItemCarrousel({
   data,
   renderItem,
   itemWidth = 360,
