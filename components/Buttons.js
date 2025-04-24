@@ -64,7 +64,7 @@ export function StateButton({
   activeTextStyle,
   containerStyle,
   activeContainerStyle,
-  gap = 15,
+  gap,
   onPress = () => {},
   iconLeft = false,
   value,
@@ -73,6 +73,7 @@ export function StateButton({
   useEffect(() => {
     setIsActive(value);
   }, [value]);
+  console.log(color);
   return (
     <Button
       onPress={() => {
@@ -94,157 +95,6 @@ export function StateButton({
     />
   );
 }
-
-//
-
-// //Un button avec un icon
-// export function IconButton({
-//   iconName,
-//   size = 20,
-//   color = "black",
-//   containerStyle,
-//   onPress = () => {},
-// }) {
-//   Icon;
-//   return (
-//     <TouchableOpacity
-//       style={{
-//         ...styles.container,
-//         backgroundColor: "transparent",
-//         ...containerStyle,
-//       }}
-//       onPress={onPress}
-//       activeOpacity={0.6}
-//     >
-//       <Icon name={iconName} size={size} color={color}></Icon>
-//     </TouchableOpacity>
-//   );
-// }
-// //Un button avec du texte
-// export function TextButton({
-//   text = "",
-//   textStyle,
-//   containerStyle,
-//   onPress = () => {},
-// }) {
-//   return (
-//     <TouchableOpacity
-//       style={{ ...styles.container, ...containerStyle }}
-//       onPress={onPress}
-//       activeOpacity={0.6}
-//     >
-//       <Text style={{ ...styles.text, ...textStyle }}>{text}</Text>
-//     </TouchableOpacity>
-//   );
-// }
-
-// export function StateButton({
-//   iconName,
-//   activeIconName,
-//   size = 20,
-//   color = "black",
-//   activeColor,
-//   text = "",
-//   activeText,
-//   textStyle,
-//   activeTextStyle,
-//   containerStyle,
-//   activeContainerStyle,
-//   gap = 15,
-//   onPress = () => {},
-//   iconLeft = false,
-//   value,
-// }) {
-//   const [isActive, setIsActive] = useState(false);
-//   useEffect(() => {
-//     setIsActive(value);
-//   }, [value]);
-//   return (
-//     <IconTextButton
-//       iconName={isActive ? (activeIconName ?? iconName) : iconName}
-//       textStyle={isActive ? (activeTextStyle ?? textStyle) : textStyle}
-//       containerStyle={
-//         isActive ? (activeContainerStyle ?? containerStyle) : containerStyle
-//       }
-//       color={isActive ? (activeColor ?? color) : color}
-//       text={isActive ? (activeText ?? text) : text}
-//       onPress={() => {
-//         onPress(!isActive);
-//         setIsActive(!isActive);
-//       }}
-//       {...{ size, gap, iconLeft }}
-//     />
-//   );
-// }
-
-// //Un button avec un icone et un état interne (on/off)
-// export function StateIconButton({
-//   iconName,
-//   activeIconName,
-//   size = 20,
-//   color = "black",
-//   activeColor = "blue",
-//   containerStyle,
-//   value,
-//   onPress = () => {},
-// }) {
-//   const [isActive, setIsActive] = useState(false);
-//   useEffect(() => {
-//     setIsActive(value);
-//   }, [value]);
-
-//   return (
-//     <IconTextButton
-//       color={(isActive && activeColor) ?? color}
-//       onPress={() => {
-//         onPress(!isActive);
-//         setIsActive(!isActive);
-//       }}
-//       iconName={(isActive && activeIconName) ?? iconName}
-//       textStyle={(isActive && activeTextStyle) ?? textStyle}
-//       {...{
-//         size,
-//         textStyle,
-//         activeTextStyle,
-//         containerStyle,
-//       }}
-//     />
-//   );
-// }
-
-//Un button avec du texte et un état interne (on/off)
-export function StateTextButton({
-  text = "",
-  containerStyle,
-  activeStyle,
-  inactiveStyle,
-  textStyle,
-  value,
-  onPress = () => {},
-}) {
-  const [isActive, setIsActive] = useState(false);
-  useEffect(() => {
-    setIsActive(value);
-  }, [value]);
-
-  return (
-    <TextButton
-      onPress={() => {
-        onPress(!isActive);
-        setIsActive(!isActive);
-      }}
-      containerStyle={{
-        ...containerStyle,
-        ...(isActive ? activeStyle : inactiveStyle),
-      }}
-      {...{
-        text,
-        textStyle,
-      }}
-    />
-  );
-}
-
 //Un Bouton avec une image et un étéat interne (on/off)
 export function StateImageButton({
   source,
