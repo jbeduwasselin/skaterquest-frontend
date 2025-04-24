@@ -133,14 +133,16 @@ export default function CrewScreen() {
           />
         </ModalContent>
 
-        <Button
-          iconName="group-add"
-          text="Ajouter un membre"
-          size={30}
-          value={false}
-          onPress={setSearchVisible}
-          containerStyle={styles.searchButton}
-        />
+        {isUserAdmin && (
+          <Button
+            iconName="group-add"
+            text="Ajouter un membre"
+            size={30}
+            value={false}
+            onPress={setSearchVisible}
+            containerStyle={styles.searchButton}
+          />
+        )}
       </BackgroundWrapper>
     );
   }
