@@ -15,6 +15,7 @@ import { Button } from "../components/Buttons";
 import globalStyle, { COLOR_BACK } from "../globalStyle";
 import ModalContent from "../components/ModalContent";
 import { EMAIL_REGEX, PASSWORD_REGEX, USERNAME_REGEX } from "../lib/utils";
+import { useErrorModal } from "../components/ErrorModal";
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ export default function LoginScreen({ navigation }) {
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [signInEmail, setSignInEmail] = useState("text0@test.test");
   const [signInPassword, setSignInPassword] = useState("test");
-  const [errorModal, setErrorModal] = useState(null);
+  const [setErrorModal, ErrorModal] = useErrorModal();
 
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [signUpUsername, setSignUpUsername] = useState("");
@@ -316,18 +317,7 @@ export default function LoginScreen({ navigation }) {
       {tuto1}
       {tuto2}
       {tuto3}
-      {/* Modal pour l'affichage des erreur */}
-      <ModalContent
-        visibleState={errorModal}
-        containerStyle={globalStyle.errorModal}
-        closeHandler={() => setErrorModal(null)}
-      >
-        <Text style={globalStyle.errorText}>{errorModal}</Text>
-        <Button onPress={() => setErrorModal(null)} text="OK"
-            containerStyle={globalStyle.errorButton}
-            textStyle={globalStyle.errorButtonText}
-        />
-      </ModalContent>
+      <ErrorModal />
     </ImageBackground>
   );
 }
