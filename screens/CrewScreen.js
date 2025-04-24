@@ -88,7 +88,7 @@ export default function CrewScreen() {
         <ModalContent
           visibleState={searchVisible}
           closeHandler={() => setSearchVisible(false)}
-          containerStyle={{...globalStyle.modalContainer, maxHeight : "95%"}}
+          containerStyle={{ ...globalStyle.modalContainer, maxHeight: "95%" }}
         >
           <Button
             iconName="cancel"
@@ -209,6 +209,7 @@ function MemberCard({ memberData, isAdmin, isUser, isUserAdmin, forceUpdate }) {
           <>
             <StateButton
               iconName="admin-panel-settings"
+              activeColor="blue"
               value={isAdmin}
               onPress={handleAdmin}
               size={30}
