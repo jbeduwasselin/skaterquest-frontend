@@ -32,16 +32,15 @@ import globalStyle, {
 import ModalContent from "../components/ModalContent";
 import { ItemCarrousel } from "../components/ItemCarrousel";
 import { formatDate } from "../lib/utils";
-
-// Variables pour gérer l'affichage
-const { width } = Dimensions.get("window"); // Pour l'affichage responsive
-const ITEM_SIZE = width * 0.5; // Largeur des images dans le carrousel
+import { useErrorModal } from "../components/ErrorModal";
 
 export default function SpotScreen({ navigation, route }) {
   const { token } = useSelector((state) => state.user.value);
   const [videoPlaying, setVideoPlaying] = useState(null);
   const [updateWatcher, forceUpdate] = useReducer((p) => p + 1, 0);
   const [spotData, setSpotData] = useState(route.params.spotData);
+
+  const [setErrorModal, ErrorModal] = useErrorModal();
 
   // États liés à la publication d'une nouvelle vidéo
   const [selectedVideoUri, setSelectedVideoUri] = useState(null); // Pour stocker l'URI de la vidéo séléctionnée
@@ -70,7 +69,7 @@ export default function SpotScreen({ navigation, route }) {
 
     // Vérification qu'au moins 1 trick ait été saisi
     if (trickList.length === 0) {
-      alert("Ajoute au moins un trick stp !");
+      setErrorModal("Ajoute au moins un trick stp !");
       return;
     } else {
       setShowTrickModal(false);
@@ -97,7 +96,7 @@ export default function SpotScreen({ navigation, route }) {
       setTrickInputs([""]);
       setSelectedVideoUri(null);
     } else {
-      alert("Erreur lors de l'envoi de la vidéo");
+      setErrorModal("Erreur lors de l'envoi de la vidéo");
     }
   };
 
@@ -120,7 +119,7 @@ export default function SpotScreen({ navigation, route }) {
     // Demande de permission d'accès à la galerie (fonction requestMediaLibraryPermissionsAsync() de ImagePicker)
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      alert("Permission requise pour accéder à la galerie");
+      setErrorModal("Permission requise pour accéder à la galerie");
       return; // Interruption de la fonction si l'utilisateur n'autorise pas l'appli à accéder à sa galerie
     }
 
@@ -286,6 +285,7 @@ export default function SpotScreen({ navigation, route }) {
           <ActivityIndicator size="large" color="orange" />
         </View>
       )}
+      <ErrorModal />
     </BackgroundWrapper>
   );
 }
