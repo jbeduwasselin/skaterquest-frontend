@@ -5,7 +5,7 @@ import {
   useAnimatedValue,
 } from "react-native";
 
-export function ItemCaroussel({
+export function ItemCarrousel({
   data,
   renderItem,
   itemWidth = 360,
@@ -13,22 +13,23 @@ export function ItemCaroussel({
   containerStyle,
   sideSpace,
 }) {
-  const scrollX = useAnimatedValue(0); // Pour le carrousel des photos
+  const scrollX = useAnimatedValue(0); // Pour le carrousel des photos (X car scroll horizontal)
   const { width } = Dimensions.get("window"); // Pour l'affichage responsive
   const paddingHorizontal = sideSpace ?? (width - itemWidth) / 2; // Espacement entre les images du carrousel pour entre‑voir les images voisines à celle du milieu
   return (
-    <Animated.FlatList
-      {...{ data }}
-      pagingEnabled
-      horizontal
-      decelerationRate="fast"
-      showsHorizontalScrollIndicator={false}
-      snapToInterval={itemWidth}
+    <Animated.FlatList // FlatList sert pour l'affichage des images en défilement et Animated pour la dynamisation
+      {...{ data }} // Les photos
+      pagingEnabled // Active le défilement "page par page" (possible de le désactiver en lui mettant ={false} mais mieux de l'activer pour l'affichage tablette d'après nos tests)
+      horizontal // Scroll horizontal (par défaut FlatList est en scroll vertical)
+      decelerationRate="fast" // Rend le scroll plus "snappy" (rapide) à s’arrêter
+      showsHorizontalScrollIndicator={false} // Cache la barre de scroll horizontale
+      snapToInterval={itemWidth} // Fluidifie le défilement en snappant automatiquement chaque image quand on scrolle
       onScroll={Animated.event(
         [{ nativeEvent: { contentOffset: { x: scrollX } } }], // Lie le scroll horizontal à scrollX pour pouvoir animer en fonction de la position
         { useNativeDriver: true } // Rend l’animation exécutable directement par le moteur natif du téléphone (donc + fluide, + rapide et ne bloque pas le reste de l’UI)
       )}
       contentContainerStyle={{ paddingHorizontal, maxHeight: itemHeight }} // Gère l'espacement entre les images
+      // Fonction renderItem() pour afficher les images (items) de la FlatList
       renderItem={(data) => {
         const inputRange = [
           (data.index - 1) * itemWidth,

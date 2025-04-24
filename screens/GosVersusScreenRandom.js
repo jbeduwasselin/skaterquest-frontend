@@ -10,8 +10,7 @@ import ModalContent from "../components/ModalContent";
 import globalStyle from "../globalStyle";
 import { randomOf } from "../lib/utils";
 
-
-export default function GosVersusScreen({ route, navigation }) {
+export default function GosVersusScreenRandom({ route, navigation }) {
   const { skater1, skater2 } = route.params;
 
   const [skater1Score, setSkater1Score] = useState(0);
@@ -33,14 +32,24 @@ export default function GosVersusScreen({ route, navigation }) {
   const handleTrickFailure = (player) => {
     const letter = getNextLetter(player);
 
-    if (player === "skater1" && skater1Letters.length < 5) {
-      const updated = skater1Letters + letter;
-      setSkater1Letters(updated);
-      if (updated.length === 5) endGame("skater1");
-    } else if (skater2Letters.length < 5) {
-      const updated = skater2Letters + letter;
-      setSkater2Letters(updated);
-      if (updated.length === 5) endGame("skater2");
+    if (player === "skater1") {
+      if (skater1Letters.length < 5) {
+        const letter = getNextLetter("skater1");
+        const updated = skater1Letters + letter;
+        setSkater1Letters(updated);
+        if (updated.length === 5) endGame("skater1");
+      }
+      return;
+    }
+
+    if (player === "skater2") {
+      if (skater2Letters.length < 5) {
+        const letter = getNextLetter("skater2");
+        const updated = skater2Letters + letter;
+        setSkater2Letters(updated);
+        if (updated.length === 5) endGame("skater2");
+      }
+      return;
     }
   };
 
@@ -79,7 +88,7 @@ export default function GosVersusScreen({ route, navigation }) {
           </View>
 
           <View style={styles.versusIconContainer}>
-            <FontAwesome5 name="battle-net" size={45} color="#FF650C" />
+            <FontAwesome5 name="flag-checkered" size={45} color="#FF650C" />
           </View>
 
           <View style={styles.profile}>

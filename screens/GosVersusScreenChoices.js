@@ -9,7 +9,7 @@ import { Button } from "../components/Buttons";
 import ModalContent from "../components/ModalContent";
 import globalStyle from "../globalStyle";
 
-export default function GosVersusScreenBis({ route, navigation }) {
+export default function GosVersusScreenChoices({ route, navigation }) {
   const { skater1 = "Joueur 1", skater2 = "Joueur 2", gameMode } = route.params;
   const skater1Final = skater1.trim() === "" ? "Joueur 1" : skater1;
   const skater2Final = skater2.trim() === "" ? "Joueur 2" : skater2;
@@ -22,6 +22,7 @@ export default function GosVersusScreenBis({ route, navigation }) {
   const [isGameOver, setIsGameOver] = useState(false);
   const [winner, setWinner] = useState("");
 
+  // Fonction appelée lorsque le joueur réussit un trick
   const handleTrickSuccess = (player) => {
     if (player === "skater1") {
       setSkater1Score(skater1Score + 1);
@@ -30,19 +31,32 @@ export default function GosVersusScreenBis({ route, navigation }) {
     }
   };
 
+  // Fonction appelée lorsque le joueur échoue un trick
   const handleTrickFailure = (player) => {
     const letter = getNextLetter(player);
 
-    if (player === "skater1" && skater1Letters.length < 5) {
-      const updated = skater1Letters + letter;
-      setSkater1Letters(updated);
-      if (updated.length === 5) endGame("skater1");
-    } else if (skater2Letters.length < 5) {
-      const updated = skater2Letters + letter;
-      setSkater2Letters(updated);
-      if (updated.length === 5) endGame("skater2");
+    if (player === "skater1") {
+      if (skater1Letters.length < 5) {
+        const letter = getNextLetter("skater1");
+        const updated = skater1Letters + letter;
+        setSkater1Letters(updated);
+        if (updated.length === 5) endGame("skater1");
+      }
+      return;
+    }
+
+    if (player === "skater2") {
+      if (skater2Letters.length < 5) {
+        const letter = getNextLetter("skater2");
+        const updated = skater2Letters + letter;
+        setSkater2Letters(updated);
+        if (updated.length === 5) endGame("skater2");
+      }
+      return;
     }
   };
+
+  // Renvoie la prochaine lettre du mot SKATE à attribuer
   const getNextLetter = (player) => {
     const word = "SKATE";
     return player === "skater1"
@@ -50,7 +64,9 @@ export default function GosVersusScreenBis({ route, navigation }) {
       : word[skater2Letters.length];
   };
 
-  const endGame = (winnerName) => {
+  // Déclenche la fin du jeu et désigne dynamiquement le gagnant
+  const endGame = (loserName) => {
+    const winnerName = loserName === "skater1" ? skater2Final : skater1Final;
     setWinner(winnerName);
     setIsGameOver(true);
   };
@@ -61,8 +77,8 @@ export default function GosVersusScreenBis({ route, navigation }) {
   };
 
   return (
-    <BackgroundWrapper flexJustify="space evenly">
-      {/* Affichage des joueurs */}
+    <BackgroundWrapper flexJustify="center">
+      {/* Affichage des noms et lettres des joueurs */}
       <Animatable.View
         animation="fadeInLeft"
         duration={1000}
@@ -74,7 +90,7 @@ export default function GosVersusScreenBis({ route, navigation }) {
         </View>
 
         <View style={styles.versusIconContainer}>
-          <FontAwesome5 name="battle-net" size={45} color="#FF650C" />
+          <FontAwesome5 name="flag-checkered" size={45} color="#FF650C" />
         </View>
 
         <View style={styles.profile}>
@@ -83,7 +99,7 @@ export default function GosVersusScreenBis({ route, navigation }) {
         </View>
       </Animatable.View>
 
-      {/* Score */}
+      {/* Affichage des scores */}
       <Animatable.View
         animation="fadeInDown"
         duration={1000}
@@ -100,7 +116,7 @@ export default function GosVersusScreenBis({ route, navigation }) {
         </View>
       </Animatable.View>
 
-      {/* Picker encapsulé */}
+      {/* Sélection du trick via Picker */}
       <Animatable.View
         animation="zoomIn"
         duration={1000}
@@ -113,55 +129,60 @@ export default function GosVersusScreenBis({ route, navigation }) {
           style={styles.picker}
           dropdownIconColor="#FFF"
         >
-          <Picker.Item label="Ollie" value="Ollie" />
-          <Picker.Item label="No Comply" value="No Comply" />
-          <Picker.Item label="Revert" value="Revert" />
-          <Picker.Item label="Caveman" value="Caveman" />
-          <Picker.Item label="Acid Drop" value="Acid Drop" />
-          <Picker.Item label="Body Varial" value="Body Varial" />
-          <Picker.Item label="Footplant" value="Footplant" />
-          <Picker.Item label="Firecracker" value="Firecracker" />
-          <Picker.Item label="Pivot" value="Pivot" />
-          <Picker.Item label="Boneless" value="Boneless" />
-          <Picker.Item label="Shuvit" value="Shuvit" />
-          <Picker.Item label="Pop Shuvit" value="Pop Shuvit" />
-          <Picker.Item label="Manual" value="Manual" />
-          <Picker.Item label="Nose Manual" value="Nose Manual" />
-          <Picker.Item label="Kickflip" value="Kickflip" />
-          <Picker.Item label="Heelflip" value="Heelflip" />
-          <Picker.Item label="Frontside 180" value="Frontside 180" />
-          <Picker.Item label="Backside 180" value="Backside 180" />
-          <Picker.Item label="Railstand" value="Railstand" />
-          <Picker.Item label="Boned Ollie" value="Boned Ollie" />
-          <Picker.Item label="Nollie" value="Nollie" />
-          <Picker.Item label="Fakie Ollie" value="Fakie Ollie" />
-          <Picker.Item label="Switch Ollie" value="Switch Ollie" />
-          <Picker.Item label="Wallride" value="Wallride" />
-          <Picker.Item label="Wallie" value="Wallie" />
-          <Picker.Item label="Powerslide" value="Powerslide" />
-          <Picker.Item label="Slappy" value="Slappy" />
-          <Picker.Item label="Varial Kickflip" value="Varial Kickflip" />
-          <Picker.Item label="360 Flip" value="360 Flip" />
-          <Picker.Item label="Hardflip" value="Hardflip" />
-          <Picker.Item label="Impossible" value="Impossible" />
-          <Picker.Item label="Frontside Flip" value="Frontside Flip" />
-          <Picker.Item label="Backside Flip" value="Backside Flip" />
-          <Picker.Item label="Bigspin" value="Bigspin" />
-          <Picker.Item label="Casper Flip" value="Casper Flip" />
-          <Picker.Item label="Darkslide" value="Darkslide" />
-          <Picker.Item label="Primo Slide" value="Primo Slide" />
-          <Picker.Item label="Tiger Claw" value="Tiger Claw" />
-          <Picker.Item label="Underflip" value="Underflip" />
-          <Picker.Item label="Hospital Flip" value="Hospital Flip" />
-          <Picker.Item label="Double Kickflip" value="Double Kickflip" />
-          <Picker.Item label="Triple Kickflip" value="Triple Kickflip" />
-          <Picker.Item label="Laser Flip" value="Laser Flip" />
-          <Picker.Item label="Gazelle Flip" value="Gazelle Flip" />
-          <Picker.Item label="Blunt Slide" value="Blunt Slide" />
+          {/* Liste très longue de tricks pour plus de choix */}
+          {[
+            "Ollie",
+            "No Comply",
+            "Revert",
+            "Caveman",
+            "Acid Drop",
+            "Body Varial",
+            "Footplant",
+            "Firecracker",
+            "Pivot",
+            "Boneless",
+            "Shuvit",
+            "Pop Shuvit",
+            "Manual",
+            "Nose Manual",
+            "Kickflip",
+            "Heelflip",
+            "Frontside 180",
+            "Backside 180",
+            "Railstand",
+            "Boned Ollie",
+            "Nollie",
+            "Fakie Ollie",
+            "Switch Ollie",
+            "Wallride",
+            "Wallie",
+            "Powerslide",
+            "Slappy",
+            "Varial Kickflip",
+            "360 Flip",
+            "Hardflip",
+            "Impossible",
+            "Frontside Flip",
+            "Backside Flip",
+            "Bigspin",
+            "Casper Flip",
+            "Darkslide",
+            "Primo Slide",
+            "Tiger Claw",
+            "Underflip",
+            "Hospital Flip",
+            "Double Kickflip",
+            "Triple Kickflip",
+            "Laser Flip",
+            "Gazelle Flip",
+            "Blunt Slide",
+          ].map((trick) => (
+            <Picker.Item key={trick} label={trick} value={trick} />
+          ))}
         </Picker>
       </Animatable.View>
 
-      {/* Actions */}
+      {/* Boutons d'action pour chaque joueur */}
       <Animatable.View
         animation="fadeInUp"
         duration={1000}
@@ -200,7 +221,7 @@ export default function GosVersusScreenBis({ route, navigation }) {
         </View>
       </Animatable.View>
 
-      {/* Modal Game Over */}
+      {/* Modal de fin de partie */}
       <ModalContent
         visibleState={isGameOver}
         closeHandler={() => setIsGameOver(false)}
