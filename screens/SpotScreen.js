@@ -237,8 +237,7 @@ export default function SpotScreen({ navigation, route }) {
               videoData={item}
               onPress={() => {
                 setVideoPlaying(item.url);
-              }}
-              onVoteUpdate={handleVoteUpdate} // Prop servant à actualier le composant lors d'un changement de vote
+              }} // Prop servant à actualier le composant lors d'un changement de vote
             />
           );
         }}
