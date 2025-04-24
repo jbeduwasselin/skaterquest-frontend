@@ -23,7 +23,7 @@ export default function HomeScreen({ navigation }) {
   }, [isFocused]);
 
   return (
-    <BackgroundWrapper>
+    <BackgroundWrapper flexJustify="center">
       {/* Icône des paramètres en haut à gauche */}
       <View style={styles.headerContainer}>
         <Button
