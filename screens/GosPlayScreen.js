@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TextInput, Dimensions } from "react-native";
 import * as Animatable from "react-native-animatable";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import ModalContent from "../components/ModalContent";
-import globalStyle, { COLOR_BACK } from "../globalStyle";
+import globalStyle, { COLOR_BACK, COLOR_PLACEHOLDER } from "../globalStyle";
 import { Button } from "../components/Buttons";
 
 // Récupérer la largeur de l'écran
@@ -42,7 +42,7 @@ export default function GosPlayScreen({ navigation }) {
 
         <TextInput
           placeholder="SkaterTag Joueur 1"
-          placeholderTextColor="white"
+          placeholderTextColor={COLOR_PLACEHOLDER}
           style={globalStyle.textInput}
           onChangeText={setSkater1}
           value={skater1}
@@ -50,7 +50,7 @@ export default function GosPlayScreen({ navigation }) {
         />
         <TextInput
           placeholder="SkaterTag Joueur 2"
-          placeholderTextColor="white"
+          placeholderTextColor={COLOR_PLACEHOLDER}
           style={globalStyle.textInput}
           onChangeText={setSkater2}
           value={skater2}

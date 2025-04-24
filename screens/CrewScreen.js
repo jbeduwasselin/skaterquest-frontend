@@ -21,7 +21,7 @@ import {
   removeUserFromCrew,
   searchUser,
 } from "../lib/request";
-import globalStyle, { COLOR_MAIN, DEFAULT_AVATAR } from "../globalStyle";
+import globalStyle, { COLOR_MAIN, DEFAULT_AVATAR, COLOR_PLACEHOLDER } from "../globalStyle";
 import { Button, StateButton } from "../components/Buttons";
 import ModalContent from "../components/ModalContent";
 import { IconButton } from "react-native-paper";
@@ -105,7 +105,7 @@ export default function CrewScreen() {
           <KeyboardAvoidingView>
             <TextInput
               style={globalStyle.textInput}
-              placeholderTextColor="white"
+              placeholderTextColor={COLOR_PLACEHOLDER}
               placeholder="Nouveau membre"
               onChangeText={handleSearchResult}
             />
@@ -157,7 +157,7 @@ export default function CrewScreen() {
       </Text>
       <TextInput
         style={globalStyle.textInput}
-        placeholderTextColor="white"
+        placeholderTextColor={COLOR_PLACEHOLDER}
         onChangeText={setNewCrewName}
         placeholder=" Nom de Ton crew"
       ></TextInput>

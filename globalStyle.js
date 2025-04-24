@@ -1,4 +1,5 @@
 import { Dimensions, StyleSheet } from "react-native";
+export const COLOR_PLACEHOLDER = "rgba(255, 255, 255, 0.6)";
 export const COLOR_BACK = "#858585FF";
 export const COLOR_GREY = "#535353FF";
 export const COLOR_MODAL = "#292929E5";

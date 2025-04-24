@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import { signInRequest, signUpRequest } from "../lib/request";
 import { Button } from "../components/Buttons";
-import globalStyle, { COLOR_BACK } from "../globalStyle";
+import globalStyle, { COLOR_BACK, COLOR_PLACEHOLDER } from "../globalStyle";
 import ModalContent from "../components/ModalContent";
 import { EMAIL_REGEX, PASSWORD_REGEX, USERNAME_REGEX } from "../lib/utils";
 
@@ -116,14 +116,14 @@ export default function LoginScreen({ navigation }) {
         <TextInput
           style={styles.inputs}
           placeholder="Ton adresse mail"
-          placeholderTextColor="white"
+          placeholderTextColor={COLOR_PLACEHOLDER}
           onChangeText={setSignInEmail}
           value={signInEmail}
         />
         <TextInput
           style={styles.inputs}
           placeholder="Ton mot de passe"
-          placeholderTextColor="white"
+          placeholderTextColor={COLOR_PLACEHOLDER}
           secureTextEntry={true}
           onChangeText={setSignInPassword}
           value={signInPassword}
@@ -158,14 +158,14 @@ export default function LoginScreen({ navigation }) {
         <TextInput
           style={styles.inputs}
           placeholder="Ton SkateurTag"
-          placeholderTextColor="white"
+          placeholderTextColor={COLOR_PLACEHOLDER}
           onChangeText={setSignUpUsername}
           value={signUpUsername}
         />
         <TextInput
           style={styles.inputs}
           placeholder="Ton adresse mail"
-          placeholderTextColor="white"
+          placeholderTextColor={COLOR_PLACEHOLDER}
           onChangeText={setSignUpEmail}
           value={signUpEmail}
         />
@@ -173,7 +173,7 @@ export default function LoginScreen({ navigation }) {
           style={styles.inputs}
           placeholder="Ton mot de passe"
           secureTextEntry={true}
-          placeholderTextColor="white"
+          placeholderTextColor={COLOR_PLACEHOLDER}
           onChangeText={setSignUpPassword}
           value={signUpPassword}
         />

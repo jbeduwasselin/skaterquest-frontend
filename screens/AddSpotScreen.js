@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TextInput } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import { useSelector } from "react-redux";
 import { createSpot } from "../lib/request";
-import globalStyle from "../globalStyle";
+import globalStyle, { COLOR_PLACEHOLDER } from "../globalStyle";
 import { Button, StateImageButton } from "../components/Buttons";
 import MapView, { Marker } from "react-native-maps";
 import { Dimensions } from "react-native";
@@ -62,8 +62,8 @@ export default function AddSpotScreen({ navigation, route }) {
       <Text style={globalStyle.screenTitle}>Ajout d'un nouveau spot</Text>
       <TextInput
         style={globalStyle.textInput}
-        placeholderTextColor="white"
         placeholder="Nomme ce spot ici !"
+        placeholderTextColor={COLOR_PLACEHOLDER}
         onChangeText={(value) => setSpotName(value)}
         value={spotName}
       />
@@ -140,9 +140,6 @@ export default function AddSpotScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  textInput: {
-    placeholderTextColor: "gray", // ça marche pas
-  },
   spotChoice: {
     ...globalStyle.flexRow,
     justifyContent: "space-evenly",

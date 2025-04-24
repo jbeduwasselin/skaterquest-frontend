@@ -28,6 +28,7 @@ import globalStyle, {
   COLOR_BACK,
   DEFAULT_AVATAR,
   DEFAULT_THUMBNAIL,
+  COLOR_PLACEHOLDER
 } from "../globalStyle";
 import ModalContent from "../components/ModalContent";
 import { ItemCarrousel } from "../components/ItemCarrousel";
@@ -216,7 +217,7 @@ export default function SpotScreen({ navigation, route }) {
           <TextInput
             key={index}
             placeholder={`Trick ${index + 1}`}
-            placeholderTextColor="white"
+            placeholderTextColor={COLOR_PLACEHOLDER}
             value={trick}
             onChangeText={(text) => {
               const updated = [...trickInputs];
