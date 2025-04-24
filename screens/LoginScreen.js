@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import { signInRequest, signUpRequest } from "../lib/request";
 import { Button } from "../components/Buttons";
-import globalStyle, { COLOR_BACK, COLOR_MAIN } from "../globalStyle";
+import globalStyle, { COLOR_BACK } from "../globalStyle";
 import ModalContent from "../components/ModalContent";
 
 export default function LoginScreen({ navigation }) {
@@ -292,6 +292,7 @@ export default function LoginScreen({ navigation }) {
       {tuto1}
       {tuto2}
       {tuto3}
+      {}
     </ImageBackground>
   );
 }

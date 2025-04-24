@@ -16,7 +16,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleTrick } from "../reducers/tricks";
 import ProgressBar from "../components/ProgressBar";
 import ConfettiCannon from "react-native-confetti-cannon";
-import IconButton from "../components/IconButton";
 import globalStyle, { COLOR_GREY } from "../globalStyle";
 import { StateButton } from "../components/Buttons";
 
@@ -160,9 +159,9 @@ export default function TricksScreen() {
             <Text style={styles.modalText}>
               T'as validé tous les tricks, champion 🍺🏋️‍♂️
             </Text>
-            <IconButton
+            <Button
               iconName="book-open"
-              buttonText="Retour au livre"
+              text="Retour au livre"
               onPress={() => setShowModal(false)}
               style={{ width: 200 }}
             />

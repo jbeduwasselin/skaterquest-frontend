@@ -73,7 +73,6 @@ export function StateButton({
   useEffect(() => {
     setIsActive(value);
   }, [value]);
-  console.log(color);
   return (
     <Button
       onPress={() => {
