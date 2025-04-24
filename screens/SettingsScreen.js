@@ -13,10 +13,20 @@ import {
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import * as ImagePicker from "expo-image-picker";
 import { Button, StateButton } from "../components/Buttons";
-import globalStyle, { COLOR_CANCEL, DEFAULT_AVATAR, COLOR_PLACEHOLDER } from "../globalStyle";
-import { changeUserAvatar, getOwnUserInfo } from "../lib/request";
+import globalStyle, {
+  COLOR_CANCEL,
+  DEFAULT_AVATAR,
+  COLOR_PLACEHOLDER,
+} from "../globalStyle";
+import {
+  changeUserAvatar,
+  getOwnUserInfo,
+  updateSkaterTag,
+} from "../lib/request";
 import { useIsFocused } from "@react-navigation/native";
 import ModalContent from "../components/ModalContent";
+import { useConfirmationModal } from "../components/ConfirmModal";
+import { useErrorModal } from "../components/ErrorModal";
 
 export default function SettingsScreen({ navigation }) {
   const [updateWatcher, forceUpdate] = useReducer((p) => p + 1, 0);
@@ -24,6 +34,9 @@ export default function SettingsScreen({ navigation }) {
   const { token } = useSelector((state) => state.user.value);
   const [userData, setUserData] = useState(null);
   const [isUploading, setIsUploading] = useState(false); // Pour activer l'indicateur visuel du chargement de l'avatar lors d'un changement
+
+  const [setConfim, ConfirmModal] = useConfirmationModal();
+  const [setErrorModal, ErrorModal] = useErrorModal();
 
   useEffect(() => {
     getOwnUserInfo(token).then(({ result, data }) => {
@@ -40,7 +53,7 @@ export default function SettingsScreen({ navigation }) {
   const requestPermission = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("Permission requise", "Autorise l'accès à la galerie");
+      setErrorModal("Permission requise, autorise l'accès à la galerie");
       return false;
     }
     return true;
@@ -63,10 +76,10 @@ export default function SettingsScreen({ navigation }) {
         setIsUploading(false); // Masquage de l'indicateur de chargement
         // Affichage d'un écran de confirmation pour l'utilisateur (car l'éditeur de launchImageLibraryAsync n'est pas très clair à ce niveau)
         if (result) {
+          setErrorModal("Succès", "Ton avatar a été mis à jour !");
           forceUpdate();
-          Alert.alert("Succès", "Ton avatar a été mis à jour !");
         } else {
-          Alert.alert("Erreur", "Impossible de mettre à jour l'avatar :(");
+          setErrorModal("Erreur", "Impossible de mettre à jour l'avatar :(");
         }
       }
     } catch (error) {
@@ -75,49 +88,24 @@ export default function SettingsScreen({ navigation }) {
   };
 
   const handleImagePress = () => {
-    Alert.alert("Changer la photo de profil", "Choisis une option :", [
-      { text: "Galerie", onPress: pickImageFromLibrary },
-      { text: "Annuler", style: "cancel" },
-    ]);
+    setConfim({
+      text: "Changer ta photo de profil ?",
+      handle: pickImageFromLibrary,
+    });
   };
 
-  const updateSkaterTag = async () => {
+  const handleUpdateSkaterTag = async () => {
     if (!newSkaterTag.trim()) {
-      Alert.alert("Erreur", "SkaterTag ne peut pas être vide");
+      setErrorModal("Erreur, le SkaterTag ne peut pas être vide");
       return;
     }
-
-    try {
-      const response = await fetch(`http://192.168.1.60:3000/user/skaterTag`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-        body: JSON.stringify({
-          newSkaterTag,
-        }),
-      });
-
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        const text = await response.text();
-        console.error("Réponse inattendue:", text);
-        Alert.alert("Erreur serveur", "Réponse non JSON");
-        return;
-      }
-
-      const result = await response.json();
-      if (result.result) {
-        setModalVisible(false);
-        forceUpdate();
-        Alert.alert("Succès", "Ton SkaterTag a été mis à jour !");
-      } else {
-        Alert.alert("Erreur", result.reason || "Échec de la mise à jour");
-      }
-    } catch (error) {
-      console.error("Erreur API SkaterTag:", error);
-      Alert.alert("Erreur", "Impossible de changer le SkaterTag");
+    const { result } = await updateSkaterTag(token);
+    if (result.result) {
+      setModalVisible(false);
+      setErrorModal("Succès", "Ton SkaterTag a été mis à jour !");
+      forceUpdate();
+    } else {
+      setErrorModal("Échec de la mise à jour");
     }
   };
 
@@ -176,7 +164,7 @@ export default function SettingsScreen({ navigation }) {
       <ModalContent
         visibleState={modalVisible}
         closeHandler={() => setModalVisible(false)}
-        style={globalStyle.modalContainer}
+        containerStyle={globalStyle.modalContainer}
       >
         <Text style={styles.modalTitle}>Nouveau SkaterTag</Text>
         <TextInput
@@ -192,9 +180,12 @@ export default function SettingsScreen({ navigation }) {
             containerStyle={{ backgroundColor: COLOR_CANCEL }}
             onPress={() => setModalVisible(false)}
           />
-          <Button text="Valider" onPress={updateSkaterTag} />
+          <Button text="Valider" onPress={handleUpdateSkaterTag} />
         </View>
       </ModalContent>
+
+      <ErrorModal />
+      <ConfirmModal />
     </BackgroundWrapper>
   );
 }

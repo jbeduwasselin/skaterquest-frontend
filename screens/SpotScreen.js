@@ -7,8 +7,6 @@ import {
   Pressable,
   TextInput,
   ActivityIndicator,
-  Dimensions,
-  Animated,
 } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import { useSelector } from "react-redux";
@@ -328,11 +326,6 @@ const styles = StyleSheet.create({
     aspectRatio: 3 / 4, // portrait
     backgroundColor: "#222", // au cas où l'image charge lentement
   },
-  //   photo: {
-  //     width: "100%",
-  //     height: "100%",
-  //     borderRadius: 8,
-  //   },
   videoItem: {
     display: "flex",
     flexDirection: "column",
