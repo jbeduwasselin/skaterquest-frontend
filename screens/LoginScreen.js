@@ -6,14 +6,19 @@ import {
   ImageBackground,
   Image,
   KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  Dimensions,
 } from "react-native";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import { signInRequest, signUpRequest } from "../lib/request";
 import { IconButton, IconTextButton, TextButton } from "../components/Buttons";
-import globalStyle, { COLOR_BACK, COLOR_MAIN } from "../globalStyle";
+import globalStyle, { COLOR_BACK } from "../globalStyle";
 import ModalContent from "../components/ModalContent";
+
+const { width, height } = Dimensions.get("window");
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -47,11 +52,9 @@ export default function LoginScreen({ navigation }) {
   const handleSignIn = async () => {
     const { result, data } = await signInRequest(signInEmail, signInPassword);
     if (result) {
-      console.log("Connection OK : ", data);
       dispatch(login(data));
       navigation.navigate("TabNavigator");
     } else {
-      console.log("Connection error : ", data);
       setErrorMessage("Erreur !");
     }
   };
@@ -60,12 +63,10 @@ export default function LoginScreen({ navigation }) {
     signUpRequest(signUpUsername, signUpEmail, signUpPassword).then(
       ({ result, data }) => {
         if (result) {
-          console.log("Inscription OK : ", data);
           dispatch(login(data));
           setShowSignUpModal(false);
           setShowTuto1(true);
         } else {
-          console.log("Inscription error : ", data);
           setErrorMessage("Erreur !");
         }
       }
@@ -76,7 +77,7 @@ export default function LoginScreen({ navigation }) {
     <ModalContent
       visibleState={showSignInModal}
       containerStyle={globalStyle.modalContainer}
-      closeHandler={()=>setShowSignInModal(false)}
+      closeHandler={() => setShowSignInModal(false)}
     >
       <IconButton
         onPress={emptyStates}
@@ -86,7 +87,10 @@ export default function LoginScreen({ navigation }) {
         containerStyle={styles.closeButton}
       />
       <Text style={globalStyle.screenTitle}>Connexion</Text>
-      <KeyboardAvoidingView style={{ width: "100%", alignItems : "center"  }}>
+      <KeyboardAvoidingView
+        style={styles.formContainer}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <TextInput
           style={styles.inputs}
           placeholder="Ton adresse mail"
@@ -98,15 +102,13 @@ export default function LoginScreen({ navigation }) {
           style={styles.inputs}
           placeholder="Ton mot de passe"
           placeholderTextColor="white"
-          secureTextEntry={true}
+          secureTextEntry
           onChangeText={setSignInPassword}
           value={signInPassword}
         />
       </KeyboardAvoidingView>
       <TextButton
         onPress={handleSignIn}
-        style={styles.button}
-        activeOpacity={0.8}
         text="Se connecter"
         textStyle={styles.buttonText}
         containerStyle={styles.button}
@@ -115,11 +117,11 @@ export default function LoginScreen({ navigation }) {
     </ModalContent>
   );
 
-  const signUpModalContent = ( 
+  const signUpModalContent = (
     <ModalContent
       visibleState={showSignUpModal}
       containerStyle={globalStyle.modalContainer}
-      closeHandler={()=>setShowSignUpModal(false)}
+      closeHandler={() => setShowSignUpModal(false)}
     >
       <IconButton
         onPress={emptyStates}
@@ -129,7 +131,10 @@ export default function LoginScreen({ navigation }) {
         containerStyle={styles.closeButton}
       />
       <Text style={globalStyle.screenTitle}>Inscription</Text>
-      <KeyboardAvoidingView style={{ width: "100%" , alignItems : "center"  }}>
+      <KeyboardAvoidingView
+        style={styles.formContainer}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <TextInput
           style={styles.inputs}
           placeholder="Ton SkateurTag"
@@ -147,7 +152,7 @@ export default function LoginScreen({ navigation }) {
         <TextInput
           style={styles.inputs}
           placeholder="Ton mot de passe"
-          secureTextEntry={true}
+          secureTextEntry
           placeholderTextColor="white"
           onChangeText={setSignUpPassword}
           value={signUpPassword}
@@ -155,8 +160,6 @@ export default function LoginScreen({ navigation }) {
       </KeyboardAvoidingView>
       <TextButton
         onPress={handleSignUp}
-        style={styles.button}
-        activeOpacity={0.8}
         text="Valider l'inscription"
         containerStyle={styles.button}
       />
@@ -169,59 +172,54 @@ export default function LoginScreen({ navigation }) {
       visibleState={showTuto1}
       containerStyle={globalStyle.modalContainer}
     >
-      <Text style={globalStyle.screenTitle}>Bienvenue sur l'app SkaterQuest ! 🛹</Text>
+      <Text style={globalStyle.screenTitle}>
+        Bienvenue sur l'app SkaterQuest ! 🛹
+      </Text>
       <Text style={globalStyle.subSubTitle}>
         Ici, tu pourras suivre ta progression en skate grâce à un livre de
         tricks, trouver des spots et défier tes potes sur un Game of Skate !
       </Text>
-
-      <View >
+      <View>
         <NextButton
           onPress={() => {
             setShowTuto1(false);
             setShowTuto2(true);
           }}
         />
-        <SkipButton
-          onPress={() => {
-            setShowTuto1(false);
-            setShowTuto2(false);
-            navigation.navigate("TabNavigator");
-          }}
-        />
+        <SkipButton onPress={() => navigation.navigate("TabNavigator")} />
       </View>
     </ModalContent>
   );
 
   const tuto2 = (
-    <ModalContent visibleState={showTuto2} containerStyle={globalStyle.modalContainer}>
-      <Text style={globalStyle.screenTitle}>Un Game of Skate c'est quoi ?🤔</Text>
+    <ModalContent
+      visibleState={showTuto2}
+      containerStyle={globalStyle.modalContainer}
+    >
+      <Text style={globalStyle.screenTitle}>
+        Un Game of Skate c'est quoi ?🤔
+      </Text>
       <Text style={globalStyle.subSubTitle}>
         Un skateur fait un trick, l'autre doit le reproduire : à chaque échec,
         il gagne une lettre du mot SKATE jusqu'à être éliminé. 🛹🔥
       </Text>
-
-      <View >
+      <View>
         <NextButton
           onPress={() => {
             setShowTuto2(false);
             setShowTuto3(true);
           }}
         />
-        <SkipButton
-          onPress={() => {
-            setShowTuto1(false);
-            setShowTuto2(false);
-            setShowTuto3(false);
-            navigation.navigate("TabNavigator");
-          }}
-        />
+        <SkipButton onPress={() => navigation.navigate("TabNavigator")} />
       </View>
     </ModalContent>
   );
 
   const tuto3 = (
-    <ModalContent visibleState={showTuto3} containerStyle={globalStyle.modalContainer}>
+    <ModalContent
+      visibleState={showTuto3}
+      containerStyle={globalStyle.modalContainer}
+    >
       <Text style={globalStyle.screenTitle}>T'es prêt à rider ? 🛹😎</Text>
       <Text style={globalStyle.subSubTitle}>
         Tu trouveras dans ton livre des tricks les tricks que tu maîtrises et
@@ -230,12 +228,7 @@ export default function LoginScreen({ navigation }) {
       <Text style={globalStyle.screenTitle}>T'es chaud patate ? 🛹💪</Text>
       <View style={styles.tutoButtons}>
         <TextButton
-          onPress={() => {
-            setShowTuto1(false);
-            setShowTuto2(false);
-            setShowTuto3(false);
-            navigation.navigate("TabNavigator");
-          }}
+          onPress={() => navigation.navigate("TabNavigator")}
           containerStyle={styles.button}
           text="C'est parti ! 🤙🛹"
         />
@@ -249,33 +242,39 @@ export default function LoginScreen({ navigation }) {
       style={styles.background}
       resizeMode="cover"
     >
-      <View style={styles.overlay}>
-        <Image
-          source={require("../assets/LOGO TEMPORAIRE.png")}
-          style={styles.logo}
-        />
-        <IconTextButton
-          iconName="login"
-          text="Connexion"
-          size={30}
-          onPress={() => {
-            setShowSignUpModal(false);
-            setShowSignInModal(true);
-          }}
-          containerStyle={styles.button}
-        />
-
-        <IconTextButton
-          iconName="person-add"
-          text="T'es nouveau ? Créer un compte ici !"
-          size={30}
-          containerStyle={styles.button}
-          onPress={() => {
-            setShowSignInModal(false);
-            setShowSignUpModal(true);
-          }}
-        />
-      </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.overlay}>
+            <Image
+              source={require("../assets/LOGO TEMPORAIRE.png")}
+              style={styles.logo}
+            />
+            <IconTextButton
+              iconName="login"
+              text="Connexion"
+              size={30}
+              onPress={() => {
+                setShowSignUpModal(false);
+                setShowSignInModal(true);
+              }}
+              containerStyle={styles.button}
+            />
+            <IconTextButton
+              iconName="person-add"
+              text="T'es nouveau ? Créer un compte ici !"
+              size={30}
+              onPress={() => {
+                setShowSignInModal(false);
+                setShowSignUpModal(true);
+              }}
+              containerStyle={styles.button}
+            />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       {signUpModalContent}
       {signInModalContent}
@@ -299,35 +298,27 @@ const SkipButton = ({ onPress }) => (
 );
 
 const styles = StyleSheet.create({
-  button: {
-    minWidth: 200,
+  scrollContainer: {
+    flexGrow: 1,
   },
-  signUpContainer: {
+  formContainer: {
+    width: "100%",
     alignItems: "center",
-    padding: 5,
-    margin: 10,
-    marginTop: -300,
-    width: "60%",
-    height: "70%",
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    borderRadius: 2,
-  },
-  signInContainer: {
-    alignItems: "center",
-    padding: 5,
-    margin: 10,
-    marginTop: -300,
-    width: "60%",
-    height: "70%",
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    borderRadius: 2,
-  },
-  closeButton: {
-    alignSelf: "flex-end",
-    // backgroundColor: "transparent",
   },
   inputs: {
     ...globalStyle.textInput,
+    width: "90%",
+    maxWidth: 400,
+  },
+  button: {
+    minWidth: "70%",
+    maxWidth: 400,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginVertical: 10,
+  },
+  closeButton: {
+    alignSelf: "flex-end",
   },
   errorMessage: {
     color: "red",
@@ -340,22 +331,19 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     alignItems: "center",
-    paddingTop: 100,
+    paddingTop: height * 0.1,
+    paddingHorizontal: 20,
     backgroundColor: "rgba(114, 111, 111, 0.4)",
   },
   logo: {
-    width: 300,
-    height: 300,
+    width: width * 0.6,
+    height: width * 0.6,
     resizeMode: "contain",
     marginBottom: 20,
+    marginTop: 50
   },
-  overlayBackground: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(51, 49, 49, 0.7)",
-    zIndex: 999,
+  tutoButtons: {
+    marginTop: 20,
+    alignItems: "center",
   },
 });
