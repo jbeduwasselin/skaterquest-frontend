@@ -17,7 +17,7 @@ import { toggleTrick } from "../reducers/tricks";
 import ProgressBar from "../components/ProgressBar";
 import ConfettiCannon from "react-native-confetti-cannon";
 import globalStyle, { COLOR_GREY } from "../globalStyle";
-import { StateButton } from "../components/Buttons";
+import { StateButton, Button } from "../components/Buttons";
 
 const initialSettings = Object.freeze({
   excludedDificulty: [],
