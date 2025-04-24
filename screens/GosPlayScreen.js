@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import { View, Text, StyleSheet, TextInput, Dimensions } from "react-native";
 import * as Animatable from "react-native-animatable";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import ModalContent from "../components/ModalContent";
 import globalStyle, { COLOR_BACK } from "../globalStyle";
 import { Button } from "../components/Buttons";
+
+// Récupérer la largeur de l'écran
+const { width } = Dimensions.get('window');
 
 export default function GosPlayScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(true);
@@ -16,6 +19,15 @@ export default function GosPlayScreen({ navigation }) {
     !skater1 && setSkater1("Joueur 1");
     !skater2 && setSkater2("Joueur 2");
     setModalVisible(false);
+  };
+
+  // Calcul de la taille du texte
+  const getFontSize = () => {
+    if (width > 600) {
+      // Sur les tablettes, on réduit un peu la taille
+      return 70; // Taille plus petite pour les grands écrans
+    }
+    return 60; // Taille plus grande pour les écrans mobiles
   };
 
   return (
@@ -64,7 +76,7 @@ export default function GosPlayScreen({ navigation }) {
         duration={1200}
         style={styles.gameTitleContainer}
       >
-        <Text style={styles.gameTitle}>GAME OF SKATE</Text>
+        <Text style={[styles.gameTitle, { fontSize: getFontSize() }]}>GAME OF SKATE</Text>
       </Animatable.View>
 
       {/* INFOS SKATERS */}
@@ -143,9 +155,11 @@ export default function GosPlayScreen({ navigation }) {
 const styles = StyleSheet.create({
   gameTitleContainer: {
     marginBottom: 30,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   gameTitle: {
-    fontSize: 60,
     fontWeight: "bold",
     color: "#FF650C",
     textAlign: "center",
