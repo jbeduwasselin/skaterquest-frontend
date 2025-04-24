@@ -6,7 +6,7 @@ import * as Animatable from "react-native-animatable";
 import { useIsFocused } from "@react-navigation/native";
 import { getOwnUserInfo } from "../lib/request";
 import globalStyle, { DEFAULT_AVATAR } from "../globalStyle";
-import { IconButton, IconTextButton } from "../components/Buttons";
+import { Button } from "../components/Buttons";
 
 // Import seulement le composant
 import ProgressBar from "../components/ProgressBar";
@@ -26,21 +26,23 @@ export default function HomeScreen({ navigation }) {
     <BackgroundWrapper>
       {/* Icône des paramètres en haut à gauche */}
       <View style={styles.headerContainer}>
-        <IconButton
+        <Button
           iconName="settings"
           color="white"
           onPress={() => navigation.navigate("AppSettingsScreen")}
           size={30}
+          containerStyle={styles.settingsButton}
         />
         {/* Titre de l'écran */}
         <Text style={globalStyle.screenTitle}>SkaterQuest</Text>
 
         {/* Icône du crayon en haut à droite */}
-        <IconButton
+        <Button
           iconName="edit"
           color="white"
           onPress={() => navigation.navigate("SettingsScreen")}
           size={30}
+          containerStyle={styles.settingsButton}
         />
       </View>
 
@@ -64,7 +66,7 @@ export default function HomeScreen({ navigation }) {
       {/* Boutons */}
       <View style={styles.buttonContainer}>
         <View style={styles.row}>
-          <IconTextButton
+          <Button
             iconName="book"
             text="Livre de tricks"
             onPress={() => navigation.navigate("TricksScreen")}
@@ -87,7 +89,7 @@ export default function HomeScreen({ navigation }) {
             resizeMode="contain"
           />
 
-          <IconTextButton
+          <Button
             iconName="video-collection"
             text="Mes vidéos"
             onPress={() => navigation.navigate("VideoScreen")}
@@ -112,6 +114,9 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
+  },
+  settingsButton : {
+    backgroundColor : "transparent"
   },
   buttonContainer: {
     flex: 1,

@@ -11,7 +11,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import { signInRequest, signUpRequest } from "../lib/request";
-import { IconButton, IconTextButton, TextButton } from "../components/Buttons";
+import { Button } from "../components/Buttons";
 import globalStyle, { COLOR_BACK, COLOR_MAIN } from "../globalStyle";
 import ModalContent from "../components/ModalContent";
 
@@ -76,9 +76,9 @@ export default function LoginScreen({ navigation }) {
     <ModalContent
       visibleState={showSignInModal}
       containerStyle={globalStyle.modalContainer}
-      closeHandler={()=>setShowSignInModal(false)}
+      closeHandler={() => setShowSignInModal(false)}
     >
-      <IconButton
+      <Button
         onPress={emptyStates}
         iconName="cancel"
         color="white"
@@ -86,7 +86,7 @@ export default function LoginScreen({ navigation }) {
         containerStyle={styles.closeButton}
       />
       <Text style={globalStyle.screenTitle}>Connexion</Text>
-      <KeyboardAvoidingView style={{ width: "100%", alignItems : "center"  }}>
+      <KeyboardAvoidingView style={{ width: "100%", alignItems: "center" }}>
         <TextInput
           style={styles.inputs}
           placeholder="Ton adresse mail"
@@ -103,7 +103,7 @@ export default function LoginScreen({ navigation }) {
           value={signInPassword}
         />
       </KeyboardAvoidingView>
-      <TextButton
+      <Button
         onPress={handleSignIn}
         style={styles.button}
         activeOpacity={0.8}
@@ -115,13 +115,13 @@ export default function LoginScreen({ navigation }) {
     </ModalContent>
   );
 
-  const signUpModalContent = ( 
+  const signUpModalContent = (
     <ModalContent
       visibleState={showSignUpModal}
       containerStyle={globalStyle.modalContainer}
-      closeHandler={()=>setShowSignUpModal(false)}
+      closeHandler={() => setShowSignUpModal(false)}
     >
-      <IconButton
+      <Button
         onPress={emptyStates}
         iconName="cancel"
         color="white"
@@ -129,7 +129,7 @@ export default function LoginScreen({ navigation }) {
         containerStyle={styles.closeButton}
       />
       <Text style={globalStyle.screenTitle}>Inscription</Text>
-      <KeyboardAvoidingView style={{ width: "100%" , alignItems : "center"  }}>
+      <KeyboardAvoidingView style={{ width: "100%", alignItems: "center" }}>
         <TextInput
           style={styles.inputs}
           placeholder="Ton SkateurTag"
@@ -153,7 +153,7 @@ export default function LoginScreen({ navigation }) {
           value={signUpPassword}
         />
       </KeyboardAvoidingView>
-      <TextButton
+      <Button
         onPress={handleSignUp}
         style={styles.button}
         activeOpacity={0.8}
@@ -169,13 +169,15 @@ export default function LoginScreen({ navigation }) {
       visibleState={showTuto1}
       containerStyle={globalStyle.modalContainer}
     >
-      <Text style={globalStyle.screenTitle}>Bienvenue sur l'app SkaterQuest ! 🛹</Text>
+      <Text style={globalStyle.screenTitle}>
+        Bienvenue sur l'app SkaterQuest ! 🛹
+      </Text>
       <Text style={globalStyle.subSubTitle}>
         Ici, tu pourras suivre ta progression en skate grâce à un livre de
         tricks, trouver des spots et défier tes potes sur un Game of Skate !
       </Text>
 
-      <View >
+      <View>
         <NextButton
           onPress={() => {
             setShowTuto1(false);
@@ -194,14 +196,19 @@ export default function LoginScreen({ navigation }) {
   );
 
   const tuto2 = (
-    <ModalContent visibleState={showTuto2} containerStyle={globalStyle.modalContainer}>
-      <Text style={globalStyle.screenTitle}>Un Game of Skate c'est quoi ?🤔</Text>
+    <ModalContent
+      visibleState={showTuto2}
+      containerStyle={globalStyle.modalContainer}
+    >
+      <Text style={globalStyle.screenTitle}>
+        Un Game of Skate c'est quoi ?🤔
+      </Text>
       <Text style={globalStyle.subSubTitle}>
         Un skateur fait un trick, l'autre doit le reproduire : à chaque échec,
         il gagne une lettre du mot SKATE jusqu'à être éliminé. 🛹🔥
       </Text>
 
-      <View >
+      <View>
         <NextButton
           onPress={() => {
             setShowTuto2(false);
@@ -221,7 +228,10 @@ export default function LoginScreen({ navigation }) {
   );
 
   const tuto3 = (
-    <ModalContent visibleState={showTuto3} containerStyle={globalStyle.modalContainer}>
+    <ModalContent
+      visibleState={showTuto3}
+      containerStyle={globalStyle.modalContainer}
+    >
       <Text style={globalStyle.screenTitle}>T'es prêt à rider ? 🛹😎</Text>
       <Text style={globalStyle.subSubTitle}>
         Tu trouveras dans ton livre des tricks les tricks que tu maîtrises et
@@ -229,7 +239,7 @@ export default function LoginScreen({ navigation }) {
       </Text>
       <Text style={globalStyle.screenTitle}>T'es chaud patate ? 🛹💪</Text>
       <View style={styles.tutoButtons}>
-        <TextButton
+        <Button
           onPress={() => {
             setShowTuto1(false);
             setShowTuto2(false);
@@ -254,7 +264,7 @@ export default function LoginScreen({ navigation }) {
           source={require("../assets/LOGO TEMPORAIRE.png")}
           style={styles.logo}
         />
-        <IconTextButton
+        <Button
           iconName="login"
           text="Connexion"
           size={30}
@@ -265,7 +275,7 @@ export default function LoginScreen({ navigation }) {
           containerStyle={styles.button}
         />
 
-        <IconTextButton
+        <Button
           iconName="person-add"
           text="T'es nouveau ? Créer un compte ici !"
           size={30}
@@ -287,11 +297,11 @@ export default function LoginScreen({ navigation }) {
 }
 
 const NextButton = ({ onPress }) => (
-  <TextButton text="Suivant" containerStyle={styles.button} onPress={onPress} />
+  <Button text="Suivant" containerStyle={styles.button} onPress={onPress} />
 );
 
 const SkipButton = ({ onPress }) => (
-  <TextButton
+  <Button
     text="Passer"
     containerStyle={{ ...styles.button, backgroundColor: COLOR_BACK }}
     onPress={onPress}
@@ -324,7 +334,7 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     alignSelf: "flex-end",
-    // backgroundColor: "transparent",
+    backgroundColor: "transparent",
   },
   inputs: {
     ...globalStyle.textInput,

@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import * as ImagePicker from "expo-image-picker";
-import { IconTextButton, TextButton } from "../components/Buttons";
+import { Button, StateButton } from "../components/Buttons";
 import globalStyle, { COLOR_CANCEL, DEFAULT_AVATAR } from "../globalStyle";
 import { changeUserAvatar, getOwnUserInfo } from "../lib/request";
 import { useIsFocused } from "@react-navigation/native";
@@ -131,23 +131,25 @@ export default function SettingsScreen({ navigation }) {
       <Text style={globalStyle.screenTitle}>Reglages</Text>
 
       <View style={styles.buttonContainer}>
-        <IconTextButton
+        <Button
           iconName="edit"
           text="Changer SkaterTag"
           iconLeft
           onPress={() => setModalVisible(true)}
         />
-        <IconTextButton
-          iconName="settings"
-          text="Option 2"
-          onPress={() => console.log("Autres options")}
+        <StateButton
+          iconName="dark-mode"
+          activeIconName="light-mode"
+          text="Mode sombre"
+          activeText = "Mode clair"
+        //   onPress={() => console.log("Autres options")}
         />
-        <IconTextButton
+        <Button
           iconName="settings"
           text="Option 3"
           onPress={() => console.log("Autres options")}
         />
-        <IconTextButton
+        <Button
           iconName="settings"
           text="Option 3"
           onPress={() => console.log("Autres options")}
@@ -169,12 +171,12 @@ export default function SettingsScreen({ navigation }) {
           onChangeText={setNewSkaterTag}
         />
         <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-          <TextButton
+          <Button
             text="Annuler"
             containerStyle={{ backgroundColor: COLOR_CANCEL }}
             onPress={() => setModalVisible(false)}
           />
-          <TextButton text="Valider" onPress={updateSkaterTag} />
+          <Button text="Valider" onPress={updateSkaterTag} />
         </View>
       </ModalContent>
     </BackgroundWrapper>

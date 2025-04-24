@@ -21,12 +21,9 @@ import {
   searchUser,
 } from "../lib/request";
 import globalStyle, { COLOR_MAIN, DEFAULT_AVATAR } from "../globalStyle";
-import {
-  IconButton,
-  IconTextButton,
-  StateIconButton,
-} from "../components/Buttons";
+import { Button, StateButton } from "../components/Buttons";
 import ModalContent from "../components/ModalContent";
+import { IconButton } from "react-native-paper";
 
 export default function CrewScreen() {
   //Rerender dans on mount et manuel
@@ -91,15 +88,18 @@ export default function CrewScreen() {
         <ModalContent
           visibleState={searchVisible}
           closeHandler={() => setSearchVisible(false)}
-          containerStyle={globalStyle.modalContainer}
+          containerStyle={{...globalStyle.modalContainer, maxHeight : "95%"}}
         >
-          <IconButton
+          <Button
             iconName="cancel"
             size={25}
             color="white"
             value={false}
             onPress={() => setSearchVisible(false)}
-            containerStyle={{ alignSelf: "flex-end" }}
+            containerStyle={{
+              alignSelf: "flex-end",
+              backgroundColor: "transparent",
+            }}
           />
           <TextInput
             style={globalStyle.textInput}
@@ -119,18 +119,21 @@ export default function CrewScreen() {
                   style={globalStyle.avatar}
                 />
                 <Text style={globalStyle.subSubTitle}>{item.username}</Text>
-                <IconButton
+                <Button
                   iconName="group-add"
                   onPress={() => handleAddMember(item.uID)}
                   color="white"
                   size={25}
+                  containerStyle={{
+                    backgroundColor: "transparent",
+                  }}
                 />
               </View>
             )}
           />
         </ModalContent>
 
-        <IconTextButton
+        <Button
           iconName="group-add"
           text="Ajouter un membre"
           size={30}
@@ -153,7 +156,7 @@ export default function CrewScreen() {
         onChangeText={setNewCrewName}
         placeholder=" Nom de Ton crew"
       ></TextInput>
-      <IconTextButton
+      <Button
         iconName="send"
         text="Go"
         textStyle={{
@@ -204,24 +207,33 @@ function MemberCard({ memberData, isAdmin, isUser, isUserAdmin, forceUpdate }) {
       <View style={styles.controlContainer}>
         {isUserAdmin && !isUser && (
           <>
-            <StateIconButton
+            <StateButton
               iconName="admin-panel-settings"
               value={isAdmin}
               onPress={handleAdmin}
               size={30}
+              containerStyle={{
+                backgroundColor: "transparent",
+              }}
             />
-            <IconButton
+            <Button
               iconName="cancel"
               onPress={handleRemoveMember}
               size={25}
+              containerStyle={{
+                backgroundColor: "transparent",
+              }}
             />
           </>
         )}
         {isUser && (
-          <IconButton
+          <Button
             iconName="door-back"
             onPress={handleLeaveCrew}
             size={30}
+            containerStyle={{
+              backgroundColor: "transparent",
+            }}
           />
         )}
       </View>

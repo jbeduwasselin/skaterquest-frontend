@@ -6,7 +6,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 // Redux
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../reducers/user";
-import { IconTextButton, TextButton } from "../components/Buttons";
+import { Button } from "../components/Buttons";
 import ModalContent from "../components/ModalContent";
 import globalStyle, { COLOR_CANCEL } from "../globalStyle";
 import { deleteAccountRequest } from "../lib/request";
@@ -106,25 +106,20 @@ export default function AppSettingsScreen({ navigation }) {
         onPress={() => navigation.goBack()}
       />
 
-      <IconTextButton
-        iconName="info"
-        onPress={handleHelpPress}
-        text="Aides"
-        iconLeft
-      />
-      <IconTextButton
+      <Button iconName="info" onPress={handleHelpPress} text="Aides" iconLeft />
+      <Button
         iconName="privacy-tip"
         onPress={handlePrivacySettingsPress}
         text="Paramètres de confidentialité"
         iconLeft
       />
-      <IconTextButton
+      <Button
         iconName="directions-walk"
         onPress={handleLogout}
         text="Déconnexion"
         iconLeft
       />
-      <IconTextButton
+      <Button
         iconName="person-off"
         onPress={handleUnsubscribe}
         text="Désinscription"
@@ -137,28 +132,28 @@ export default function AppSettingsScreen({ navigation }) {
         containerStyle={globalStyle.modalContainer}
       >
         <Text style={styles.modalTitle}>Paramètres de confidentialité</Text>
-          <View style={styles.row}>
-            <Text style={styles.modalText}>Notifications marketing</Text>
-            <Switch
-              value={marketingEnabled}
-              onValueChange={setMarketingEnabled}
-            />
-          </View>
+        <View style={styles.row}>
+          <Text style={styles.modalText}>Notifications marketing</Text>
+          <Switch
+            value={marketingEnabled}
+            onValueChange={setMarketingEnabled}
+          />
+        </View>
 
-          <View style={styles.row}>
-            <Text style={{ ...styles.modalText, textAlign: "left" }}>
-              Profil visible
-            </Text>
-            <Switch
-              value={profileVisibility}
-              onValueChange={setProfileVisibility}
-            />
-          </View>
+        <View style={styles.row}>
+          <Text style={{ ...styles.modalText, textAlign: "left" }}>
+            Profil visible
+          </Text>
+          <Switch
+            value={profileVisibility}
+            onValueChange={setProfileVisibility}
+          />
+        </View>
 
-          <View style={styles.row}>
-            <Text style={styles.modalText}>Partage de données</Text>
-            <Switch value={dataSharing} onValueChange={setDataSharing} />
-          </View>
+        <View style={styles.row}>
+          <Text style={styles.modalText}>Partage de données</Text>
+          <Switch value={dataSharing} onValueChange={setDataSharing} />
+        </View>
 
         {/* Bouton enregistrer (activable plus tard) */}
         {/* 
@@ -170,10 +165,7 @@ export default function AppSettingsScreen({ navigation }) {
               </TouchableOpacity>
               */}
 
-        <TextButton
-          text="Fermer"
-          onPress={() => setPrivacyModalVisible(false)}
-        />
+        <Button text="Fermer" onPress={() => setPrivacyModalVisible(false)} />
       </ModalContent>
 
       {/* Modal Aides */}
@@ -188,7 +180,7 @@ export default function AppSettingsScreen({ navigation }) {
           tricks, contacte Clovis et David, ils te feront des tricks à la
           Webcam!
         </Text>
-        <TextButton text="Fermer" onPress={() => setHelpModalVisible(false)} />
+        <Button text="Fermer" onPress={() => setHelpModalVisible(false)} />
       </ModalContent>
 
       {/* Modal de confirmation Déconnexion */}
@@ -202,12 +194,12 @@ export default function AppSettingsScreen({ navigation }) {
           Es-tu sûr de vouloir te déconnecter ?
         </Text>
         <View style={styles.row}>
-          <TextButton
+          <Button
             text="Annuler"
             onPress={() => setLogoutConfirmVisible(false)}
           />
 
-          <TextButton
+          <Button
             text="Se déconnecter"
             onPress={confirmLogout}
             containerStyle={styles.modalButtonCancel}
@@ -227,13 +219,13 @@ export default function AppSettingsScreen({ navigation }) {
           irréversible.
         </Text>
         <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-          <TextButton
+          <Button
             onPress={() => setDeleteConfirmVisible(false)}
             text="Annuler"
           />
 
-          <TextButton
-            onPress={() => setDeleteConfirmVisible(false)}
+          <Button
+            onPress={confirmUnsubscribe}
             text="Se désinscrire"
             containerStyle={styles.modalButtonCancel}
           />
@@ -268,7 +260,7 @@ const styles = StyleSheet.create({
   },
   row: {
     ...globalStyle.flexRow,
-    width : "100%",
+    width: "100%",
     justifyContent: "space-between",
   },
 });

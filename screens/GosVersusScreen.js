@@ -3,17 +3,16 @@ import { View, Text, StyleSheet, Modal } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
-import { IconTextButton } from "../components/Buttons";
+import { Button } from "../components/Buttons";
 import ConfettiCannon from "react-native-confetti-cannon";
 import { tricksData } from "../data/trickList";
 import ModalContent from "../components/ModalContent";
 import globalStyle from "../globalStyle";
+import { randomOf } from "../lib/utils";
 
-function randomOf(list) {
-  return list[Math.floor(Math.random() * list.length)];
-}
+
 export default function GosVersusScreen({ route, navigation }) {
-  const { skater1, skater2, gameMode } = route.params;
+  const { skater1, skater2 } = route.params;
 
   const [skater1Score, setSkater1Score] = useState(0);
   const [skater2Score, setSkater2Score] = useState(0);
@@ -62,9 +61,8 @@ export default function GosVersusScreen({ route, navigation }) {
   };
 
   const nextTrick = () => {
-    return randomOf(tricksData).name;
+    setCurrentTrick(randomOf(tricksData).name);
   };
-
 
   return (
     <BackgroundWrapper>
@@ -114,9 +112,9 @@ export default function GosVersusScreen({ route, navigation }) {
           style={[styles.trickContainer, styles.trickCard]}
         >
           <Text style={styles.trickText}>
-            Partie en cours: {currentTrick || "Push sur Next Trick"}
+            Partie en cours: {currentTrick || "Appuie sur Next Trick"}
           </Text>
-          <IconTextButton
+          <Button
             iconName="refresh"
             text="Next Trick"
             onPress={nextTrick}
@@ -132,13 +130,13 @@ export default function GosVersusScreen({ route, navigation }) {
         >
           <View style={styles.buttonsContainer}>
             <View style={styles.playerButtons}>
-              <IconTextButton
+              <Button
                 iconName="check-circle"
                 text="Trick Validé"
                 onPress={() => handleTrickSuccess("skater1")}
                 style={[styles.actionButton, styles.smallButton]}
               />
-              <IconTextButton
+              <Button
                 iconName="unpublished"
                 text="Aïe !"
                 onPress={() => handleTrickFailure("skater1")}
@@ -147,13 +145,13 @@ export default function GosVersusScreen({ route, navigation }) {
             </View>
 
             <View style={styles.playerButtons}>
-              <IconTextButton
+              <Button
                 iconName="check-circle"
                 text="Trick Validé"
                 onPress={() => handleTrickSuccess("skater2")}
                 style={[styles.actionButton, styles.smallButton]}
               />
-              <IconTextButton
+              <Button
                 iconName="unpublished"
                 text="Aïe !"
                 onPress={() => handleTrickFailure("skater2")}
@@ -168,7 +166,7 @@ export default function GosVersusScreen({ route, navigation }) {
           animationType="fade"
           transparent={true}
           visibleState={isGameOver}
-          closeHandler={()=>setIsGameOver(false)}
+          closeHandler={() => setIsGameOver(false)}
           containerStyle={globalStyle.modalContainer}
         >
           {/* Confettis */}
@@ -187,7 +185,7 @@ export default function GosVersusScreen({ route, navigation }) {
           <Text style={globalStyle.subSubTitle}>
             {winner ? `${winner} a gagné !` : "Fin de partie"}
           </Text>
-          <IconTextButton
+          <Button
             iconName="settings-backup-restore"
             text="Retour au menu"
             onPress={() => navigation.navigate("GoS")}
@@ -352,19 +350,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
     minWidth: 250,
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
-    width: 300,
-    alignItems: "center",
   },
   modalImage: {
     width: 200,

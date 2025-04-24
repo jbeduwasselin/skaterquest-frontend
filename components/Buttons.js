@@ -1,61 +1,24 @@
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import  { COLOR_MAIN } from "../globalStyle";
+import { COLOR_MAIN } from "../globalStyle";
 import { useEffect, useState } from "react";
 import { Image } from "react-native";
-//Un button avec un icon
-export function IconButton({
-  iconName,
-  size = 20,
-  color = "black",
-  containerStyle,
-  onPress = () => {},
-}) {
-  Icon;
-  return (
-    <TouchableOpacity
-      style={{
-        ...styles.container,
-        backgroundColor: "transparent",
-        ...containerStyle,
-      }}
-      onPress={onPress}
-      activeOpacity={0.6}
-    >
-      <Icon name={iconName} size={size} color={color}></Icon>
-    </TouchableOpacity>
-  );
-}
-//Un button avec du texte
-export function TextButton({
-  text = "",
-  textStyle,
-  containerStyle,
-  onPress = () => {},
-}) {
-  return (
-    <TouchableOpacity
-      style={{ ...styles.container, ...containerStyle }}
-      onPress={onPress}
-      activeOpacity={0.6}
-    >
-      <Text style={{ ...styles.text, ...textStyle }}>{text}</Text>
-    </TouchableOpacity>
-  );
-}
+
+///Ces deux boutons sont ceux à utiliser
 
 //Un bouton avec du text et une icone
-export function IconTextButton({
+export function Button({
   iconName,
   size = 20,
   color = "black",
   text = "",
   textStyle,
   containerStyle,
-  gap = 15,
+  gap = 0,
   onPress = () => {},
   iconLeft = false,
 }) {
+  text && iconName && (gap = 15);
   return (
     <TouchableOpacity
       style={{
@@ -68,53 +31,186 @@ export function IconTextButton({
     >
       {iconLeft ? (
         <>
-          <Icon name={iconName} size={size} color={color}></Icon>
-          <Text style={{ marginLeft: gap, ...styles.text, ...textStyle }}>
-            {text}
-          </Text>
+          {iconName && <Icon name={iconName} size={size} color={color}></Icon>}
+          {text && (
+            <Text style={{ marginLeft: gap, ...styles.text, ...textStyle }}>
+              {text}
+            </Text>
+          )}
         </>
       ) : (
         <>
-          <Text style={{ marginRight: gap, ...styles.text, ...textStyle }}>
-            {text}
-          </Text>
-          <Icon name={iconName} size={size} color={color}></Icon>
+          {text && (
+            <Text style={{ marginRight: gap, ...styles.text, ...textStyle }}>
+              {text}
+            </Text>
+          )}
+          {iconName && <Icon name={iconName} size={size} color={color}></Icon>}
         </>
       )}
     </TouchableOpacity>
   );
 }
 
-//Un button avec un icone et un état interne (on/off)
-export function StateIconButton({
+export function StateButton({
   iconName,
+  activeIconName,
   size = 20,
-  inactiveColor = "black",
-  activeColor = "blue",
+  color = "black",
+  activeColor,
+  text = "",
+  activeText,
+  textStyle,
+  activeTextStyle,
   containerStyle,
-  value,
+  activeContainerStyle,
+  gap = 15,
   onPress = () => {},
+  iconLeft = false,
+  value,
 }) {
   const [isActive, setIsActive] = useState(false);
   useEffect(() => {
     setIsActive(value);
   }, [value]);
-
   return (
-    <IconButton
-      color={isActive ? activeColor : inactiveColor}
+    <Button
       onPress={() => {
         onPress(!isActive);
         setIsActive(!isActive);
       }}
+      iconName={isActive ? (activeIconName ?? iconName) : iconName}
+      color={isActive ? (activeColor ?? color) : color}
+      text={isActive ? (activeText ?? text) : text}
+      textStyle={isActive ? (activeTextStyle ?? textStyle) : textStyle}
+      containerStyle={
+        isActive ? (activeContainerStyle ?? containerStyle) : containerStyle
+      }
       {...{
-        iconName,
         size,
-        containerStyle,
+        gap,
+        iconLeft,
       }}
     />
   );
 }
+
+//
+
+// //Un button avec un icon
+// export function IconButton({
+//   iconName,
+//   size = 20,
+//   color = "black",
+//   containerStyle,
+//   onPress = () => {},
+// }) {
+//   Icon;
+//   return (
+//     <TouchableOpacity
+//       style={{
+//         ...styles.container,
+//         backgroundColor: "transparent",
+//         ...containerStyle,
+//       }}
+//       onPress={onPress}
+//       activeOpacity={0.6}
+//     >
+//       <Icon name={iconName} size={size} color={color}></Icon>
+//     </TouchableOpacity>
+//   );
+// }
+// //Un button avec du texte
+// export function TextButton({
+//   text = "",
+//   textStyle,
+//   containerStyle,
+//   onPress = () => {},
+// }) {
+//   return (
+//     <TouchableOpacity
+//       style={{ ...styles.container, ...containerStyle }}
+//       onPress={onPress}
+//       activeOpacity={0.6}
+//     >
+//       <Text style={{ ...styles.text, ...textStyle }}>{text}</Text>
+//     </TouchableOpacity>
+//   );
+// }
+
+// export function StateButton({
+//   iconName,
+//   activeIconName,
+//   size = 20,
+//   color = "black",
+//   activeColor,
+//   text = "",
+//   activeText,
+//   textStyle,
+//   activeTextStyle,
+//   containerStyle,
+//   activeContainerStyle,
+//   gap = 15,
+//   onPress = () => {},
+//   iconLeft = false,
+//   value,
+// }) {
+//   const [isActive, setIsActive] = useState(false);
+//   useEffect(() => {
+//     setIsActive(value);
+//   }, [value]);
+//   return (
+//     <IconTextButton
+//       iconName={isActive ? (activeIconName ?? iconName) : iconName}
+//       textStyle={isActive ? (activeTextStyle ?? textStyle) : textStyle}
+//       containerStyle={
+//         isActive ? (activeContainerStyle ?? containerStyle) : containerStyle
+//       }
+//       color={isActive ? (activeColor ?? color) : color}
+//       text={isActive ? (activeText ?? text) : text}
+//       onPress={() => {
+//         onPress(!isActive);
+//         setIsActive(!isActive);
+//       }}
+//       {...{ size, gap, iconLeft }}
+//     />
+//   );
+// }
+
+// //Un button avec un icone et un état interne (on/off)
+// export function StateIconButton({
+//   iconName,
+//   activeIconName,
+//   size = 20,
+//   color = "black",
+//   activeColor = "blue",
+//   containerStyle,
+//   value,
+//   onPress = () => {},
+// }) {
+//   const [isActive, setIsActive] = useState(false);
+//   useEffect(() => {
+//     setIsActive(value);
+//   }, [value]);
+
+//   return (
+//     <IconTextButton
+//       color={(isActive && activeColor) ?? color}
+//       onPress={() => {
+//         onPress(!isActive);
+//         setIsActive(!isActive);
+//       }}
+//       iconName={(isActive && activeIconName) ?? iconName}
+//       textStyle={(isActive && activeTextStyle) ?? textStyle}
+//       {...{
+//         size,
+//         textStyle,
+//         activeTextStyle,
+//         containerStyle,
+//       }}
+//     />
+//   );
+// }
 
 //Un button avec du texte et un état interne (on/off)
 export function StateTextButton({
@@ -159,7 +255,7 @@ export function StateImageButton({
   containerStyle,
   textStyle,
   activeTextStyle,
-  text
+  text,
 }) {
   const [isActive, setIsActive] = useState(false);
   useEffect(() => {
@@ -171,17 +267,24 @@ export function StateImageButton({
         onPress(!isActive);
         setIsActive(!isActive);
       }}
-      style={{...styles.container , ...containerStyle}}
+      style={{ ...styles.container, ...containerStyle }}
     >
       <Image
         {...{ source }}
         style={{ ...imageStyle, ...(isActive && activeImageStyle) }}
       ></Image>
-      <Text style={{...styles.text , ...textStyle,  ...(isActive && activeTextStyle)}}>{text}</Text>
+      <Text
+        style={{
+          ...styles.text,
+          ...textStyle,
+          ...(isActive && activeTextStyle),
+        }}
+      >
+        {text}
+      </Text>
     </TouchableOpacity>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
