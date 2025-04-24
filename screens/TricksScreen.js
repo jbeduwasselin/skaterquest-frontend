@@ -18,7 +18,7 @@ import ProgressBar from "../components/ProgressBar";
 import ConfettiCannon from "react-native-confetti-cannon";
 import IconButton from "../components/IconButton";
 import globalStyle, { COLOR_GREY } from "../globalStyle";
-import { StateTextButton } from "../components/Buttons";
+import { StateButton } from "../components/Buttons";
 
 const initialSettings = Object.freeze({
   excludedDificulty: [],
@@ -174,14 +174,14 @@ export default function TricksScreen() {
 }
 
 const FilterButton = ({ text, color, onPress, reverse = false }) => (
-  <StateTextButton
+  <StateButton
     {...{ text, onPress }}
-    activeStyle={{
+    activeContainerStyle={{
       ...styles.filterButton,
       backgroundColor: color,
       opacity: reverse ? 1 : 0.2,
     }}
-    inactiveStyle={{
+    containerStyle={{
       ...styles.filterButton,
       backgroundColor: color,
       opacity: reverse ? 0.2 : 1,
