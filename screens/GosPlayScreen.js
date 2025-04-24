@@ -1,14 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Dimensions,
-} from "react-native";
+import { View, Text, StyleSheet, TextInput } from "react-native";
 import * as Animatable from "react-native-animatable";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import ModalContent from "../components/ModalContent";
@@ -29,18 +20,13 @@ export default function GosPlayScreen({ navigation }) {
 
   return (
     <BackgroundWrapper flexJustify="space-between">
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      {/* MODAL DE CONFIGURATION */}
+      <ModalContent
+        visibleState={modalVisible}
+        closeHandler={() => setModalVisible(false)}
+        containerStyle={globalStyle.modalContainer}
       >
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {/* MODAL DE CONFIGURATION */}
-          <ModalContent
-            visibleState={modalVisible}
-            closeHandler={() => setModalVisible(false)}
-            containerStyle={globalStyle.modalContainer}
-          >
-            <Text style={styles.modalTitle}>Entrez les SkaterTags !</Text>
+        <Text style={styles.modalTitle}>Entrez les SkaterTags !</Text>
 
         <TextInput
           placeholder="SkaterTag Joueur 1"
@@ -59,7 +45,7 @@ export default function GosPlayScreen({ navigation }) {
           maxLength={8}
         />
         <View style={globalStyle.flexRow}>
-          <TextButton
+          <Button
             text="Retour"
             onPress={() => {
               skater1 && skater2
@@ -68,18 +54,18 @@ export default function GosPlayScreen({ navigation }) {
             }}
             containerStyle={{ backgroundColor: COLOR_BACK }}
           />
-          <TextButton text="Valider" onPress={startGame} />
+          <Button text="Valider" onPress={startGame} />
         </View>
       </ModalContent>
 
-          {/* TITRE */}
-          <Animatable.View
-            animation="fadeInDown"
-            duration={1200}
-            style={styles.gameTitleContainer}
-          >
-            <Text style={styles.gameTitle}>GAME OF SKATE</Text>
-          </Animatable.View>
+      {/* TITRE */}
+      <Animatable.View
+        animation="fadeInDown"
+        duration={1200}
+        style={styles.gameTitleContainer}
+      >
+        <Text style={styles.gameTitle}>GAME OF SKATE</Text>
+      </Animatable.View>
 
       {/* INFOS SKATERS */}
       <View style={styles.profileContainer}>
@@ -88,23 +74,23 @@ export default function GosPlayScreen({ navigation }) {
           duration={1000}
           style={styles.profile}
         >
-          <Text style={styles.name}>{skater1 || "Joueur 1"}</Text>
+          <Text style={styles.name}>{skater1}</Text>
         </Animatable.View>
 
-            <Animatable.View
-              animation="zoomIn"
-              duration={800}
-              style={styles.versusIconContainer}
-            >
-              <Text style={styles.versus}>VS</Text>
-            </Animatable.View>
+        <Animatable.View
+          animation="zoomIn"
+          duration={800}
+          style={styles.versusIconContainer}
+        >
+          <Text style={styles.versus}>VS</Text>
+        </Animatable.View>
 
         <Animatable.View
           animation="fadeInRight"
           duration={1000}
           style={styles.profile}
         >
-          <Text style={styles.name}>{skater2 || "Joueur 2"}</Text>
+          <Text style={styles.name}>{skater2}</Text>
         </Animatable.View>
       </View>
 
@@ -115,7 +101,7 @@ export default function GosPlayScreen({ navigation }) {
         style={styles.buttonContainer}
       >
         {/* Bouton "Tricks aléatoires" */}
-        <IconTextButton
+        <Button
           iconName="shuffle"
           text="Tricks aléatoires"
           onPress={() =>
@@ -129,7 +115,7 @@ export default function GosPlayScreen({ navigation }) {
         />
 
         {/* Bouton "Choix des tricks" */}
-        <IconTextButton
+        <Button
           iconName="list"
           text="Choix des tricks"
           onPress={() =>
@@ -143,7 +129,7 @@ export default function GosPlayScreen({ navigation }) {
         />
 
         {/* Bouton "Joueurs" */}
-        <IconTextButton
+        <Button
           iconName="repeat"
           text="Joueurs"
           onPress={() => setModalVisible(true)}
@@ -155,20 +141,11 @@ export default function GosPlayScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   gameTitleContainer: {
-    marginTop: 100,
     marginBottom: 30,
-    paddingHorizontal: 20,
   },
-
   gameTitle: {
-    fontSize: Math.min(width * 0.1, 60),
+    fontSize: 60,
     fontWeight: "bold",
     color: "#FF650C",
     textAlign: "center",
@@ -185,22 +162,20 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 20,
     alignItems: "center",
-    paddingHorizontal: 10,
   },
   profile: {
     flex: 1,
     alignItems: "center",
-    maxWidth: 160,
+    maxWidth: 150,
   },
   name: {
     color: "#fff",
     fontWeight: "700",
-    fontSize: 22,
+    fontSize: 25,
     textTransform: "uppercase",
     textShadowColor: "#000",
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 5,
-    textAlign: "center",
   },
   versusIconContainer: {
     width: 80,
@@ -212,59 +187,11 @@ const styles = StyleSheet.create({
     color: "#FF650C",
     fontWeight: "bold",
   },
-  buttonContainer: {
-    marginBottom: 50,
-  },
-  gameButton: {
-    marginBottom: 20,
-    width: 250,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.8)",
-    padding: 20,
-  },
-  modalContent: {
-    backgroundColor: "#1f1f1f",
-    padding: 20,
-    borderRadius: 16,
-  },
+  buttonContainer: { marginBottom: 50 },
   modalTitle: {
     ...globalStyle.subSubTitle,
     fontSize: 24,
     textAlign: "center",
-  },
-  input: {
-    backgroundColor: "#333",
-    color: "#fff",
-    padding: 12,
-    borderRadius: 10,
-    marginBottom: 15,
-  },
-  validateButton: {
-    backgroundColor: "#FF650C",
-    padding: 12,
-    borderRadius: 10,
-  },
-  validateText: {
-    color: "#fff",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  reconfigButton: {
-    marginTop: 50,
-    backgroundColor: "#444",
-  },
-  backButton: {
-    backgroundColor: "#666",
-    padding: 12,
-    borderRadius: 10,
-    marginTop: 15,
-  },
-  backText: {
-    color: "#fff",
-    fontWeight: "bold",
-    textAlign: "center",
+    marginBottom: 20,
   },
 });

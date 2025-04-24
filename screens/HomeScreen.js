@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Image,
-  Text,
-  Dimensions,
-  StatusBar,
-  Platform,
-} from "react-native";
+import { View, StyleSheet, Image, Text } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import { useSelector } from "react-redux";
 import * as Animatable from "react-native-animatable";
@@ -18,12 +10,6 @@ import { Button } from "../components/Buttons";
 
 // Import seulement le composant
 import ProgressBar from "../components/ProgressBar";
-
-const screenHeight = Dimensions.get("window").height;
-
-const topOffset =
-  screenHeight * 0.01 +
-  (Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0);
 
 export default function HomeScreen({ navigation }) {
   const isFocused = useIsFocused();
@@ -40,43 +26,47 @@ export default function HomeScreen({ navigation }) {
     <BackgroundWrapper>
       {/* Icône des paramètres en haut à gauche */}
       <View style={styles.headerContainer}>
-        <IconButton
+        <Button
           iconName="settings"
           color="white"
           onPress={() => navigation.navigate("AppSettingsScreen")}
           size={30}
+          containerStyle={styles.settingsButton}
         />
         {/* Titre de l'écran */}
         <Text style={globalStyle.screenTitle}>SkaterQuest</Text>
 
         {/* Icône du crayon en haut à droite */}
-        <IconButton
+        <Button
           iconName="edit"
           color="white"
           onPress={() => navigation.navigate("SettingsScreen")}
           size={30}
+          containerStyle={styles.settingsButton}
         />
       </View>
 
-        <Image
-          source={{ uri: userData?.avatar ?? DEFAULT_AVATAR }}
-          height={120}
-          width={120}
-          style={globalStyle.avatar}
-        />
+      {/* Image de profil */}
+      <Image
+        source={{ uri: userData?.avatar ?? DEFAULT_AVATAR }}
+        height={120}
+        width={120}
+        style={globalStyle.avatar}
+      />
 
-        <Text style={globalStyle.skaterTag}>
-          {userData?.skaterTag ?? "@" + userData?.username ?? ""}
-        </Text>
-
-        <View style={styles.progressContainer}>
-          <ProgressBar />
-        </View>
+      {/* Affichage du SkaterTag */}
+      <Text style={globalStyle.skaterTag}>
+        {userData?.skaterTag ?? "@" + userData?.username ?? ""}
+      </Text>
+      {/* Barre de progression */}
+      <View style={styles.progressContainer}>
+        <ProgressBar />
+      </View>
 
       {/* Boutons */}
       <View style={styles.buttonContainer}>
         <View style={styles.row}>
-          <IconTextButton
+          <Button
             iconName="book"
             text="Livre de tricks"
             onPress={() => navigation.navigate("TricksScreen")}
@@ -99,7 +89,7 @@ export default function HomeScreen({ navigation }) {
             resizeMode="contain"
           />
 
-          <IconTextButton
+          <Button
             iconName="video-collection"
             text="Mes vidéos"
             onPress={() => navigation.navigate("VideoScreen")}
@@ -112,17 +102,11 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    alignItems: "center",
-    width: "100%",
-    paddingHorizontal: 20,
-  },
   headerContainer: {
     ...globalStyle.flexRow,
     width: "100%",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "flex-start",
   },
   progressContainer: {
     marginTop: 20,

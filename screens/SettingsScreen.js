@@ -9,8 +9,6 @@ import {
   Image,
   Alert,
   TextInput,
-  Dimensions,
-  Platform,
 } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import * as ImagePicker from "expo-image-picker";
@@ -20,31 +18,24 @@ import { changeUserAvatar, getOwnUserInfo } from "../lib/request";
 import { useIsFocused } from "@react-navigation/native";
 import ModalContent from "../components/ModalContent";
 
-// Récupération des dimensions de l'écran pour une mise en page responsive
-const { height, width } = Dimensions.get("window");
-const isSmallScreen = width < 375; // Vérifie si l'écran est petit (moins de 375px de large)
-
 export default function SettingsScreen({ navigation }) {
-  // Utilisation du hook useIsFocused pour savoir si l'écran est actuellement affiché
+  //   const [updateWatcher, forceUpdate] = useReducer((p) => p + 1, 0);
   const isFocused = useIsFocused();
-  const { token } = useSelector((state) => state.user.value); // Récupère le token de l'utilisateur depuis Redux
-  const [userData, setUserData] = useState(null); // État pour stocker les données de l'utilisateur
+  const { token } = useSelector((state) => state.user.value);
+  const [userData, setUserData] = useState(null);
 
-  // Fonction pour récupérer les informations de l'utilisateur au focus de l'écran
   useEffect(() => {
     getOwnUserInfo(token).then(({ result, data }) => {
       if (result) {
-        console.log("USER DATA REÇUE :", data); // Affiche les données reçues de l'API
-        setUserData(data); // Met à jour l'état avec les données de l'utilisateur
+        console.log("USER DATA REÇUE :", data); // 👈 Log ici
+        setUserData(data);
       }
     });
   }, [isFocused]);
 
-  // Gestion du modal de changement de SkaterTag
   const [modalVisible, setModalVisible] = useState(false);
-  const [newSkaterTag, setNewSkaterTag] = useState(""); // État pour stocker le nouveau SkaterTag
+  const [newSkaterTag, setNewSkaterTag] = useState("");
 
-  // Demande d'autorisation pour accéder à la galerie d'images
   const requestPermission = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -54,7 +45,6 @@ export default function SettingsScreen({ navigation }) {
     return true;
   };
 
-  // Fonction pour ouvrir la galerie et sélectionner une image
   const pickImageFromLibrary = async () => {
     const hasPermission = await requestPermission();
     if (!hasPermission) return;
@@ -83,7 +73,6 @@ export default function SettingsScreen({ navigation }) {
     ]);
   };
 
-  // Mise à jour du SkaterTag
   const updateSkaterTag = async () => {
     if (!newSkaterTag.trim()) {
       Alert.alert("Erreur", "SkaterTag ne peut pas être vide");
@@ -126,31 +115,20 @@ export default function SettingsScreen({ navigation }) {
 
   return (
     <BackgroundWrapper>
-      <TouchableOpacity
-        onPress={handleImagePress}
-        activeOpacity={0.6}
-        style={{ marginTop: isSmallScreen ? 20 : 40 }}
-      >
-        {/* Avatar */}
+      <TouchableOpacity onPress={handleImagePress} activeOpacity={0.6}>
         <Image
           source={{ uri: userData?.avatar ?? DEFAULT_AVATAR }}
-          width={isSmallScreen ? 100 : 150}
-          height={isSmallScreen ? 100 : 150}
+          width={200}
+          height={200}
           style={globalStyle.avatar}
         />
       </TouchableOpacity>
 
-      <Text
-        style={[globalStyle.skaterTag, { fontSize: isSmallScreen ? 16 : 18 }]}
-      >
+      <Text style={globalStyle.skaterTag}>
         {userData?.skaterTag ?? "@" + userData?.username ?? ""}
       </Text>
 
-      <Text
-        style={[globalStyle.screenTitle, { fontSize: isSmallScreen ? 20 : 24 }]}
-      >
-        Reglages
-      </Text>
+      <Text style={globalStyle.screenTitle}>Reglages</Text>
 
       <View style={styles.buttonContainer}>
         <Button
@@ -184,11 +162,7 @@ export default function SettingsScreen({ navigation }) {
         closeHandler={() => setModalVisible(false)}
         style={globalStyle.modalContainer}
       >
-        <Text
-          style={[styles.modalTitle, { fontSize: isSmallScreen ? 16 : 18 }]}
-        >
-          Nouveau SkaterTag
-        </Text>
+        <Text style={styles.modalTitle}>Nouveau SkaterTag</Text>
         <TextInput
           style={globalStyle.textInput}
           placeholder="Entre ton nouveau pseudo"

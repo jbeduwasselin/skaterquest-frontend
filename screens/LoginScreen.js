@@ -6,9 +6,6 @@ import {
   ImageBackground,
   Image,
   KeyboardAvoidingView,
-  ScrollView,
-  Platform,
-  Dimensions,
 } from "react-native";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -17,8 +14,6 @@ import { signInRequest, signUpRequest } from "../lib/request";
 import { Button } from "../components/Buttons";
 import globalStyle, { COLOR_BACK, COLOR_MAIN } from "../globalStyle";
 import ModalContent from "../components/ModalContent";
-
-const { width, height } = Dimensions.get("window");
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -52,9 +47,11 @@ export default function LoginScreen({ navigation }) {
   const handleSignIn = async () => {
     const { result, data } = await signInRequest(signInEmail, signInPassword);
     if (result) {
+      console.log("Connection OK : ", data);
       dispatch(login(data));
       navigation.navigate("TabNavigator");
     } else {
+      console.log("Connection error : ", data);
       setErrorMessage("Erreur !");
     }
   };
@@ -63,10 +60,12 @@ export default function LoginScreen({ navigation }) {
     signUpRequest(signUpUsername, signUpEmail, signUpPassword).then(
       ({ result, data }) => {
         if (result) {
+          console.log("Inscription OK : ", data);
           dispatch(login(data));
           setShowSignUpModal(false);
           setShowTuto1(true);
         } else {
+          console.log("Inscription error : ", data);
           setErrorMessage("Erreur !");
         }
       }
@@ -99,13 +98,15 @@ export default function LoginScreen({ navigation }) {
           style={styles.inputs}
           placeholder="Ton mot de passe"
           placeholderTextColor="white"
-          secureTextEntry
+          secureTextEntry={true}
           onChangeText={setSignInPassword}
           value={signInPassword}
         />
       </KeyboardAvoidingView>
       <Button
         onPress={handleSignIn}
+        style={styles.button}
+        activeOpacity={0.8}
         text="Se connecter"
         textStyle={styles.buttonText}
         containerStyle={styles.button}
@@ -146,7 +147,7 @@ export default function LoginScreen({ navigation }) {
         <TextInput
           style={styles.inputs}
           placeholder="Ton mot de passe"
-          secureTextEntry
+          secureTextEntry={true}
           placeholderTextColor="white"
           onChangeText={setSignUpPassword}
           value={signUpPassword}
@@ -154,6 +155,8 @@ export default function LoginScreen({ navigation }) {
       </KeyboardAvoidingView>
       <Button
         onPress={handleSignUp}
+        style={styles.button}
+        activeOpacity={0.8}
         text="Valider l'inscription"
         containerStyle={styles.button}
       />
@@ -173,6 +176,7 @@ export default function LoginScreen({ navigation }) {
         Ici, tu pourras suivre ta progression en skate grâce à un livre de
         tricks, trouver des spots et défier tes potes sur un Game of Skate !
       </Text>
+
       <View>
         <NextButton
           onPress={() => {
@@ -180,7 +184,13 @@ export default function LoginScreen({ navigation }) {
             setShowTuto2(true);
           }}
         />
-        <SkipButton onPress={() => navigation.navigate("TabNavigator")} />
+        <SkipButton
+          onPress={() => {
+            setShowTuto1(false);
+            setShowTuto2(false);
+            navigation.navigate("TabNavigator");
+          }}
+        />
       </View>
     </ModalContent>
   );
@@ -197,6 +207,7 @@ export default function LoginScreen({ navigation }) {
         Un skateur fait un trick, l'autre doit le reproduire : à chaque échec,
         il gagne une lettre du mot SKATE jusqu'à être éliminé. 🛹🔥
       </Text>
+
       <View>
         <NextButton
           onPress={() => {
@@ -204,7 +215,14 @@ export default function LoginScreen({ navigation }) {
             setShowTuto3(true);
           }}
         />
-        <SkipButton onPress={() => navigation.navigate("TabNavigator")} />
+        <SkipButton
+          onPress={() => {
+            setShowTuto1(false);
+            setShowTuto2(false);
+            setShowTuto3(false);
+            navigation.navigate("TabNavigator");
+          }}
+        />
       </View>
     </ModalContent>
   );
@@ -291,11 +309,10 @@ const SkipButton = ({ onPress }) => (
 );
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    flexGrow: 1,
+  button: {
+    minWidth: 200,
   },
-  formContainer: {
-    width: "100%",
+  signUpContainer: {
     alignItems: "center",
     padding: 5,
     margin: 10,
@@ -321,18 +338,6 @@ const styles = StyleSheet.create({
   },
   inputs: {
     ...globalStyle.textInput,
-    width: "90%",
-    maxWidth: 400,
-  },
-  button: {
-    minWidth: "70%",
-    maxWidth: 400,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    marginVertical: 10,
-  },
-  closeButton: {
-    alignSelf: "flex-end",
   },
   errorMessage: {
     color: "red",
@@ -345,19 +350,22 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     alignItems: "center",
-    paddingTop: height * 0.1,
-    paddingHorizontal: 20,
+    paddingTop: 100,
     backgroundColor: "rgba(114, 111, 111, 0.4)",
   },
   logo: {
-    width: width * 0.6,
-    height: width * 0.6,
+    width: 300,
+    height: 300,
     resizeMode: "contain",
     marginBottom: 20,
-    marginTop: 50
   },
-  tutoButtons: {
-    marginTop: 20,
-    alignItems: "center",
+  overlayBackground: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(51, 49, 49, 0.7)",
+    zIndex: 999,
   },
 });
