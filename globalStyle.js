@@ -86,13 +86,21 @@ const globalStyle = StyleSheet.create({
     padding: 20,
     display : "flex",
     justifyContent : "center",
-    alignItems : "center"
+    alignItems : "center",
+    backgroundColor : "black",
+    borderRadius : 15
   },
   errorText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "white",
+    color: "red",
     margin: "2%",
+  },
+  errorButton : {
+    backgroundColor : COLOR_GREY
+  },
+  errorButtonText : {
+    color : "black"
   },
 });
 

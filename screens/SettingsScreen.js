@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { updateAvatar } from "../reducers/user";
+import {  useSelector } from "react-redux";
 import {
   View,
   Text,
