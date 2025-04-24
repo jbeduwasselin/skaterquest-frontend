@@ -128,9 +128,9 @@ export default function AddSpotScreen({ navigation, route }) {
         closeHandler={() => setErrorModal(null)}
       >
         <Text style={globalStyle.errorText}>{errorModal}</Text>
-        <Button
-          onPress={() => setErrorModal(null)}
-          text="OK"
+        <Button onPress={() => setErrorModal(null)} text="OK"
+            containerStyle={globalStyle.errorButton}
+            textStyle={globalStyle.errorButtonText}
         />
       </ModalContent>
     </BackgroundWrapper>
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
   map: {
     width: Dimensions.get("window").width * 0.95,
-    height: Dimensions.get("window").height * 0.4,
+    height: Dimensions.get("window").height * 0.40,
     margin: 5,
   },
 });

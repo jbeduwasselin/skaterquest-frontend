@@ -14,6 +14,7 @@ import { signInRequest, signUpRequest } from "../lib/request";
 import { Button } from "../components/Buttons";
 import globalStyle, { COLOR_BACK } from "../globalStyle";
 import ModalContent from "../components/ModalContent";
+import { EMAIL_REGEX, PASSWORD_REGEX, USERNAME_REGEX } from "../lib/utils";
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -28,15 +29,13 @@ export default function LoginScreen({ navigation }) {
   const [signUpEmail, setSignUpEmail] = useState("");
   const [signUpPassword, setSignUpPassword] = useState("");
 
-  const [errorMessage, setErrorMessage] = useState("");
-
   const [showTuto1, setShowTuto1] = useState(false);
   const [showTuto2, setShowTuto2] = useState(false);
   const [showTuto3, setShowTuto3] = useState(false);
 
   const emptyStates = () => {
     setShowSignInModal(false);
-    setErrorMessage("");
+
     setSignInEmail("");
     setSignInPassword("");
     setShowSignUpModal(false);
@@ -46,6 +45,15 @@ export default function LoginScreen({ navigation }) {
   };
 
   const handleSignIn = async () => {
+    if (!signInEmail.match(EMAIL_REGEX)) {
+      setErrorModal("Email invalide");
+      return;
+    }
+
+    if (!signInPassword.match(PASSWORD_REGEX)) {
+      setErrorModal("Mot de passe trop court (minimum 4 caractères).");
+      return;
+    }
     const { result, data } = await signInRequest(signInEmail, signInPassword);
     if (result) {
       console.log("Connection OK : ", data);
@@ -53,11 +61,29 @@ export default function LoginScreen({ navigation }) {
       navigation.navigate("TabNavigator");
     } else {
       console.log("Connection error : ", data);
-      setErrorMessage("Erreur !");
+      setErrorModal("Email/mot de passe invalide");
     }
   };
 
   const handleSignUp = () => {
+    console.log(!signUpUsername.match(USERNAME_REGEX), signUpUsername);
+    if (!signUpUsername.match(USERNAME_REGEX)) {
+      setErrorModal(
+        "Nom d'utilisateur invalide (maximum 15 caractères, pas de caractères spéciaux)"
+      );
+      return;
+    }
+
+    if (!signUpEmail.match(EMAIL_REGEX)) {
+      setErrorModal("Email invalide");
+      return;
+    }
+
+    if (!signUpPassword.match(PASSWORD_REGEX)) {
+      setErrorModal("Mot de passe trop court (minimum 4 caractères).");
+      return;
+    }
+
     signUpRequest(signUpUsername, signUpEmail, signUpPassword).then(
       ({ result, data }) => {
         if (result) {
@@ -66,8 +92,7 @@ export default function LoginScreen({ navigation }) {
           setShowSignUpModal(false);
           setShowTuto1(true);
         } else {
-          console.log("Inscription error : ", data);
-          setErrorMessage("Erreur !");
+          setErrorModal("Erreur d'inscription...");
         }
       }
     );
@@ -112,7 +137,6 @@ export default function LoginScreen({ navigation }) {
         textStyle={styles.buttonText}
         containerStyle={styles.button}
       />
-      <Text style={styles.errorMessage}>{errorMessage}</Text>
     </ModalContent>
   );
 
@@ -161,7 +185,6 @@ export default function LoginScreen({ navigation }) {
         text="Valider l'inscription"
         containerStyle={styles.button}
       />
-      <Text style={styles.errorMessage}>{errorMessage}</Text>
     </ModalContent>
   );
 
@@ -293,7 +316,18 @@ export default function LoginScreen({ navigation }) {
       {tuto1}
       {tuto2}
       {tuto3}
-      {}
+      {/* Modal pour l'affichage des erreur */}
+      <ModalContent
+        visibleState={errorModal}
+        containerStyle={globalStyle.errorModal}
+        closeHandler={() => setErrorModal(null)}
+      >
+        <Text style={globalStyle.errorText}>{errorModal}</Text>
+        <Button onPress={() => setErrorModal(null)} text="OK"
+            containerStyle={globalStyle.errorButton}
+            textStyle={globalStyle.errorButtonText}
+        />
+      </ModalContent>
     </ImageBackground>
   );
 }
