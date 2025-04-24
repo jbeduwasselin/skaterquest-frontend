@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import {
   View,
   Text,
@@ -16,6 +16,8 @@ import { useBackHandler } from "@react-native-community/hooks";
 import globalStyle, { DEFAULT_THUMBNAIL } from "../globalStyle";
 import * as VideoThumbnails from "expo-video-thumbnails";
 import { Button } from "../components/Buttons";
+import { useConfirmationModal } from "../components/ConfirmModal";
+import { formatDate } from "../lib/utils";
 
 /*
 Ce screen est un bon exemple de comment on peut gérer le video player.
@@ -49,7 +51,7 @@ Ce screen est un bon exemple de comment on peut gérer le video player.
 
 export default function VideoScreen({ navigation }) {
   const [userData, setUserData] = useState(null);
-  const [updateWatcher, forceUpdate] = useState((p) => p + 1, 0);
+  const [updateWatcher, forceUpdate] = useReducer((p) => p + 1, 0);
   const [videoPlaying, setVideoPlaying] = useState(null);
   const { token } = useSelector((state) => state.user.value);
 
@@ -67,9 +69,57 @@ export default function VideoScreen({ navigation }) {
     return false;
   });
 
+  const [setConfim, ConfirmModal] = useConfirmationModal();
+
   async function deleteUserVideo(videoID) {
-    const { result } = await deleteVideo(token, videoID);
-    result && forceUpdate();
+    setConfim({
+      text: "Supprimer cette vidéo ?",
+      handle: async () => {
+        const { result } = await deleteVideo(token, videoID);
+        result && forceUpdate();
+      },
+    });
+  }
+
+  function VideoCard({ videoData }) {
+    const [thumbnail, setThumbnail] = useState({ uri: DEFAULT_THUMBNAIL });
+
+    useEffect(() => {
+      (async function getThumbnail() {
+        VideoThumbnails.getThumbnailAsync(videoData.url).then(setThumbnail);
+      })();
+    }, []);
+
+    return (
+      <TouchableOpacity
+        style={styles.videoCard}
+        onPress={() => setVideoPlaying(videoData.url)}
+      >
+        <View style={styles.thumbnailWrapper}>
+          <Image
+            source={thumbnail ? { uri: thumbnail.uri } : DEFAULT_THUMBNAIL}
+            style={styles.thumbnail}
+          />
+          <View style={styles.playIconContainer}>
+            <Icon name="play-circle" size={36} color="#fff" />
+          </View>
+        </View>
+
+        <View style={styles.infoContainer}>
+          <Text style={styles.infoText}>👍 {videoData.votes.length} votes</Text>
+          <Text style={styles.infoText}>📍 {videoData.spot?.name}</Text>
+          <Text style={styles.infoText}>
+            🕒 {formatDate(videoData.creationDate)}
+          </Text>
+        </View>
+        <Button
+          iconName="delete"
+          size={30}
+          onPress={() => deleteUserVideo(videoData._id)}
+          containerStyle={{ backgroundColor: "transparent" }}
+        />
+      </TouchableOpacity>
+    );
   }
 
   if (videoPlaying) {
@@ -87,64 +137,12 @@ export default function VideoScreen({ navigation }) {
       <Text style={globalStyle.screenTitle}>Mes vidéos</Text>
       <FlatList
         data={userData?.videos}
-        renderItem={({ item }) =>
-          item && (
-            <VideoCard
-              videoData={item}
-              onPress={() => {
-                setVideoPlaying(item.url);
-              }}
-              handleDelete={() => deleteUserVideo(item._id)}
-            />
-          )
-        }
+        renderItem={({ item }) => item && <VideoCard videoData={item} />}
         keyExtractor={(item) => item._id}
         contentContainerStyle={styles.list}
       />
+      <ConfirmModal />
     </BackgroundWrapper>
-  );
-}
-
-function formatDate(creationDate) {
-  const date = new Date(creationDate);
-  return ` ${new Intl.DateTimeFormat("fr-FR", { weekday: "long" }).format(date)} ${date.getUTCDate()}/${date.getUTCMonth()}/${date.getFullYear()}`;
-}
-
-function VideoCard({ videoData, onPress, handleDelete }) {
-  const [thumbnail, setThumbnail] = useState({ uri: DEFAULT_THUMBNAIL });
-
-  useEffect(() => {
-    (async function getThumbnail() {
-      VideoThumbnails.getThumbnailAsync(videoData.url).then(setThumbnail);
-    })();
-  }, []);
-
-  return (
-    <TouchableOpacity style={styles.videoCard} onPress={onPress}>
-      <View style={styles.thumbnailWrapper}>
-        <Image
-          source={thumbnail ? { uri: thumbnail.uri } : DEFAULT_THUMBNAIL}
-          style={styles.thumbnail}
-        />
-        <View style={styles.playIconContainer}>
-          <Icon name="play-circle" size={36} color="#fff" />
-        </View>
-      </View>
-
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoText}>👍 {videoData.votes.length} votes</Text>
-        <Text style={styles.infoText}>📍 {videoData.spot?.name}</Text>
-        <Text style={styles.infoText}>
-          🕒 {formatDate(videoData.creationDate)}
-        </Text>
-      </View>
-      <Button
-        iconName="delete"
-        size={30}
-        onPress={handleDelete}
-        containerStyle={{ backgroundColor: "transparent" }}
-      />
-    </TouchableOpacity>
   );
 }
 

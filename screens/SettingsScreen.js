@@ -13,7 +13,7 @@ import {
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import * as ImagePicker from "expo-image-picker";
 import { Button, StateButton } from "../components/Buttons";
-import globalStyle, { COLOR_CANCEL, DEFAULT_AVATAR } from "../globalStyle";
+import globalStyle, { COLOR_CANCEL, DEFAULT_AVATAR, COLOR_PLACEHOLDER } from "../globalStyle";
 import { changeUserAvatar, getOwnUserInfo } from "../lib/request";
 import { useIsFocused } from "@react-navigation/native";
 import ModalContent from "../components/ModalContent";
@@ -182,7 +182,7 @@ export default function SettingsScreen({ navigation }) {
         <TextInput
           style={globalStyle.textInput}
           placeholder="Entre ton nouveau pseudo"
-          placeholderTextColor="white"
+          placeholderTextColor={COLOR_PLACEHOLDER}
           value={newSkaterTag}
           onChangeText={setNewSkaterTag}
         />

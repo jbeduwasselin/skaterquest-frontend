@@ -12,9 +12,10 @@ import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import { signInRequest, signUpRequest } from "../lib/request";
 import { Button } from "../components/Buttons";
-import globalStyle, { COLOR_BACK } from "../globalStyle";
+import globalStyle, { COLOR_BACK,COLOR_CONFIRM, COLOR_PLACEHOLDER } from "../globalStyle";
 import ModalContent from "../components/ModalContent";
 import { EMAIL_REGEX, PASSWORD_REGEX, USERNAME_REGEX } from "../lib/utils";
+import { useErrorModal } from "../components/ErrorModal";
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ export default function LoginScreen({ navigation }) {
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [signInEmail, setSignInEmail] = useState("text0@test.test");
   const [signInPassword, setSignInPassword] = useState("test");
-  const [errorModal, setErrorModal] = useState(null);
+  const [setErrorModal, ErrorModal] = useErrorModal();
 
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [signUpUsername, setSignUpUsername] = useState("");
@@ -116,14 +117,14 @@ export default function LoginScreen({ navigation }) {
         <TextInput
           style={styles.inputs}
           placeholder="Ton adresse mail"
-          placeholderTextColor="white"
+          placeholderTextColor={COLOR_PLACEHOLDER}
           onChangeText={setSignInEmail}
           value={signInEmail}
         />
         <TextInput
           style={styles.inputs}
           placeholder="Ton mot de passe"
-          placeholderTextColor="white"
+          placeholderTextColor={COLOR_PLACEHOLDER}
           secureTextEntry={true}
           onChangeText={setSignInPassword}
           value={signInPassword}
@@ -158,14 +159,14 @@ export default function LoginScreen({ navigation }) {
         <TextInput
           style={styles.inputs}
           placeholder="Ton SkateurTag"
-          placeholderTextColor="white"
+          placeholderTextColor={COLOR_PLACEHOLDER}
           onChangeText={setSignUpUsername}
           value={signUpUsername}
         />
         <TextInput
           style={styles.inputs}
           placeholder="Ton adresse mail"
-          placeholderTextColor="white"
+          placeholderTextColor={COLOR_PLACEHOLDER}
           onChangeText={setSignUpEmail}
           value={signUpEmail}
         />
@@ -173,7 +174,7 @@ export default function LoginScreen({ navigation }) {
           style={styles.inputs}
           placeholder="Ton mot de passe"
           secureTextEntry={true}
-          placeholderTextColor="white"
+          placeholderTextColor={COLOR_PLACEHOLDER}
           onChangeText={setSignUpPassword}
           value={signUpPassword}
         />
@@ -316,24 +317,17 @@ export default function LoginScreen({ navigation }) {
       {tuto1}
       {tuto2}
       {tuto3}
-      {/* Modal pour l'affichage des erreur */}
-      <ModalContent
-        visibleState={errorModal}
-        containerStyle={globalStyle.errorModal}
-        closeHandler={() => setErrorModal(null)}
-      >
-        <Text style={globalStyle.errorText}>{errorModal}</Text>
-        <Button onPress={() => setErrorModal(null)} text="OK"
-            containerStyle={globalStyle.errorButton}
-            textStyle={globalStyle.errorButtonText}
-        />
-      </ModalContent>
+      <ErrorModal />
     </ImageBackground>
   );
 }
 
 const NextButton = ({ onPress }) => (
-  <Button text="Suivant" containerStyle={styles.button} onPress={onPress} />
+  <Button
+    text="Suivant"
+    containerStyle={{ ...styles.button, backgroundColor: COLOR_CONFIRM }}
+    onPress={onPress}
+  />
 );
 
 const SkipButton = ({ onPress }) => (

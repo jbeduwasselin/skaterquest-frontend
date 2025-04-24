@@ -1,9 +1,11 @@
 import { Dimensions, StyleSheet } from "react-native";
+export const COLOR_PLACEHOLDER = "rgba(255, 255, 255, 0.6)";
 export const COLOR_BACK = "#858585FF";
 export const COLOR_GREY = "#535353FF";
 export const COLOR_MODAL = "#292929E5";
 export const COLOR_MAIN = "#FF650C";
-export const COLOR_CANCEL = "#dc3545";
+export const COLOR_CANCEL = "#858585FF";
+export const COLOR_CONFIRM = "#dc3545";
 
 export const DEFAULT_AVATAR =
   "https://res.cloudinary.com/dl5e9wcse/image/upload/v1745437126/lfnxpwagw27derwlvc0f.png";
@@ -83,11 +85,11 @@ const globalStyle = StyleSheet.create({
   },
   errorModal: {
     padding: 20,
-    display : "flex",
-    justifyContent : "center",
-    alignItems : "center",
-    backgroundColor : "black",
-    borderRadius : 15
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
+    borderRadius: 15,
   },
   errorText: {
     fontSize: 16,
@@ -95,11 +97,31 @@ const globalStyle = StyleSheet.create({
     color: "red",
     margin: "2%",
   },
-  errorButton : {
-    backgroundColor : COLOR_GREY
+  errorButton: {
+    backgroundColor: COLOR_GREY,
   },
-  errorButtonText : {
-    color : "black"
+  errorButtonText: {
+    color: "black",
+  },
+  confirmationModal: {
+    backgroundColor: COLOR_MODAL,
+    padding: 20,
+    borderRadius: 15,
+    display : "flex",
+    alignItems : "center"
+  },
+  confirmationText: {
+    fontWeight: "bold",
+    color: "white",
+    fontSize: 18,
+    margin: "2%",
+
+  },
+  cancelButton: {
+    backgroundColor: COLOR_BACK,
+  },
+  confirmButton: {
+    backgroundColor: COLOR_CONFIRM,
   },
 });
 
