@@ -75,6 +75,8 @@ export default function SpotScreen({ navigation, route }) {
     if (trickList.length === 0) {
       alert("Ajoute au moins un trick stp !");
       return;
+    } else {
+      setShowTrickModal(false);
     }
 
     // Chargement de la vidéo

@@ -128,9 +128,11 @@ export default function AddSpotScreen({ navigation, route }) {
         closeHandler={() => setErrorModal(null)}
       >
         <Text style={globalStyle.errorText}>{errorModal}</Text>
-        <Button onPress={() => setErrorModal(null)} text="OK"
-            containerStyle={globalStyle.errorButton}
-            textStyle={globalStyle.errorButtonText}
+        <Button
+          onPress={() => setErrorModal(null)}
+          text="OK"
+          containerStyle={globalStyle.errorButton}
+          textStyle={globalStyle.errorButtonText}
         />
       </ModalContent>
     </BackgroundWrapper>
@@ -138,6 +140,9 @@ export default function AddSpotScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
+  textInput: {
+    placeholderTextColor: "gray", // ça marche pas
+  },
   spotChoice: {
     ...globalStyle.flexRow,
     justifyContent: "space-evenly",
@@ -156,7 +161,7 @@ const styles = StyleSheet.create({
   },
   map: {
     width: Dimensions.get("window").width * 0.95,
-    height: Dimensions.get("window").height * 0.40,
+    height: Dimensions.get("window").height * 0.4,
     margin: 5,
   },
 });

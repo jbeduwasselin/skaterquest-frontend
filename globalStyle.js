@@ -77,7 +77,6 @@ const globalStyle = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "white",
-    placeholderTextColor: "white",
     marginBottom: 15,
     width: "90%",
     textAlign: "center",
