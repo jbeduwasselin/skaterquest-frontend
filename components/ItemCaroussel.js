@@ -16,7 +16,6 @@ export function ItemCaroussel({
   const scrollX = useAnimatedValue(0); // Pour le carrousel des photos
   const { width } = Dimensions.get("window"); // Pour l'affichage responsive
   const paddingHorizontal = sideSpace ?? (width - itemWidth) / 2; // Espacement entre les images du carrousel pour entre‑voir les images voisines à celle du milieu
-  11;
   return (
     <Animated.FlatList
       {...{ data }}

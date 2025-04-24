@@ -19,7 +19,7 @@ import { useIsFocused } from "@react-navigation/native";
 import ModalContent from "../components/ModalContent";
 
 export default function SettingsScreen({ navigation }) {
-  //   const [updateWatcher, forceUpdate] = useReducer((p) => p + 1, 0);
+  const [updateWatcher, forceUpdate] = useReducer((p) => p + 1, 0);
   const isFocused = useIsFocused();
   const { token } = useSelector((state) => state.user.value);
   const [userData, setUserData] = useState(null);
@@ -31,7 +31,7 @@ export default function SettingsScreen({ navigation }) {
         setUserData(data);
       }
     });
-  }, [isFocused]);
+  }, [updateWatcher, isFocused]);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [newSkaterTag, setNewSkaterTag] = useState("");
@@ -141,8 +141,8 @@ export default function SettingsScreen({ navigation }) {
           iconName="dark-mode"
           activeIconName="light-mode"
           text="Mode sombre"
-          activeText = "Mode clair"
-        //   onPress={() => console.log("Autres options")}
+          activeText="Mode clair"
+          //   onPress={() => console.log("Autres options")}
         />
         <Button
           iconName="settings"
