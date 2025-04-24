@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import { signInRequest, signUpRequest } from "../lib/request";
 import { Button } from "../components/Buttons";
-import globalStyle, { COLOR_BACK } from "../globalStyle";
+import globalStyle, { COLOR_BACK, COLOR_CONFIRM } from "../globalStyle";
 import ModalContent from "../components/ModalContent";
 import { EMAIL_REGEX, PASSWORD_REGEX, USERNAME_REGEX } from "../lib/utils";
 import { useErrorModal } from "../components/ErrorModal";
@@ -323,7 +323,11 @@ export default function LoginScreen({ navigation }) {
 }
 
 const NextButton = ({ onPress }) => (
-  <Button text="Suivant" containerStyle={styles.button} onPress={onPress} />
+  <Button
+    text="Suivant"
+    containerStyle={{ ...styles.button, backgroundColor: COLOR_CONFIRM }}
+    onPress={onPress}
+  />
 );
 
 const SkipButton = ({ onPress }) => (
