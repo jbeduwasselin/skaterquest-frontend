@@ -24,7 +24,13 @@ import * as ImagePicker from "expo-image-picker";
 import VideoPlayer from "../components/VideoPlayer";
 import { useIsFocused } from "@react-navigation/native";
 import { Button, StateButton } from "../components/Buttons";
-import globalStyle from "../globalStyle";
+import globalStyle, {
+  COLOR_BACK,
+  DEFAULT_AVATAR,
+  DEFAULT_THUMBNAIL,
+} from "../globalStyle";
+import ModalContent from "../components/ModalContent";
+import { ItemCaroussel } from "../components/ItemCaroussel";
 
 // Variables pour gérer l'affichage
 const { width } = Dimensions.get("window"); // Pour l'affichage responsive
@@ -146,66 +152,37 @@ export default function SpotScreen({ navigation, route }) {
   };
 
   return (
-    <BackgroundWrapper>
-        <Text style={globalStyle.screenTitle}>{spotData.name}</Text>
-        <Text style={{...globalStyle.subSubTitle}}>Spot de type {spotData.category}</Text>
+    <BackgroundWrapper flexJustify="space-around">
+      <Text style={globalStyle.screenTitle}>{spotData.name}</Text>
 
-      <Animated.FlatList // FlatList sert pour l'affichage des images en défilement et Animated pour la dynamisation
-        data={spotData.img} // Mettre ici les images (photos ou vidéos) voulues
-        keyExtractor={(uri, i) => "img" + i} // Pour identifier quelle image est au centre ou non et gérer son affichage en fonction
-        horizontal // Scroll horizontal (par défaut FlatList est en scroll vertical)
-        showsHorizontalScrollIndicator={false} // Cache la barre de scroll horizontale
-        snapToInterval={ITEM_SIZE} // Fluidifie le défilement en snappant automatiquement chaque image quand on scrolle
-        decelerationRate="fast" // Rend le scroll plus "snappy" (rapide) à s’arrêter
-        pagingEnabled={false} // Désactive le défilement "page par page" (qui est plus adapté quand les images prennent toute la largeur de l'écran)
-        // contentContainerStyle={{ paddingHorizontal: SIDE_EMPTY_SPACE }} // Gère l'espacement entre les images
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollXPhotos } } }], // Lie le scroll horizontal à scrollX pour pouvoir animer en fonction de la position
-          { useNativeDriver: true } // Rend l’animation exécutable directement par le moteur natif du téléphone (donc + fluide, + rapide et ne bloque pas le reste de l’UI)
+      <Text style={{ ...globalStyle.subSubTitle }}>
+        Spot de type {spotData.category}
+      </Text>
+
+      <ItemCaroussel
+        data={spotData.img}
+        renderItem={({ item }) => (
+          <Image
+            source={{ uri: item }}
+            height={300}
+            width={200}
+            resizeMode="cover" // Remplit proprement l'espace vertical
+          />
         )}
-        scrollEventThrottle={16} // Fluidifie le sroll (gère la fréquence de déclenchement du onScroll ci-dessus, + la valeur est basse + le scroll est fluide mais réduit les perfs)
-        // Fonction renderItem() pour afficher les éléments (items) de la FlatList
-        renderItem={({ item, index }) => {
-          const inputRange = [
-            (index - 1) * ITEM_SIZE,
-            index * ITEM_SIZE,
-            (index + 1) * ITEM_SIZE,
-          ];
-          const scale = scrollXPhotos.interpolate({
-            inputRange,
-            outputRange: [0.8, 1, 0.8], // Règle la taille respective de l'image de gauche, du milieu et de droite
-            extrapolate: "clamp",
-          });
-          const opacity = scrollXPhotos.interpolate({
-            inputRange,
-            outputRange: [0.6, 1, 0.6], // Règle l'opacité respective de l'image de gauche, du milieu et de droite
-            extrapolate: "clamp",
-          });
-          return (
-            <Animated.View
-              style={[styles.carouselItem, { transform: [{ scale }], opacity }]}
-            >
-              <Image
-                source={{ uri: item }}
-                height={200}
-                width={400}
-                  style={styles.photo}
-                resizeMode="cover" // Remplit proprement l'espace vertical
-              />
-            </Animated.View>
-          );
-        }}
+        itemWidth={200}
+        itemHeight={300}
+        item
       />
+
       <Button
         onPress={() => navigation.navigate("AddPhotoScreen", { spotData })}
         iconName="add-a-photo"
         text="Ajouter une photo"
       />
 
-      <Animated.FlatList
-        horizontal
-        pagingEnabled
+      <ItemCaroussel
         data={spotData.videos}
+        contentContainerStyle={{ borderWidth: 5, borderColor: "red" }}
         renderItem={({ item }) => {
           return (
             <VideoCard
@@ -218,44 +195,45 @@ export default function SpotScreen({ navigation, route }) {
         }}
       />
 
-      {showTrickModal && (
-        <View
-          style={{ padding: 16, backgroundColor: "#fff", marginVertical: 20 }}
-        >
-          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>
-            Quels tricks sont présents dans la vidéo ?
-          </Text>
-          {trickInputs.map((trick, index) => (
-            <TextInput
-              key={index}
-              placeholder={`Trick ${index + 1}`}
-              value={trick}
-              onChangeText={(text) => {
-                const updated = [...trickInputs];
-                updated[index] = text;
-                setTrickInputs(updated);
-              }}
-              style={globalStyle.textInput}
-            />
-          ))}
-
-          <Button onPress={handleAddTrick} text="Ajouter un autre trick" />
-          <Button onPress={handleSubmitVideo} text="Poster la video" />
-        </View>
-      )}
-
-      {uploading && (
-        <View>
-          <Text>Chargement de ta vidéo...</Text>
-          <ActivityIndicator size="large" color="orange" />
-        </View>
-      )}
       <Button
         onPress={uploadVideoFromGallery}
         iconName="video-call"
         text="Poster une vidéo"
         size={30}
       />
+
+      <ModalContent
+        visibleState={showTrickModal}
+        closeHandler={() => setShowTrickModal(false)}
+        containerStyle={globalStyle.modalContainer}
+      >
+        <Text style={{ ...globalStyle.subSubTitle, fontSize: 18 }}>
+          Quels tricks sont présents dans la vidéo ?
+        </Text>
+        {trickInputs.map((trick, index) => (
+          <TextInput
+            key={index}
+            placeholder={`Trick ${index + 1}`}
+            placeholderTextColor="white"
+            value={trick}
+            onChangeText={(text) => {
+              const updated = [...trickInputs];
+              updated[index] = text;
+              setTrickInputs(updated);
+            }}
+            style={globalStyle.textInput}
+          />
+        ))}
+
+        <Button onPress={handleAddTrick} text="Ajouter un autre trick" />
+        <Button onPress={handleSubmitVideo} text="Poster la video" />
+      </ModalContent>
+      {uploading && (
+        <View>
+          <Text>Chargement de ta vidéo...</Text>
+          <ActivityIndicator size="large" color="orange" />
+        </View>
+      )}
     </BackgroundWrapper>
   );
 }
@@ -281,30 +259,41 @@ function VideoCard({ videoData, onPress }) {
 
   return (
     <Pressable style={styles.videoItem} onPress={onPress}>
-      <View style={styles.thumbnailWrapper}>
-        {thumbnail && (
-          <Image source={{ uri: thumbnail.uri }} height={200} width={400} />
-        )}
+      <View>
+        <Image
+          source={{ uri: thumbnail?.uri ?? DEFAULT_THUMBNAIL }}
+          height={180}
+          width={360}
+          resizeMode="fill"
+        />
       </View>
-      <View style={globalStyle.flexRow}>
-        <Text>
-          {videoData.author.username} - 🕒 {formatDate(videoData.creationDate)}
-        </Text>
-        <Text style={styles.infoText}>👍 {videoData.votes.length} votes</Text>
-        <Text style={styles.infoText}>📍 {videoData.spot?.name}</Text>
-        <Text style={styles.infoText}>{videoData.tricks.join(",")}</Text>
-      </View>
-      <StateButton
-        value={videoData.votes.some((vote) => vote.uID == uID)}
-        iconName="thumb-up"
-        activeColor="blue"
-        containerStyle={{ backgroundColor: "transparent" }}
-        onPress={async (like) => {
-          like
-            ? await upvoteVideo(token, videoData._id)
-            : await unvoteVideo(token, videoData._id);
+      <View
+        style={{
+          ...globalStyle.flexRow,
+          justifyContent: "space-evenly",
+          backgroundColor: COLOR_BACK,
+          width: 360,
         }}
-      />
+      >
+        <View style={{ ...globalStyle.flexRow, justifyContent: "center" }}>
+          <Text>
+            {videoData.author.username} - 🕒{" "}
+            {formatDate(videoData.creationDate)}
+          </Text>
+          <StateButton
+            value={videoData.votes.some((vote) => vote.uID == uID)}
+            iconName="thumb-up"
+            activeColor="blue"
+            containerStyle={{ backgroundColor: "transparent" }}
+            onPress={async (like) => {
+              like
+                ? await upvoteVideo(token, videoData._id)
+                : await unvoteVideo(token, videoData._id);
+            }}
+          />
+          <Text style={styles.infoText}> {videoData.votes.length} votes</Text>
+        </View>
+      </View>
     </Pressable>
   );
 }
@@ -337,12 +326,10 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   carouselItem: {
-    // width: ITEM_SIZE,
-    // height: ITEM_SIZE * 1.5,
     marginHorizontal: 2,
     borderRadius: 12,
     overflow: "hidden",
-    backgroundColor: "#000",
+    // backgroundColor: "#000",
   },
   photoWrapper: {
     width: "100%",
@@ -357,6 +344,9 @@ const styles = StyleSheet.create({
   videoItem: {
     display: "flex",
     flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 20,
   },
   buttons: {
     marginBottom: 10,
