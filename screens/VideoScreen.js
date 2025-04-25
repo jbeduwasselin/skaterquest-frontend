@@ -134,13 +134,17 @@ export default function VideoScreen({ navigation }) {
   }
   return (
     <BackgroundWrapper>
-      <Text style={globalStyle.screenTitle}>Mes vidéos</Text>
+      <Text style={[globalStyle.screenTitle, { marginTop: 50 }]}>
+        Mes vidéos
+      </Text>
+
       <FlatList
         data={userData?.videos}
         renderItem={({ item }) => item && <VideoCard videoData={item} />}
         keyExtractor={(item) => item._id}
-        contentContainerStyle={styles.list}
+        contentContainerStyle={[styles.list, { paddingTop: 20 }]} // 👈 petit espace aussi ici
       />
+
       <ConfirmModal />
     </BackgroundWrapper>
   );

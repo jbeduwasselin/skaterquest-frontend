@@ -234,7 +234,7 @@ export default function CrewScreen() {
   }
   //Creation d'un crew
   return (
-    <BackgroundWrapper>
+    <BackgroundWrapper flexJustify={"center"}>
       <Text style={globalStyle.screenTitle}>
         Tu n'as pas de crew, fais toi inviter ou crée en un !
       </Text>

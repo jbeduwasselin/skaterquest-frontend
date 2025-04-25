@@ -26,8 +26,8 @@ export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
 
   const [showSignInModal, setShowSignInModal] = useState(false);
-  const [signInEmail, setSignInEmail] = useState("text0@test.test");
-  const [signInPassword, setSignInPassword] = useState("test");
+  const [signInEmail, setSignInEmail] = useState("test@test.test");
+  const [signInPassword, setSignInPassword] = useState("pass");
   const [setErrorModal, ErrorModal] = useErrorModal();
 
   const [showSignUpModal, setShowSignUpModal] = useState(false);

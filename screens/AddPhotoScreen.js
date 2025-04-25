@@ -89,8 +89,8 @@ export default function AddPhotoScreen({ navigation, route }) {
   };
 
   return (
-    <BackgroundWrapper>
-      <View style={styles.container}>
+    <BackgroundWrapper flexJustify={"center"}>
+      <View style={[styles.container, { marginTop: 60 }]}>
         <View style={styles.cameraContainer}>
           <Text style={styles.title}>Prends des photos du spot !</Text>
 
@@ -169,7 +169,7 @@ export default function AddPhotoScreen({ navigation, route }) {
             onPress={() => {
               savePhotos();
             }}
-            style={styles.button}
+            style={[styles.button, { marginBottom: 20 }]} // Ajouter marginBottom ici
             activeOpacity={0.8}
           >
             <Text style={styles.validateButton}>VALIDER CES PHOTOS</Text>
