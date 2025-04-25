@@ -59,7 +59,7 @@ export default function AddSpotScreen({ navigation, route }) {
     }
   };
   return (
-    <BackgroundWrapper>
+    <BackgroundWrapper flexJustify={"center"}>
       <Text style={globalStyle.screenTitle}>Ajout d'un nouveau spot</Text>
       <TextInput
         style={globalStyle.textInput}

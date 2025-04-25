@@ -200,7 +200,7 @@ export default function SpotScreen({ navigation, route }) {
   }
 
   return (
-    <BackgroundWrapper flexJustify="space-around">
+    <BackgroundWrapper flexJustify="center">
       <Text style={globalStyle.screenTitle}>{spotData.name}</Text>
 
       <Text style={{ ...globalStyle.subSubTitle }}>

@@ -109,7 +109,7 @@ export default function SettingsScreen({ navigation }) {
   };
 
   return (
-    <BackgroundWrapper>
+    <BackgroundWrapper flexJustify="center">
       <TouchableOpacity onPress={handleImagePress} activeOpacity={0.6}>
         {isUploading ? (
           <ActivityIndicator
@@ -122,7 +122,7 @@ export default function SettingsScreen({ navigation }) {
             source={{ uri: userData?.avatar ?? DEFAULT_AVATAR }}
             width={200}
             height={200}
-            style={globalStyle.avatar}
+            style={[globalStyle.avatar, { marginTop: 60 }]}
           />
         )}
       </TouchableOpacity>
