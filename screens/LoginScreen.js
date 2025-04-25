@@ -164,7 +164,7 @@ export default function LoginScreen({ navigation }) {
       <KeyboardAvoidingView style={{ width: "100%", alignItems: "center" }}>
         <TextInput
           style={styles.inputs}
-          placeholder="Ton SkateurTag"
+          placeholder="Ton SkaterTag"
           placeholderTextColor={COLOR_PLACEHOLDER}
           onChangeText={setSignUpUsername}
           value={signUpUsername}
