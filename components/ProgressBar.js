@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { tricksData } from "../data/trickList";
-import { COLOR_GREY } from "../globalStyle";
+import { COLOR_SECD } from "../globalStyle";
 
 export default function ProgressBar() {
   const progress = useSelector((state) => state.tricks.value.length);
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   },
   barBackground: {
     height: 12,
-    backgroundColor: COLOR_GREY,
+    backgroundColor: COLOR_SECD,
     borderRadius: 6,
     overflow: "hidden",
   },
