@@ -40,10 +40,10 @@ export default function GosPlayScreen({ navigation }) {
         closeHandler={() => setModalVisible(false)}
         containerStyle={globalStyle.modalContainer}
       >
-        <Text style={styles.modalTitle}>Entrez les SkaterTags !</Text>
+        <Text style={styles.modalTitle}>Entrez vos pseudos pour cette partie !</Text>
 
         <TextInput
-          placeholder="SkaterTag Joueur 1"
+          placeholder="Joueur 1"
           placeholderTextColor={COLOR_PLACEHOLDER}
           style={globalStyle.textInput}
           onChangeText={setSkater1}
@@ -51,7 +51,7 @@ export default function GosPlayScreen({ navigation }) {
           maxLength={8}
         />
         <TextInput
-          placeholder="SkaterTag Joueur 2"
+          placeholder="Joueur 2"
           placeholderTextColor={COLOR_PLACEHOLDER}
           style={globalStyle.textInput}
           onChangeText={setSkater2}
