@@ -9,6 +9,7 @@ import {
   Image,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import { useIsFocused } from "@react-navigation/native";
@@ -28,6 +29,7 @@ export default function AddPhotoScreen({ navigation, route }) {
   //const [cameraReady, setCameraReady] = useState(false); // État pour contrôler si la caméra est prête
 
   const [photosSpot, setPhotosSpot] = useState([]); // État pour enregistrer les photos du spot prises par l'utilisateur
+  const [uploading, setUploading] = useState(false); // Indicateur de progression pour l'envoi des photos (utile pour envoyer un feedback à l'utilisateur ça met du temps à charger)
 
   const { token } = useSelector((state) => state.user.value);
   const { spotData } = route.params;
@@ -74,18 +76,20 @@ export default function AddPhotoScreen({ navigation, route }) {
   const savePhotos = async () => {
     console.log("Number of photos :", photosSpot.length);
     if (photosSpot.length > 0) {
+      setUploading(true); // Affichage de l'indicateur de chargement
       for (const takenPhoto of photosSpot) {
         const { result, error } = await addPictureToSpot(
           token,
           takenPhoto.uri,
           spotData._id
         );
+        setUploading(false); // Masquage de l'indicateur de chargement
         console.log("photo URI :", takenPhoto.uri);
         console.log("result :", result, ", error :", error);
       }
     }
     photosSpot.length > 0 && navigation.goBack();
-    // NB : Avec un débit internet faible ça peut prendre plusieurs secondes pour revenir sur SpotScreen, ajouter un ActivityIndicator
+    // NB : Avec un débit internet faible ça peut prendre plusieurs secondes ou minutes pour revenir sur SpotScreen, ajouter un ActivityIndicator
   };
 
   return (
@@ -163,6 +167,13 @@ export default function AddPhotoScreen({ navigation, route }) {
             <Text style={styles.deleteHint}>
               Fais un appui long sur une photo pour la supprimer
             </Text>
+          )}
+
+          {uploading && (
+            <View>
+              <Text>Chargement des photos...</Text>
+              <ActivityIndicator size="large" color="orange" />
+            </View>
           )}
 
           <TouchableOpacity
