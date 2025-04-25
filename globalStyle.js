@@ -102,7 +102,7 @@ const globalStyle = StyleSheet.create({
     borderBottomWidth: 1,
     fontSize: 16,
     fontWeight: "bold",
-    color: COLOR_TEXT,
+    color: COLOR_LIGHT,
     marginBottom: 15,
     width: "90%",
     textAlign: "center",
