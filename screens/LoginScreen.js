@@ -12,7 +12,11 @@ import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import { signInRequest, signUpRequest } from "../lib/request";
 import { Button } from "../components/Buttons";
-import globalStyle, { COLOR_BACK,COLOR_CONFIRM, COLOR_PLACEHOLDER } from "../globalStyle";
+import globalStyle, {
+  COLOR_BACK,
+  COLOR_CONFIRM,
+  COLOR_PLACEHOLDER,
+} from "../globalStyle";
 import ModalContent from "../components/ModalContent";
 import { EMAIL_REGEX, PASSWORD_REGEX, USERNAME_REGEX } from "../lib/utils";
 import { useErrorModal } from "../components/ErrorModal";
@@ -225,10 +229,10 @@ export default function LoginScreen({ navigation }) {
       visibleState={showTuto2}
       containerStyle={globalStyle.modalContainer}
     >
-      <Text style={globalStyle.screenTitle}>
+      <Text style={[globalStyle.screenTitle, { textAlign: "center" }]}>
         Un Game of Skate c'est quoi ?🤔
       </Text>
-      <Text style={globalStyle.subSubTitle}>
+      <Text style={[globalStyle.subSubTitle, { textAlign: "center" }]}>
         Un skateur fait un trick, l'autre doit le reproduire : à chaque échec,
         il gagne une lettre du mot SKATE jusqu'à être éliminé. 🛹🔥
       </Text>
