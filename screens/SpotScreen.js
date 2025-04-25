@@ -7,6 +7,7 @@ import {
   Pressable,
   TextInput,
   ActivityIndicator,
+  KeyboardAvoidingView,
 } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import { useSelector } from "react-redux";
@@ -234,6 +235,7 @@ export default function SpotScreen({ navigation, route }) {
         renderItem={({ item }) => {
           return (
             <VideoCard
+              key={item._id}
               videoData={item}
               onPress={() => {
                 setVideoPlaying(item.url);
@@ -259,18 +261,19 @@ export default function SpotScreen({ navigation, route }) {
           Quels tricks sont présents dans la vidéo ?
         </Text>
         {trickInputs.map((trick, index) => (
-          <TextInput
-            key={index}
-            placeholder={`Trick ${index + 1}`}
-            placeholderTextColor={COLOR_PLACEHOLDER}
-            value={trick}
-            onChangeText={(text) => {
-              const updated = [...trickInputs];
-              updated[index] = text;
-              setTrickInputs(updated);
-            }}
-            style={globalStyle.textInput}
-          />
+          <KeyboardAvoidingView key={index} /* Attention à mettre la prop key dans ce composant parent et pas dans TextInput */>
+            <TextInput
+              placeholder={`Trick ${index + 1}`}
+              placeholderTextColor={COLOR_PLACEHOLDER}
+              value={trick}
+              onChangeText={(text) => {
+                const updated = [...trickInputs];
+                updated[index] = text;
+                setTrickInputs(updated);
+              }}
+              style={globalStyle.textInput}
+            />
+          </KeyboardAvoidingView>
         ))}
 
         <Button onPress={handleAddTrick} text="Ajouter un autre trick" />
