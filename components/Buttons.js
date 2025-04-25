@@ -1,6 +1,6 @@
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { COLOR_MAIN } from "../globalStyle";
+import globalStyle, { COLOR_TEXT } from "../globalStyle";
 import { useEffect, useState } from "react";
 import { Image } from "react-native";
 
@@ -10,7 +10,7 @@ import { Image } from "react-native";
 export function Button({
   iconName,
   size = 20,
-  color = "black",
+  color = COLOR_TEXT,
   text = "",
   textStyle,
   containerStyle,
@@ -82,10 +82,11 @@ export function StateButton({
       iconName={isActive ? (activeIconName ?? iconName) : iconName}
       color={isActive ? (activeColor ?? color) : color}
       text={isActive ? (activeText ?? text) : text}
-      textStyle={isActive ? (activeTextStyle ?? textStyle) : textStyle}
-      containerStyle={
-        isActive ? (activeContainerStyle ?? containerStyle) : containerStyle
-      }
+      textStyle={{ ...textStyle, ...(isActive && activeTextStyle) }}
+      containerStyle={{
+        ...containerStyle,
+        ...(isActive && activeContainerStyle),
+      }}
       {...{
         size,
         gap,
@@ -94,6 +95,7 @@ export function StateButton({
     />
   );
 }
+
 //Un Bouton avec une image et un étéat interne (on/off)
 export function StateImageButton({
   source,
@@ -141,14 +143,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: COLOR_MAIN,
-    borderRadius: 10,
-    padding: 12,
-    margin: 5,
-    paddingHorizontal: 20,
+    ...globalStyle.button,
   },
   text: {
     fontSize: 18,
     fontWeight: 800,
+    textAlign: "center",
+    ...globalStyle.buttonText,
   },
 });

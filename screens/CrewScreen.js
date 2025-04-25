@@ -45,6 +45,7 @@ export default function CrewScreen() {
   const [searchVisible, setSearchVisible] = useState(false);
 
   const [setConfirm, ConfirmModal] = useConfirmationModal();
+ 
   async function handleCreateCrew() {
     const { result, reason } = await createCrew(token, newCrewName);
     console.log(result, reason);
@@ -68,7 +69,7 @@ export default function CrewScreen() {
 
   async function handleLeaveCrew() {
     setConfirm({
-      text: `Quiter le crew ${userData.crew.name} ?`,
+      text: `Quitter le crew ${userData.crew.name} ?`,
       handle: async () => {
         const { result } = await leaveCrew(token);
         result && forceUpdate();
@@ -78,7 +79,7 @@ export default function CrewScreen() {
 
   async function handleAdmin(isAdmin, memberData) {
     setConfirm({
-      text: `${isAdmin ? "Promouvoir" : "Rétrograder"} ${memberData.username} du role administrateurs`,
+      text: `${isAdmin ? "Donner à" : "Retirer à"} ${memberData.username} les droits d'administrateur ?`,
       handle: async () => {
         const { result } = isAdmin
           ? await promoteToCrewAdmin(token, memberData.uID)

@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  Alert,
   TextInput,
   ActivityIndicator,
 } from "react-native";

@@ -3,20 +3,22 @@ import { View, Text, StyleSheet, TextInput, Dimensions } from "react-native";
 import * as Animatable from "react-native-animatable";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import ModalContent from "../components/ModalContent";
-import globalStyle, { COLOR_BACK, COLOR_PLACEHOLDER } from "../globalStyle";
+import globalStyle, { COLOR_CANCEL, COLOR_PLACEHOLDER } from "../globalStyle";
 import { Button } from "../components/Buttons";
+import { useSelector } from "react-redux";
 
 // Récupérer la largeur de l'écran
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 export default function GosPlayScreen({ navigation }) {
+  const { username } = useSelector((state) => state.user.value);
   const [modalVisible, setModalVisible] = useState(true);
   const [skater1, setSkater1] = useState("");
   const [skater2, setSkater2] = useState("");
 
   // Fonction pour démarrer le jeu
   const startGame = () => {
-    !skater1 && setSkater1("Joueur 1");
+    !skater1 && setSkater1(username);
     !skater2 && setSkater2("Joueur 2");
     setModalVisible(false);
   };
@@ -64,7 +66,7 @@ export default function GosPlayScreen({ navigation }) {
                 ? setModalVisible(false)
                 : navigation.navigate("Home");
             }}
-            containerStyle={{ backgroundColor: COLOR_BACK }}
+            containerStyle={{ backgroundColor: COLOR_CANCEL }}
           />
           <Button text="Valider" onPress={startGame} />
         </View>
@@ -76,7 +78,9 @@ export default function GosPlayScreen({ navigation }) {
         duration={1200}
         style={styles.gameTitleContainer}
       >
-        <Text style={[styles.gameTitle, { fontSize: getFontSize() }]}>GAME OF SKATE</Text>
+        <Text style={[styles.gameTitle, { fontSize: getFontSize() }]}>
+          GAME OF SKATE
+        </Text>
       </Animatable.View>
 
       {/* INFOS SKATERS */}
@@ -155,9 +159,9 @@ export default function GosPlayScreen({ navigation }) {
 const styles = StyleSheet.create({
   gameTitleContainer: {
     marginBottom: 30,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   gameTitle: {
     fontWeight: "bold",

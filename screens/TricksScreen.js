@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleTrick } from "../reducers/tricks";
 import ProgressBar from "../components/ProgressBar";
 import ConfettiCannon from "react-native-confetti-cannon";
-import globalStyle, { COLOR_GREY } from "../globalStyle";
+import globalStyle, { COLOR_SECD } from "../globalStyle";
 import { StateButton, Button } from "../components/Buttons";
 
 const initialSettings = Object.freeze({
@@ -120,7 +120,7 @@ export default function TricksScreen() {
             <FilterButton
               key={id}
               text={category}
-              color={COLOR_GREY}
+              color={COLOR_SECD}
               onPress={() => toggleFilterCategory(category)}
             />
           ))}
@@ -176,8 +176,6 @@ const FilterButton = ({ text, color, onPress, reverse = false }) => (
   <StateButton
     {...{ text, onPress }}
     activeContainerStyle={{
-      ...styles.filterButton,
-      backgroundColor: color,
       opacity: reverse ? 1 : 0.2,
     }}
     containerStyle={{
