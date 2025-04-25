@@ -23,7 +23,7 @@ import VideoPlayer from "../components/VideoPlayer";
 import { useIsFocused } from "@react-navigation/native";
 import { Button, StateButton } from "../components/Buttons";
 import globalStyle, {
-  COLOR_BACK,
+  COLOR_CANCEL,
   DEFAULT_THUMBNAIL,
   COLOR_PLACEHOLDER,
 } from "../globalStyle";
@@ -161,7 +161,7 @@ export default function SpotScreen({ navigation, route }) {
           style={{
             ...globalStyle.flexRow,
             justifyContent: "space-evenly",
-            backgroundColor: COLOR_BACK,
+            backgroundColor: COLOR_CANCEL,
             width: 360,
           }}
         >

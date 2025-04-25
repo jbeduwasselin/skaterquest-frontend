@@ -1,11 +1,15 @@
 import React from "react";
 import { ImageBackground, SafeAreaView } from "react-native";
-import globalStyle from "../globalStyle";
+import globalStyle, { BACKGROUND } from "../globalStyle";
 
-export default function BackgroundWrapper({ children , flexJustify , flexAlign }) {
+export default function BackgroundWrapper({
+  children,
+  flexJustify,
+  flexAlign,
+}) {
   return (
     <ImageBackground
-      source={require("../assets/Autre fond.png")}
+      source={BACKGROUND}
       style={globalStyle.container}
       resizeMode="cover"
     >

@@ -12,10 +12,15 @@ import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import { signInRequest, signUpRequest } from "../lib/request";
 import { Button } from "../components/Buttons";
-import globalStyle, { COLOR_BACK,COLOR_CONFIRM, COLOR_PLACEHOLDER } from "../globalStyle";
+import globalStyle, {
+  COLOR_BACK,
+  COLOR_CONFIRM,
+  COLOR_PLACEHOLDER,
+} from "../globalStyle";
 import ModalContent from "../components/ModalContent";
 import { EMAIL_REGEX, PASSWORD_REGEX, USERNAME_REGEX } from "../lib/utils";
 import { useErrorModal } from "../components/ErrorModal";
+import BackgroundWrapper from "../components/BackgroundWrapper";
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -279,38 +284,34 @@ export default function LoginScreen({ navigation }) {
   );
 
   return (
-    <ImageBackground
-      source={require("../assets/Autre fond.png")}
-      style={styles.background}
-      resizeMode="cover"
-    >
-      <View style={styles.overlay}>
-        <Image
-          source={require("../assets/LOGO TEMPORAIRE.png")}
-          style={styles.logo}
-        />
-        <Button
-          iconName="login"
-          text="Connexion"
-          size={30}
-          onPress={() => {
-            setShowSignUpModal(false);
-            setShowSignInModal(true);
-          }}
-          containerStyle={styles.button}
-        />
+    <BackgroundWrapper flexJustify="space-evenly">
+      <Image
+        source={require("../assets/LOGO TEMPORAIRE.png")}
+        style={styles.logo}
+      />
+      <Button
+        iconName="login"
+        text="Connexion"
+        size={30}
+        onPress={() => {
+          setShowSignUpModal(false);
+          setShowSignInModal(true);
+        }}
+        containerStyle={styles.button}
+      />
 
-        <Button
-          iconName="person-add"
-          text="T'es nouveau ? Créer un compte ici !"
-          size={30}
-          containerStyle={styles.button}
-          onPress={() => {
-            setShowSignInModal(false);
-            setShowSignUpModal(true);
-          }}
-        />
-      </View>
+      <Button
+        iconName="person-add"
+        text={
+`T'es nouveau ?
+Créer un compte ici !`}
+        size={30}
+        containerStyle={styles.button}
+        onPress={() => {
+          setShowSignInModal(false);
+          setShowSignUpModal(true);
+        }}
+      />
 
       {signUpModalContent}
       {signInModalContent}
@@ -318,7 +319,7 @@ export default function LoginScreen({ navigation }) {
       {tuto2}
       {tuto3}
       <ErrorModal />
-    </ImageBackground>
+    </BackgroundWrapper>
   );
 }
 

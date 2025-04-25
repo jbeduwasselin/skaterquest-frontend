@@ -45,6 +45,7 @@ export default function CrewScreen() {
   const [searchVisible, setSearchVisible] = useState(false);
 
   const [setConfirm, ConfirmModal] = useConfirmationModal();
+ 
   async function handleCreateCrew() {
     const { result, reason } = await createCrew(token, newCrewName);
     console.log(result, reason);

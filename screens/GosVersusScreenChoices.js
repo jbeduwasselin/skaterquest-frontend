@@ -8,6 +8,7 @@ import { Picker } from "@react-native-picker/picker";
 import { Button } from "../components/Buttons";
 import ModalContent from "../components/ModalContent";
 import globalStyle from "../globalStyle";
+import { tricksData } from "../data/trickList";
 
 export default function GosVersusScreenChoices({ route, navigation }) {
   const { skater1 = "Joueur 1", skater2 = "Joueur 2", gameMode } = route.params;
@@ -130,54 +131,8 @@ export default function GosVersusScreenChoices({ route, navigation }) {
           dropdownIconColor="#FFF"
         >
           {/* Liste très longue de tricks pour plus de choix */}
-          {[
-            "Ollie",
-            "No Comply",
-            "Revert",
-            "Caveman",
-            "Acid Drop",
-            "Body Varial",
-            "Footplant",
-            "Firecracker",
-            "Pivot",
-            "Boneless",
-            "Shuvit",
-            "Pop Shuvit",
-            "Manual",
-            "Nose Manual",
-            "Kickflip",
-            "Heelflip",
-            "Frontside 180",
-            "Backside 180",
-            "Railstand",
-            "Boned Ollie",
-            "Nollie",
-            "Fakie Ollie",
-            "Switch Ollie",
-            "Wallride",
-            "Wallie",
-            "Powerslide",
-            "Slappy",
-            "Varial Kickflip",
-            "360 Flip",
-            "Hardflip",
-            "Impossible",
-            "Frontside Flip",
-            "Backside Flip",
-            "Bigspin",
-            "Casper Flip",
-            "Darkslide",
-            "Primo Slide",
-            "Tiger Claw",
-            "Underflip",
-            "Hospital Flip",
-            "Double Kickflip",
-            "Triple Kickflip",
-            "Laser Flip",
-            "Gazelle Flip",
-            "Blunt Slide",
-          ].map((trick) => (
-            <Picker.Item key={trick} label={trick} value={trick} />
+          {tricksData.map(({ name }) => (
+            <Picker.Item key={name} label={name} value={name} />
           ))}
         </Picker>
       </Animatable.View>
