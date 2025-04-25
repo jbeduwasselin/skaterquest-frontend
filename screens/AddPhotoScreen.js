@@ -15,6 +15,8 @@ import { useIsFocused } from "@react-navigation/native";
 import { addPictureToSpot } from "../lib/request";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CameraView, Camera } from "expo-camera";
+import globalStyle from "../globalStyle";
+import { Button } from "../components/Buttons";
 
 // Calcul dynamique de la hauteur de la caméra selon le ratio
 // const cameraWidth = Dimensions.get("window").width - 40;
@@ -90,92 +92,81 @@ export default function AddPhotoScreen({ navigation, route }) {
 
   return (
     <BackgroundWrapper flexJustify={"center"}>
-      <View style={[styles.container, { marginTop: 60 }]}>
-        <View style={styles.cameraContainer}>
-          <Text style={styles.title}>Prends des photos du spot !</Text>
+      <Text style={globalStyle.screenTitle}>Prends des photos du spot !</Text>
 
-          {!hasPermission || !isFocused ? (
-            <View>
-              <Text>
-                Pour prendre une photo de ce spot, tu dois autoriser l'appli à
-                accéder à ton appareil !
-              </Text>
-            </View>
-          ) : (
-            <CameraView
-              ref={cameraRef}
-              style={styles.camera}
-              //ratio={cameraRatio} // Donne le ratio préparé plus tôt
-              // onCameraReady={ratioVerification} // Événement onCameraReady pour savoir quand la caméra est prête
-            />
-          )}
-
-          <TouchableOpacity
-            onPress={() => {
-              takePicture();
-            }}
-            style={styles.button}
-            activeOpacity={0.8}
-          >
-            <MaterialIcons
-              style={styles.photoButton}
-              name="motion-photos-on" // Autre possibilité : "camera-alt"
-              size={48}
-              color="white"
-            />
-          </TouchableOpacity>
-
-          <ScrollView
-            horizontal // Car vertical par défaut
-            style={styles.previewScroll}
-            contentContainerStyle={styles.previewContainer}
-            showsHorizontalScrollIndicator={false} // Pour masquer la barre de scroll
-          >
-            {photosSpot.map((photo, index) => (
-              // Fonctionnalité pour supprimer une photo en la touchant longtemps
-              <TouchableOpacity
-                key={index}
-                onLongPress={() => {
-                  Alert.alert(
-                    "Supprimer cette photo ?",
-                    "Cette action est irréversible.",
-                    [
-                      { text: "Annuler", style: "cancel" },
-                      {
-                        text: "Supprimer",
-                        style: "destructive",
-                        onPress: () => {
-                          setPhotosSpot((prev) =>
-                            prev.filter((_, i) => i !== index)
-                          );
-                        },
-                      },
-                    ]
-                  );
-                }}
-              >
-                <Image source={{ uri: photo.uri }} style={styles.thumbnail} />
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-
-          {photosSpot.length > 0 && (
-            <Text style={styles.deleteHint}>
-              Fais un appui long sur une photo pour la supprimer
-            </Text>
-          )}
-
-          <TouchableOpacity
-            onPress={() => {
-              savePhotos();
-            }}
-            style={[styles.button, { marginBottom: 20 }]} // Ajouter marginBottom ici
-            activeOpacity={0.8}
-          >
-            <Text style={styles.validateButton}>VALIDER CES PHOTOS</Text>
-          </TouchableOpacity>
+      {!hasPermission || !isFocused ? (
+        <View>
+          <Text>
+            Pour prendre une photo de ce spot, tu dois autoriser l'appli à
+            accéder à ton appareil !
+          </Text>
         </View>
-      </View>
+      ) : (
+        <CameraView
+          ref={cameraRef}
+          style={styles.camera}
+          //ratio={cameraRatio} // Donne le ratio préparé plus tôt
+          // onCameraReady={ratioVerification} // Événement onCameraReady pour savoir quand la caméra est prête
+        />
+      )}
+
+      <TouchableOpacity
+        onPress={() => {
+          takePicture();
+        }}
+        style={styles.button}
+        activeOpacity={0.8}
+      >
+        <MaterialIcons
+          style={styles.photoButton}
+          name="motion-photos-on" // Autre possibilité : "camera-alt"
+          size={48}
+          color="white"
+        />
+      </TouchableOpacity>
+
+      <ScrollView
+        horizontal // Car vertical par défaut
+        style={styles.previewScroll}
+        contentContainerStyle={styles.previewContainer}
+        showsHorizontalScrollIndicator={false} // Pour masquer la barre de scroll
+      >
+        {photosSpot.map((photo, index) => (
+          // Fonctionnalité pour supprimer une photo en la touchant longtemps
+          <TouchableOpacity
+            key={index}
+            onLongPress={() => {
+              Alert.alert(
+                "Supprimer cette photo ?",
+                "Cette action est irréversible.",
+                [
+                  { text: "Annuler", style: "cancel" },
+                  {
+                    text: "Supprimer",
+                    style: "destructive",
+                    onPress: () => {
+                      setPhotosSpot((prev) =>
+                        prev.filter((_, i) => i !== index)
+                      );
+                    },
+                  },
+                ]
+              );
+            }}
+          >
+            <Image source={{ uri: photo.uri }} style={styles.thumbnail} />
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      {photosSpot.length > 0 && (
+        <>
+          <Text style={styles.deleteHint}>
+            Fais un appui long sur une photo pour la supprimer
+          </Text>
+          <Button onPress={savePhotos} text="Valider ces photos" />
+        </>
+      )}
     </BackgroundWrapper>
   );
 }
@@ -202,17 +193,13 @@ const styles = StyleSheet.create({
   },
   photoButton: {
     padding: 8,
-    marginBottom: 10,
+    // marginBottom: 10,
   },
-  validateButton: {
-    backgroundColor: "orange",
-    padding: 10,
-  },
-  previewScroll: {
-    marginTop: 16,
-    marginBottom: 16,
-    maxHeight: 90,
-  },
+    previewScroll: {
+      marginTop: 16,
+      marginBottom: 16,
+      maxHeight: 90,
+    },
   previewContainer: {
     flexDirection: "row",
     paddingHorizontal: 10,
@@ -229,6 +216,7 @@ const styles = StyleSheet.create({
   deleteHint: {
     textAlign: "center",
     fontSize: 14,
+    fontWeight : 600,
     color: "black",
     marginBottom: 10,
   },
