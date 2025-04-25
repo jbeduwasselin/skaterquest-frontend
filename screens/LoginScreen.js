@@ -14,6 +14,7 @@ import { signInRequest, signUpRequest } from "../lib/request";
 import { Button } from "../components/Buttons";
 import globalStyle, {
   COLOR_BACK,
+  COLOR_CANCEL,
   COLOR_CONFIRM,
   COLOR_PLACEHOLDER,
 } from "../globalStyle";
@@ -334,7 +335,7 @@ const NextButton = ({ onPress }) => (
 const SkipButton = ({ onPress }) => (
   <Button
     text="Passer"
-    containerStyle={{ ...styles.button, backgroundColor: COLOR_BACK }}
+    containerStyle={{ ...styles.button, backgroundColor: COLOR_CANCEL }}
     onPress={onPress}
   />
 );
