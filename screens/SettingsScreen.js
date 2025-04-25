@@ -26,6 +26,7 @@ import { useIsFocused } from "@react-navigation/native";
 import ModalContent from "../components/ModalContent";
 import { useConfirmationModal } from "../components/ConfirmModal";
 import { useErrorModal } from "../components/ErrorModal";
+import { USERNAME_REGEX } from "../lib/utils";
 
 export default function SettingsScreen({ navigation }) {
   const [updateWatcher, forceUpdate] = useReducer((p) => p + 1, 0);
@@ -94,11 +95,13 @@ export default function SettingsScreen({ navigation }) {
   };
 
   const handleUpdateSkaterTag = async () => {
-    if (!newSkaterTag.trim()) {
-      setErrorModal("Erreur, le SkaterTag ne peut pas être vide");
+    if (!newSkaterTag.trim().match(USERNAME_REGEX)) {
+      setErrorModal(
+        "Le SkaterTag doit contenir maximum 15 lettres (sans caractères spéciaux)."
+      );
       return;
     }
-    const { result } = await updateSkaterTag(token);
+    const { result } = await updateSkaterTag(token, newSkaterTag.trim());
     if (result.result) {
       setModalVisible(false);
       setErrorModal("Succès", "Ton SkaterTag a été mis à jour !");
