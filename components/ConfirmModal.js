@@ -5,17 +5,16 @@ import { Text, View } from "react-native";
 import { Button } from "./Buttons";
 
 /*
-Function qui renvoie [setter , component] pour une modale de 
-confirmation. 
+Fonction qui renvoie [setter , component] pour une modale de confirmation. 
 Usage :
 
-  //appeler le hook
+  // Appeler le hook
   const [setConfim , Confirm] = useConfirmationModal()
 
   function handleEvent(){
     setConfirm({
-        text : "le text à afficher",
-        handle : ()=>{ //ici mettre les actions à réaliser}
+        text : "le texte à afficher",
+        handle : ()=>{ //Ici mettre les actions à réaliser}
    })
 
    [....]
@@ -24,12 +23,12 @@ Usage :
    ....
    .....
    .....
-    <Confirm/>  //Appeler le composant
+    <Confirm/>  // Appeler le composant
    </>)
 
 }
-
 */
+
 export function useConfirmationModal() {
   const [confirmationData, setConfirmationData] = useState();
   return [

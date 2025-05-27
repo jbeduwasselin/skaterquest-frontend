@@ -1,7 +1,8 @@
 import { StyleSheet } from "react-native";
 
 export const COLOR_PLACEHOLDER = "#FFFFFF9A";
-//THEME 1
+
+// Thème 1
 export const COLOR_TEXT = "#000000FF";
 export const COLOR_DEEP = "#000000";
 export const COLOR_LIGHT = "#FFFFFF";
@@ -11,7 +12,8 @@ export const COLOR_MODAL = "#292929E5";
 export const COLOR_CANCEL = "#858585FF";
 export const COLOR_CONFIRM = "#dc3545";
 export const BACKGROUND = require("./assets/Background1.png");
-//THEME 2
+
+// Thème 2
 // export const COLOR_TEXT = "#000000";
 // export const COLOR_DEEP = "#000000";
 // export const COLOR_MAIN = "#a13d63";

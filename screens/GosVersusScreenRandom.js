@@ -170,7 +170,7 @@ export default function GosVersusScreenRandom({ route, navigation }) {
           </View>
         </Animatable.View>
 
-        {/* Modal Game Over */}
+        {/* Modale Game Over */}
         <ModalContent
           animationType="fade"
           transparent={true}

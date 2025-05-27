@@ -22,7 +22,7 @@ Librairie pour la conversion de vidéo : https://www.npmjs.com/package/@config-p
     - headers : infos envoyés dans les fetch
   - **request.js** : Fichier passerelle gérant la communication du front vers le back
   - **request.test.js** : Fichier de TDD pour tester la communication front-back et les routes
-  - **util.js** : Regroupe des fonctions utilitaires et regex pour gérer des calculs, des tirages aléatoires, de la mise en forme de dates, et la validation d’inputs
+  - **util.js** : Regroupe des fonctions utilitaires et des regex (calculs, tirages aléatoires, mise en forme de dates, vérification d'inputs)
 
 - **reducers** : Contient les états du store de Redux
 

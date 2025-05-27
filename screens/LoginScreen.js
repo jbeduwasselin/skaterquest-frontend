@@ -3,7 +3,6 @@ import {
   Text,
   View,
   TextInput,
-  ImageBackground,
   Image,
   KeyboardAvoidingView,
 } from "react-native";

@@ -8,8 +8,7 @@ import { getOwnUserInfo } from "../lib/request";
 import globalStyle, { DEFAULT_AVATAR } from "../globalStyle";
 import { Button } from "../components/Buttons";
 
-// Import seulement le composant
-import ProgressBar from "../components/ProgressBar";
+import ProgressBar from "../components/ProgressBar"; // Barre de progression des tricks
 
 export default function HomeScreen({ navigation }) {
   const isFocused = useIsFocused();

@@ -27,11 +27,10 @@ import ModalContent from "../components/ModalContent";
 import { useConfirmationModal } from "../components/ConfirmModal";
 
 export default function CrewScreen() {
-  //Rerender dans on mount et manuel
-  const [updateWatcher, forceUpdate] = useReducer((p) => p + 1, 0);
-  const isFocused = useIsFocused();
+  const [updateWatcher, forceUpdate] = useReducer((p) => p + 1, 0); // Permet de forcer la mise à jour du composant (pour l'affichage dynamique)
+  const isFocused = useIsFocused(); // La méthode useIsFocused() permet de ne pas afficher la caméra si l'écran n'est pas focus
 
-  //Recup les info utilisateur
+  // Récupération des infos de l'utilisateur
   const { token } = useSelector((state) => state.user.value);
   const [userData, setUserData] = useState(null);
   useEffect(() => {
@@ -146,7 +145,7 @@ export default function CrewScreen() {
     );
   }
 
-  //Listes des utilisateurs et ajout
+  // Liste des utilisateurs et ajout au crew
   if (userData?.crew) {
     const isUserAdmin = userData.crew.admins.includes(userData.uID);
     return (
@@ -227,12 +226,13 @@ export default function CrewScreen() {
             containerStyle={styles.searchButton}
           />
         )}
-        {/* Modal de confirmation */}
+        {/* Modale de confirmation */}
         <ConfirmModal />
       </BackgroundWrapper>
     );
   }
-  //Creation d'un crew
+  
+  // Création d'un crew
   return (
     <BackgroundWrapper flexJustify={"center"}>
       <Text style={globalStyle.screenTitle}>

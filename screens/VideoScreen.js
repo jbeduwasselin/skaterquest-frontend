@@ -20,12 +20,11 @@ import { useConfirmationModal } from "../components/ConfirmModal";
 import { formatDate } from "../lib/utils";
 
 /*
-Ce screen est un bon exemple de comment on peut gérer le video player.
-
+Ce screen est un exemple de comment gérer le video player
 
   const [videoPlaying, setVideoPlaying] = useState(null);
 
-  un state qui contien l'url de la video a jouer
+  Un état qui contient l'URL de la vidéo à jouer
 
     useBackHandler(() => {
     if (videoPlaying) {
@@ -44,9 +43,9 @@ Ce screen est un bon exemple de comment on peut gérer le video player.
           />
         ) : ( ..... )
 
-    un petit check, si la videoPlaying est true (contient une url) on charge
-    le composant videoPlayer
-    Sinon on charge le screen normal.
+    On vérifie si la videoPlaying est true (contient une url)
+    Si oui et on charge le composant videoPlayer
+    Si non on charge le screen normal
 */
 
 export default function VideoScreen({ navigation }) {

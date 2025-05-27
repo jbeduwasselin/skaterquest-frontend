@@ -1,3 +1,5 @@
+// Barre de progression de l'apprentissage des tricks
+
 import { View, Text, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { tricksData } from "../data/trickList";

@@ -11,23 +11,23 @@ import ModalContent from "../components/ModalContent";
 import globalStyle, { COLOR_CANCEL } from "../globalStyle";
 import { deleteAccountRequest } from "../lib/request";
 
-// import AsyncStorage from "@react-native-async-storage/async-storage"; // Décommente pour activer la sauvegarde
+// import AsyncStorage from "@react-native-async-storage/async-storage"; // Sauvegarde (actuellement désactivée)
 
 export default function AppSettingsScreen({ navigation }) {
   const dispatch = useDispatch(); // Hook Redux pour dispatcher des actions
-  const user = useSelector((state) => state.user.value); // Récupère les infos de l'utilisateur
+  const user = useSelector((state) => state.user.value); // Récupération des infos de l'utilisateur
 
-  const [isPrivacyModalVisible, setPrivacyModalVisible] = useState(false);
-  const [isHelpModalVisible, setHelpModalVisible] = useState(false); // Modal Aides
-  const [isLogoutConfirmVisible, setLogoutConfirmVisible] = useState(false); // Modal Déconnexion
-  const [isDeleteConfirmVisible, setDeleteConfirmVisible] = useState(false); // Modal Désinscription
+  const [isPrivacyModalVisible, setPrivacyModalVisible] = useState(false); // Modale de confidentialité
+  const [isHelpModalVisible, setHelpModalVisible] = useState(false); // Modale d'aide
+  const [isLogoutConfirmVisible, setLogoutConfirmVisible] = useState(false); // Modale de déconnexion
+  const [isDeleteConfirmVisible, setDeleteConfirmVisible] = useState(false); // Modale de désinscription
 
   const [marketingEnabled, setMarketingEnabled] = useState(false);
   const [profileVisibility, setProfileVisibility] = useState(true);
   const [dataSharing, setDataSharing] = useState(false);
 
   const handleHelpPress = () => {
-    setHelpModalVisible(true); // Affiche la modal d'aide
+    setHelpModalVisible(true); // Affiche la modale d'aide
   };
 
   const handlePrivacySettingsPress = () => {
@@ -58,7 +58,7 @@ export default function AppSettingsScreen({ navigation }) {
     navigation.navigate("LoginScreen");
   };
 
-  // Décommenter pour activer la sauvegarde
+  // Sauvegarde (actuellement désactivée)
   /*
   useEffect(() => {
     const loadPrivacySettings = async () => {
@@ -76,10 +76,6 @@ export default function AppSettingsScreen({ navigation }) {
     };
     loadPrivacySettings();
   }, []);
-  */
-
-  // Fonction de sauvegarde (commentée pour activer plus tard)
-  /*
   const savePrivacySettings = async () => {
     try {
       const settings = {
@@ -97,6 +93,7 @@ export default function AppSettingsScreen({ navigation }) {
     }
   };
   */
+
   return (
     <BackgroundWrapper flexJustify="space-evenly">
       <Icon
@@ -155,7 +152,7 @@ export default function AppSettingsScreen({ navigation }) {
           <Switch value={dataSharing} onValueChange={setDataSharing} />
         </View>
 
-        {/* Bouton enregistrer (activable plus tard) */}
+        {/* Bouton enregistrer (actuellement désactivé) */}
         {/* 
               <TouchableOpacity
                 style={[styles.closeButton, { backgroundColor: "#28a745", marginBottom: 10 }]}
@@ -168,7 +165,7 @@ export default function AppSettingsScreen({ navigation }) {
         <Button text="Fermer" onPress={() => setPrivacyModalVisible(false)} />
       </ModalContent>
 
-      {/* Modal Aides */}
+      {/* Modal d'aide */}
       <ModalContent
         visibleState={isHelpModalVisible}
         closeHandler={() => setHelpModalVisible(false)}
@@ -183,7 +180,7 @@ export default function AppSettingsScreen({ navigation }) {
         <Button text="Fermer" onPress={() => setHelpModalVisible(false)} />
       </ModalContent>
 
-      {/* Modal de confirmation Déconnexion */}
+      {/* Modale de confirmation de déconnexion */}
       <ModalContent
         visibleState={isLogoutConfirmVisible}
         closeHandler={() => setLogoutConfirmVisible(false)}
@@ -207,7 +204,7 @@ export default function AppSettingsScreen({ navigation }) {
         </View>
       </ModalContent>
 
-      {/* Modal de confirmation Désinscription */}
+      {/* Modale de confirmation de désinscription */}
       <ModalContent
         visibleState={isDeleteConfirmVisible}
         closeHandler={() => setDeleteConfirmVisible(false)}

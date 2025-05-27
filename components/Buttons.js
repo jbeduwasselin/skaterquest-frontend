@@ -4,9 +4,9 @@ import globalStyle, { COLOR_TEXT } from "../globalStyle";
 import { useEffect, useState } from "react";
 import { Image } from "react-native";
 
-///Ces deux boutons sont ceux à utiliser
+// Ces deux boutons sont ceux à utiliser
 
-//Un bouton avec du text et une icone
+// Un bouton avec du texte et une icône
 export function Button({
   iconName,
   size = 20,
@@ -96,7 +96,7 @@ export function StateButton({
   );
 }
 
-//Un Bouton avec une image et un étéat interne (on/off)
+// Un Bouton avec une image et un état interne (on/off)
 export function StateImageButton({
   source,
   value,

@@ -48,13 +48,8 @@ export default function SpotScreen({ navigation, route }) {
   const [uploading, setUploading] = useState(false); // Indicateur de progression du chargement de la vidéo (utile pour envoyer un feedback à l'utilisateur quand la vidéo met du temps à charger)
 
   // Hook qui détermine si l'écran est actif
-  const isFocused = useIsFocused();
+  const isFocused = useIsFocused(); // La méthode useIsFocused() permet de ne pas afficher la caméra si l'écran n'est pas focus
   useEffect(() => {
-    /*
-    isFocused nous dis si l'écran est celui actuellement chargé par l'utilisateur.
-    Ici on fetch au montage du composant et au changement d'écran mais seulement
-    si on est sur celui ci isFocused = true.
-    */
     isFocused &&
       getSpotInfo(token, spotData._id).then(({ result, data }) => {
         data.videos = data.videos.sort(
@@ -244,7 +239,7 @@ export default function SpotScreen({ navigation, route }) {
               videoData={item}
               onPress={() => {
                 setVideoPlaying(item.url);
-              }} // Prop servant à actualier le composant lors d'un changement de vote
+              }} // Prop servant à actualiser le composant lors d'un changement de vote (pour permettre l'affichage dynamique)
             />
           );
         }}
@@ -330,12 +325,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 2,
     borderRadius: 12,
     overflow: "hidden",
-    // backgroundColor: "#000",
   },
   photoWrapper: {
     width: "100%",
-    aspectRatio: 3 / 4, // portrait
-    backgroundColor: "#222", // au cas où l'image charge lentement
+    aspectRatio: 3 / 4, // Portrait
+    backgroundColor: "#222", // Au cas où l'image charge lentement
   },
   videoItem: {
     display: "flex",

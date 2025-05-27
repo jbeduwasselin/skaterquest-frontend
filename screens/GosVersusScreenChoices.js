@@ -176,7 +176,7 @@ export default function GosVersusScreenChoices({ route, navigation }) {
         </View>
       </Animatable.View>
 
-      {/* Modal de fin de partie */}
+      {/* Modale de fin de partie */}
       <ModalContent
         visibleState={isGameOver}
         closeHandler={() => setIsGameOver(false)}

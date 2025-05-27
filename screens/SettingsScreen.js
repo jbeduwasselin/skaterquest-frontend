@@ -74,7 +74,7 @@ export default function SettingsScreen({ navigation }) {
         setUploading(true); // Affichage de l'indicateur de chargement
         const { result } = await changeUserAvatar(token, uri);
         setUploading(false); // Masquage de l'indicateur de chargement
-        // Affichage d'un écran de confirmation pour l'utilisateur (car l'éditeur de launchImageLibraryAsync n'est pas très clair à ce niveau)
+        // Affichage d'un écran de confirmation pour l'utilisateur (car l'éditeur de launchImageLibraryAsync n'est pas très explicite à ce niveau)
         if (result) {
           setErrorModal("Succès", "Ton avatar a été mis à jour !");
           forceUpdate();
@@ -162,7 +162,7 @@ export default function SettingsScreen({ navigation }) {
         /> */}
       </View>
 
-      {/* Modal de changement de SkaterTag */}
+      {/* Modale de changement de SkaterTag */}
       <ModalContent
         visibleState={modalVisible}
         closeHandler={() => setModalVisible(false)}

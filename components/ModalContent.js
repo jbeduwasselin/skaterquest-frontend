@@ -1,5 +1,4 @@
-//A Modal that's displayed on top of the screen
-//Une modal qui s'ouvre par dessus le contenu de l'écran
+// Une modale qui s'ouvre par dessus le contenu de l'écran
 
 import {
   Animated,
@@ -19,11 +18,11 @@ export default function ModalContent({
   fadeInDuration = 500,
   fadeOutDuration = 500,
 }) {
-  //visibleState = State du composant parent qui détermine la visibilité
-  //containerStyle= Style du container interne (écrase le css par défault)
+  // visibleState = State du composant parent qui détermine la visibilité
+  // containerStyle = Style du container interne (écrase le CSS par défaut)
   const [visible, setVisible] = useState(false);
 
-  //Animations
+  // Animations
   const fadeAnim = useAnimatedValue(0);
   const fadeIn = () => {
     Animated.timing(fadeAnim, {
@@ -41,7 +40,7 @@ export default function ModalContent({
     }).start();
   };
 
-  //Hook d'effet qui met à jours l'état lors d'un rerender du parent
+  // Hook d'effet qui met à jours l'état lors d'un rerender du parent
   useEffect(() => {
     visibleState ? fadeIn() : fadeOut();
     visibleState
@@ -49,7 +48,7 @@ export default function ModalContent({
       : setTimeout(() => setVisible(visibleState), fadeOutDuration);
   }, [visibleState]);
 
-  //Ferme la modal sur appui du backbutton
+  // Ferme la modale sur appui du backbutton
   useBackHandler(() => {
     if (visible && closeHandler) {
       closeHandler();
@@ -58,10 +57,10 @@ export default function ModalContent({
     return false;
   });
 
-  //si la modal n'est pas visible retourne rien
+  // Si la modale n'est pas visible retourne rien
   if (!visible) return;
 
-  //sinon retourne les enfants dans un double container
+  // Sinon retourne les enfants dans un double container
   return (
     <SafeAreaView style={styles.mainContainer}>
       <Animated.View
@@ -79,7 +78,7 @@ export default function ModalContent({
 }
 
 const styles = StyleSheet.create({
-  //Overlay en position absolu, prend tout l'écran
+  // Overlay en position absolue, prend tout l'écran
   mainContainer: {
     justifyContent: "center",
     alignItems: "center",
@@ -91,7 +90,7 @@ const styles = StyleSheet.create({
     left: 0,
     zIndex: 10,
   },
-  //style par défaut du contenaire interne
+  // Style par défaut du container interne
   container: {
     padding: "1%",
     backgroundColor: "#202020A0",

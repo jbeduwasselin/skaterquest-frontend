@@ -7,18 +7,15 @@ import globalStyle, { COLOR_PLACEHOLDER } from "../globalStyle";
 import { Button, StateImageButton } from "../components/Buttons";
 import MapView, { Marker } from "react-native-maps";
 import { Dimensions } from "react-native";
-import ModalContent from "../components/ModalContent";
 import { useErrorModal } from "../components/ErrorModal";
 
 export default function AddSpotScreen({ navigation, route }) {
-  // Récupération des infos depuis le store
-  const { token } = useSelector((state) => state.user.value);
-  //Localisation du spot passées en paramètre de navigation
-  const { latitude, longitude } = route.params;
+  const { token } = useSelector((state) => state.user.value); // Récupération des infos depuis le store
+  const { latitude, longitude } = route.params; // Coordonnées du spot passées en paramètre de navigation
 
   const [spotName, setSpotName] = useState(""); // État pour enregistrer le nom donné au spot par l'utilisateur
   const [spotCategory, setSpotCategory] = useState(null); // État pour enregistrer la catégorie du spot choisie par l'utilisateur
-  const [coordinate, setCoordinate] = useState({ latitude, longitude }); //Etat pour les coordonnées du spot
+  const [coordinate, setCoordinate] = useState({ latitude, longitude }); // État pour les coordonnées du spot
   const [setErrorModal, ErrorModal] = useErrorModal();
   function toggleSpotCategory(value) {
     spotCategory == value ? setSpotCategory(null) : setSpotCategory(value);
@@ -32,7 +29,6 @@ export default function AddSpotScreen({ navigation, route }) {
     }
     if (!spotCategory) {
       setErrorModal("Veuillez renseigner une categorie pour le spot.");
-      // faudrait afficher un message d'erreur ou entourer en rouge le champ manquant
       return; // On interrompt la fonction s'il n'y a pas de nom et/ou de catégorie pour enregistrer le spot
     }
 

@@ -5,19 +5,18 @@ import { Text } from "react-native";
 import { Button } from "./Buttons";
 
 /*
-Function qui renvoie [setter , component] pour une modale d'affichage
-d'erreur.
+Fonction qui renvoie [setter , component] pour une modale d'affichage d'erreur.
 
 Usage :
 
-  //appeler le hook
+  // Appeler le hook
   const [setError , Error] = useConfirmationModal()
 
   function handleEvent(){
   try {
     myDodgyFunction()
   }catch (error){
-    setError("Oh noo it failed") //Ici mettre le texte de ton error
+    setError("It failed") // Ici mettre le texte de l'error
   }
 
    [....]
@@ -26,7 +25,7 @@ Usage :
    ....
    .....
    .....
-    <Error/>  //Appeler le composant
+    <Error/>  // Appeler le composant
    </>)
 
 }

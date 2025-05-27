@@ -34,21 +34,18 @@ import user from "./reducers/user";
 import spot from "./reducers/spot";
 import tricks from "./reducers/tricks";
 
-// Persist config
+// Configuration du store persistant de Redux (actuellement désactivé)
 // const persistConfig = {
 //   key: "root",
 //   storage: AsyncStorage,
 // };
-
 // const rootReducer = combineReducers({ user });
 // const persistedReducer = persistReducer(persistConfig, rootReducer);
-
 // const store = configureStore({
 //   reducer: persistedReducer,
 //   middleware: (getDefaultMiddleware) =>
 //     getDefaultMiddleware({ serializableCheck: false }),
 // });
-
 // const persistor = persistStore(store);
 const store = configureStore({
   reducer: {
@@ -58,7 +55,6 @@ const store = configureStore({
   },
 });
 
-// Création de la navigation
 // Création de la navigation
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();

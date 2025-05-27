@@ -39,5 +39,9 @@ yarn.lock
 # typescript
 *.tsbuildinfo
 
-# test pour bootcamp
+# Tests pour l'évaluation de La Capsule
 user.test.js
+tricks.test.js
+
+# Other
+obsolete/

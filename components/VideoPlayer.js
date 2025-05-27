@@ -1,3 +1,5 @@
+// Lecteur vidéo
+
 import { useVideoPlayer, VideoView } from "expo-video";
 import { useEffect, useRef } from "react";
 import { Dimensions, StyleSheet } from "react-native";

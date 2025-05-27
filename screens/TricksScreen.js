@@ -11,13 +11,14 @@ import {
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { categories, difficultyLevels, tricksData } from "../data/trickList";
 import { useState, useEffect, useMemo } from "react";
-import BackgroundWrapper from "../components/BackgroundWrapper";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTrick } from "../reducers/tricks";
-import ProgressBar from "../components/ProgressBar";
-import ConfettiCannon from "react-native-confetti-cannon";
 import globalStyle, { COLOR_SECD } from "../globalStyle";
 import { StateButton, Button } from "../components/Buttons";
+
+import ConfettiCannon from "react-native-confetti-cannon";
+import BackgroundWrapper from "../components/BackgroundWrapper";
+import ProgressBar from "../components/ProgressBar";
 
 const initialSettings = Object.freeze({
   excludedDificulty: [],
@@ -135,7 +136,7 @@ export default function TricksScreen() {
         )}
       />
 
-      {/* MODAL 100% */}
+      {/* Modale 100% */}
       <Modal
         visible={showModal}
         transparent

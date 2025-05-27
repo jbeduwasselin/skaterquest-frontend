@@ -114,7 +114,7 @@ export default function MapScreen({ navigation }) {
         onPress={addSpot}
       />
 
-      {/* Modal pour l'affichage des erreur */}
+      {/* Modale pour l'affichage des erreurs */}
       <ModalContent
         visibleState={errorModal}
         containerStyle={globalStyle.errorModal}

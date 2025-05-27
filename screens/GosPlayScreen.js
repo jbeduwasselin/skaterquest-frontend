@@ -7,8 +7,7 @@ import globalStyle, { COLOR_CANCEL, COLOR_PLACEHOLDER } from "../globalStyle";
 import { Button } from "../components/Buttons";
 import { useSelector } from "react-redux";
 
-// Récupérer la largeur de l'écran
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get("window"); // Récupération de la largeur de l'écran
 
 export default function GosPlayScreen({ navigation }) {
   const { username } = useSelector((state) => state.user.value);
@@ -34,7 +33,7 @@ export default function GosPlayScreen({ navigation }) {
 
   return (
     <BackgroundWrapper flexJustify="center">
-      {/* MODAL DE CONFIGURATION */}
+      {/* Modale de configuration */}
       <ModalContent
         visibleState={modalVisible}
         closeHandler={() => setModalVisible(false)}
@@ -72,7 +71,7 @@ export default function GosPlayScreen({ navigation }) {
         </View>
       </ModalContent>
 
-      {/* TITRE */}
+      {/* Titre */}
       <Animatable.View
         animation="fadeInDown"
         duration={1200}
@@ -83,7 +82,7 @@ export default function GosPlayScreen({ navigation }) {
         </Text>
       </Animatable.View>
 
-      {/* INFOS SKATERS */}
+      {/* Infos skaters */}
       <View style={styles.profileContainer}>
         <Animatable.View
           animation="fadeInLeft"
@@ -110,7 +109,7 @@ export default function GosPlayScreen({ navigation }) {
         </Animatable.View>
       </View>
 
-      {/* BOUTONS POUR DÉMARRER LE JEU */}
+      {/* Boutons pour démarrer le jeu */}
       <Animatable.View
         animation="zoomIn"
         duration={1200}
