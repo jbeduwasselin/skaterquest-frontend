@@ -2,6 +2,8 @@
 
 Partie frontend de l'application mobile SkaterQuest, développée par Julien Bédu, Thomas Poillion et Baptiste Zuber.
 
+Lien de déploiement (Expo) : https://expo.dev/accounts/jbedu/projects/SkaterQuest-frontend/updates/818390a9-6f7e-458a-85c5-d3d929a11528
+
 Librairie pour la conversion de vidéo : https://www.npmjs.com/package/@config-plugins/ffmpeg-kit-react-native
 (éviter de stocker des videos trop lourdes) /!\ ne marche pas sur expo GO, à implémenter sur les .apk/.app
 
